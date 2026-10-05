@@ -8,6 +8,7 @@ npm run build
 
 # Setup GitHub Pages requirements
 cp dist/index.html dist/404.html
+cp public/ws-config.json dist/ws-config.json
 touch dist/.nojekyll
 
 # Create temporary workdir for gh-pages branch

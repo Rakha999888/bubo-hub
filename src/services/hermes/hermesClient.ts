@@ -3,39 +3,67 @@ import { HermesEvent } from '../../types';
 type Listener = (e: HermesEvent) => void;
 declare const process: { env: { HERMES_WS_URL?: string } };
 
+const DEFAULT_FALLBACK_WSS = 'wss://tapes-link-metallica-billy.trycloudflare.com/ws';
+
 /**
- * Hermes client connecting to local Bubo WebSocket server.
- * Auto-detects local host / proxy subpath (/bubo-hub/ws or /ws).
+ * Hermes client connecting to live Bubo WebSocket server.
+ * Auto-detects local host, dynamic ws-config.json, or secure Cloudflare Tunnel WSS.
  */
 class HermesClient {
   private listener: Listener = () => {};
   private ws: WebSocket | null = null;
-  private url: string;
+  private url: string = '';
   private reconnectTimer: any = null;
+  private isConnecting: boolean = false;
 
-  constructor() {
+  async resolveUrl(): Promise<string> {
     if (typeof process !== 'undefined' && process.env && process.env.HERMES_WS_URL) {
-      this.url = process.env.HERMES_WS_URL;
-    } else if (typeof window !== 'undefined') {
-      const isHttps = window.location.protocol === 'https:';
-      const proto = isHttps ? 'wss:' : 'ws:';
-      const host = window.location.host;
-      const isSubpath = window.location.pathname.startsWith('/bubo-hub');
-      this.url = `${proto}//${host}${isSubpath ? '/bubo-hub' : ''}/ws`;
-    } else {
-      this.url = 'ws://127.0.0.1:4005/ws';
+      return process.env.HERMES_WS_URL;
     }
+    if (typeof window !== 'undefined') {
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      if (isLocalhost) {
+        return `ws://${window.location.hostname}:4005/ws`;
+      }
+
+      // Try fetching runtime ws-config.json
+      try {
+        const basePath = window.location.pathname.startsWith('/bubo-hub') ? '/bubo-hub' : '';
+        const res = await fetch(`${basePath}/ws-config.json?_t=${Date.now()}`, { cache: 'no-store' });
+        if (res.ok) {
+          const cfg = await res.json();
+          if (cfg && cfg.wsUrl) {
+            console.log('[BuboClient] Loaded dynamic WS URL from config:', cfg.wsUrl);
+            return cfg.wsUrl;
+          }
+        }
+      } catch (err) {
+        console.warn('[BuboClient] Fetch ws-config.json failed, falling back', err);
+      }
+
+      return DEFAULT_FALLBACK_WSS;
+    }
+    return 'ws://127.0.0.1:4005/ws';
   }
 
-  connect(l: Listener) {
+  async connect(l: Listener) {
     this.listener = l;
     if (typeof window === 'undefined') return;
+    if (this.isConnecting) return;
+
+    this.isConnecting = true;
 
     try {
+      if (!this.url) {
+        this.url = await this.resolveUrl();
+      }
+
+      console.log(`[BuboClient] Initiating WebSocket connection to ${this.url}`);
       this.ws = new WebSocket(this.url);
 
       this.ws.onopen = () => {
-        console.log(`[BuboClient] Connected to Bubo server at ${this.url}`);
+        this.isConnecting = false;
+        console.log(`[BuboClient] Connected to live Bubo server at ${this.url}`);
       };
 
       this.ws.onmessage = (m) => {
@@ -48,10 +76,12 @@ class HermesClient {
       };
 
       this.ws.onerror = (e) => {
-        console.warn(`[BuboClient] WS error connecting to ${this.url}`);
+        this.isConnecting = false;
+        console.warn(`[BuboClient] WS connection error to ${this.url}`, e);
       };
 
       this.ws.onclose = () => {
+        this.isConnecting = false;
         if (!this.reconnectTimer) {
           this.reconnectTimer = setTimeout(() => {
             this.reconnectTimer = null;
@@ -60,7 +90,14 @@ class HermesClient {
         }
       };
     } catch (err) {
-      console.warn('[BuboClient] WebSocket init error, fallback active', err);
+      this.isConnecting = false;
+      console.warn('[BuboClient] WebSocket init error, will retry...', err);
+      if (!this.reconnectTimer) {
+        this.reconnectTimer = setTimeout(() => {
+          this.reconnectTimer = null;
+          this.connect(this.listener);
+        }, 4000);
+      }
     }
   }
 
@@ -68,7 +105,25 @@ class HermesClient {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify({ type: 'prompt', agentId, text }));
     } else {
+      console.warn('[BuboClient] Cannot send prompt, socket not open');
       this.mock(agentId, text);
+    }
+  }
+
+  sendGoal(goal: string) {
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(JSON.stringify({ type: 'goal', goal }));
+    }
+  }
+
+  disconnect() {
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
+    }
+    if (this.ws) {
+      this.ws.close();
+      this.ws = null;
     }
   }
 
