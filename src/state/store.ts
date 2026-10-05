@@ -28,10 +28,25 @@ interface UIState {
 export const useStore = create<UIState>((set, get) => ({
   view: 'office', floor: 2, cameraLevel: 'city',
   selectedAgentId: null, agentMode: false, agents: initialAgents(),
-  setView: (view) => set({ view, selectedAgentId: null, agentMode: false }),
-  setFloor: (floor) => set({ floor, selectedAgentId: null, agentMode: false, cameraLevel: 'floor' }),
+  setView: (view) => set((s) => {
+    if (view === 'agent') {
+      const activeId = s.selectedAgentId || 'bubo-manager';
+      const targetAgent = AGENTS.find((a) => a.id === activeId) || AGENTS[0];
+      return { view, selectedAgentId: activeId, floor: targetAgent.floor as FloorId, cameraLevel: 'floor' };
+    }
+    return { view, selectedAgentId: null, agentMode: false };
+  }),
+  setFloor: (floor) => set({ floor, cameraLevel: 'floor' }),
   setCameraLevel: (cameraLevel) => set({ cameraLevel }),
-  selectAgent: (selectedAgentId) => set({ selectedAgentId, agentMode: false }),
+  selectAgent: (selectedAgentId) => set((s) => {
+    if (!selectedAgentId) return { selectedAgentId: null, agentMode: false };
+    const targetAgent = AGENTS.find((a) => a.id === selectedAgentId);
+    return {
+      selectedAgentId,
+      agentMode: false,
+      floor: targetAgent ? (targetAgent.floor as FloorId) : s.floor
+    };
+  }),
   openAgent: () => set({ agentMode: true }),
   closeAgentMode: () => set({ agentMode: false }),
   applyEvent: (e) => set((s) => {

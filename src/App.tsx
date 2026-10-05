@@ -7,7 +7,7 @@ import { ViewSwitcher } from './components/navigation/ViewSwitcher';
 import { FloorSelector } from './components/navigation/FloorSelector';
 import { AgentPanel } from './components/agent-panel/AgentPanel';
 import { PromptBar } from './components/prompt/PromptBar';
-import { AgentGridView } from './components/agent-view/AgentGridView';
+import { AgentFocusHUD } from './components/agent-view/AgentFocusHUD';
 import { useStore } from './state/store';
 import { STATUS_COLOR } from './3d/characters/AgentActor';
 import { CameraLevel } from './types';
@@ -81,7 +81,7 @@ export default function App() {
         </>
       )}
 
-      {view === 'agent' && <AgentGridView />}
+      {view === 'agent' && <AgentFocusHUD />}
     </div>
   );
 }
