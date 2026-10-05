@@ -21,13 +21,25 @@ export const STATUS_COLOR: Record<AgentStatus, string> = {
   offline: '#64748b'
 };
 
+const DISCORD_META: Record<string, { emoji: string; channel: string; division: string }> = {
+  'bubo-manager': { emoji: '💬', channel: '#💬・general-chat', division: 'General Coordinator' },
+  'bubo-n8n': { emoji: '⚡', channel: '#⚡・bubo-n8n', division: 'n8n Automation' },
+  'bubo-portal': { emoji: '🌐', channel: '#🌐・bubo-portal', division: 'Portal FE' },
+  'bubo-backend-portal': { emoji: '💻', channel: '#💻・bubo-backend-portal', division: 'Backend & DB' },
+  'bubo-admin-portal': { emoji: '🛡', channel: '#🛡・bubo-admin-portal', division: 'Admin System' },
+  'bubo-source-video': { emoji: '🎬', channel: '#🎬・bubo-source-video', division: 'Video Production' },
+  'bubo-pdf': { emoji: '📄', channel: '#📄・bubo-pdf', division: 'PDF Processing' },
+  'bubo-qc-portal': { emoji: '🔍', channel: '#🔍・bubo-qc-portal', division: 'QC & Troubleshooting' },
+  'bubo-ticketing': { emoji: '🎫', channel: '#🎫・bubo-ticketing', division: 'Ticketing & Jira' },
+  'bubo-building': { emoji: '🏗', channel: '#🏗・bubo-building', division: 'System Architecture & Build' }
+};
+
 const wrap = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
 
 /**
  * AgentActor:
- * By default in office, seated properly on their designated office chair facing their workstation desk.
- * When working/thinking, types on keyboard with monitor glow.
- * Only leaves chair when explicitly sent to break or walking.
+ * Seated on their workstation chair in office.
+ * Above head: 3D badge showing full Bubo name, exact Discord channel, and division with real-time status.
  */
 export function AgentActor({ cfg }: { cfg: AgentConfig }) {
   const st = useStore((s) => s.agents[cfg.id] || { status: 'idle', task: '', activity: '' });
@@ -38,6 +50,12 @@ export function AgentActor({ cfg }: { cfg: AgentConfig }) {
   const yaw = useRef(Math.PI);
   const latest = useRef(st);
   latest.current = st;
+
+  const meta = DISCORD_META[cfg.id] || {
+    emoji: '🤖',
+    channel: cfg.department || '#general',
+    division: cfg.role || 'Division'
+  };
 
   // Exact anchor matching Workstation chair at (x, 0.15, z + 0.85)
   const anchors = useMemo(() => ({
@@ -62,7 +80,6 @@ export function AgentActor({ cfg }: { cfg: AgentConfig }) {
     const s = latest.current;
     const p = pose.current;
 
-    // Normal office state = seated on their chair
     const wantSit = s.status !== 'break';
     const target = wantSit ? anchors.sit : anchors.brk;
 
@@ -70,7 +87,6 @@ export function AgentActor({ cfg }: { cfg: AgentConfig }) {
     to.y = 0;
     const dist = to.length();
 
-    // Stand up if moving away to break
     const canMove = p.sit < 0.2;
     p.walking = !wantSit && dist > 0.08 && canMove;
 
@@ -90,7 +106,6 @@ export function AgentActor({ cfg }: { cfg: AgentConfig }) {
     else if (s.status === 'break') mood = 'happy';
     p.mood = mood;
 
-    // Face desk (Math.PI) when seated, face movement direction when walking
     const goalYaw = p.walking ? Math.atan2(to.x, to.z) : Math.PI;
     yaw.current += wrap(goalYaw - yaw.current) * Math.min(1, 8 * dt);
     g.rotation.y = yaw.current;
@@ -123,45 +138,74 @@ export function AgentActor({ cfg }: { cfg: AgentConfig }) {
         </group>
       )}
 
-      {/* Professional SMLONE 3D Nameplate */}
-      <Html position={[0, 2.35, 0]} center distanceFactor={10} zIndexRange={[10, 0]} style={{ pointerEvents: 'none' }}>
+      {/* Real-time Discord 3D Nameplate */}
+      <Html position={[0, 2.38, 0]} center distanceFactor={10} zIndexRange={[10, 0]} style={{ pointerEvents: 'none' }}>
         <div
           style={{
-            background: isManager ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95))' : 'rgba(15, 23, 42, 0.92)',
-            border: isManager ? '1.5px solid #e0b341' : '1px solid rgba(148, 163, 184, 0.25)',
-            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.4)',
-            borderRadius: '10px',
-            padding: '6px 12px',
+            background: isManager ? 'rgba(15, 23, 42, 0.96)' : 'rgba(15, 23, 42, 0.94)',
+            border: isManager ? '1.5px solid #e0b341' : selected ? '1.5px solid #38bdf8' : '1px solid rgba(148, 163, 184, 0.35)',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.65), 0 2px 6px rgba(0, 0, 0, 0.4)',
+            borderRadius: '8px',
+            padding: '5px 10px',
             textAlign: 'center',
-            minWidth: '150px',
+            minWidth: '170px',
             whiteSpace: 'nowrap',
             backdropFilter: 'blur(8px)',
-            userSelect: 'none'
+            userSelect: 'none',
+            fontFamily: 'Inter, system-ui, sans-serif'
           }}
         >
-          <div style={{ fontSize: '0.95em', fontWeight: 800, color: '#f8fafc', letterSpacing: '0.01em' }}>
-            {cfg.displayName}
+          {/* Top Row: Emoji + Official Name */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '13px' }}>{meta.emoji}</span>
+            <span style={{ fontSize: '12.5px', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.01em' }}>
+              {cfg.displayName}
+            </span>
           </div>
-          <div style={{ fontSize: '0.72em', color: '#94a3b8', margin: '2px 0 4px 0', fontWeight: 500 }}>
-            {cfg.role}
+
+          {/* Middle Row: Exact Discord Channel Tag & Division */}
+          <div style={{ fontSize: '9.5px', color: '#94a3b8', margin: '2px 0 4px 0', fontWeight: 600 }}>
+            <span style={{ color: '#38bdf8', fontFamily: 'monospace' }}>{meta.channel}</span> · {meta.division}
           </div>
+
+          {/* Bottom Row: Real-time Live Status Badge */}
           <div
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '4px',
-              fontSize: '0.68em',
+              fontSize: '9px',
               fontWeight: 700,
               color: statusColor,
-              background: 'rgba(0, 0, 0, 0.4)',
+              background: 'rgba(0, 0, 0, 0.5)',
               padding: '2px 8px',
               borderRadius: '999px',
               border: `1px solid ${statusColor}44`
             }}
           >
-            <span style={{ fontSize: '1.2em', lineHeight: 0.5 }}>●</span>
-            <span>{st.status === 'idle' ? 'SEATED • STANDBY' : st.status.toUpperCase()}</span>
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: statusColor, display: 'inline-block' }} />
+            <span>{st.status === 'idle' ? 'STANDBY' : st.status.toUpperCase()}</span>
           </div>
+
+          {/* Active Real-Time Discord Task text (if in-flight) */}
+          {st.task && st.status !== 'idle' && (
+            <div
+              style={{
+                marginTop: '4px',
+                fontSize: '9px',
+                color: '#e2e8f0',
+                maxWidth: '190px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                background: 'rgba(56, 189, 248, 0.2)',
+                padding: '2px 6px',
+                borderRadius: '4px',
+                border: '1px solid rgba(56, 189, 248, 0.35)'
+              }}
+            >
+              ⚡ {st.task}
+            </div>
+          )}
         </div>
       </Html>
     </group>

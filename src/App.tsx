@@ -3,12 +3,10 @@ import { AdaptiveDpr } from '@react-three/drei';
 import { BuboCity } from './3d/city/BuboCity';
 import { BuboBuilding } from './3d/building/BuboBuilding';
 import { CameraRig } from './3d/cameras/CameraRig';
-import { StatBubbles } from './3d/characters/StatBubbles';
 import { ViewSwitcher } from './components/navigation/ViewSwitcher';
 import { FloorSelector } from './components/navigation/FloorSelector';
 import { AgentPanel } from './components/agent-panel/AgentPanel';
 import { PromptBar } from './components/prompt/PromptBar';
-import { TycoonHUD } from './components/tycoon-hud/TycoonHUD';
 import { useStore } from './state/store';
 import { STATUS_COLOR } from './3d/characters/AgentActor';
 import { CameraLevel } from './types';
@@ -35,13 +33,10 @@ export default function App() {
   return (
     <div className="app">
       <header>
-        <div className="brand">Bubo-Hub · Game Dev Tycoon Edition</div>
+        <div className="brand">Bubo-Hub 3D</div>
         <Counts />
         <ViewSwitcher />
       </header>
-
-      {/* Game Dev Tycoon Top Project & Stats HUD */}
-      <TycoonHUD />
 
       <Canvas
         shadows
@@ -66,7 +61,6 @@ export default function App() {
 
         <BuboCity />
         <BuboBuilding />
-        <StatBubbles />
         <CameraRig />
         <AdaptiveDpr pixelated />
       </Canvas>

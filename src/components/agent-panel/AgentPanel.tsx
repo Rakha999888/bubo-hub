@@ -1,6 +1,15 @@
 import { useStore } from '../../state/store';
 import { AGENTS } from '../../config/agents';
-import { STATUS_COLOR } from '../../3d/characters/AgentActor';
+
+const STATUS_THEME: Record<string, { label: string; color: string; border: string }> = {
+  idle: { label: 'STANDBY', color: '#94a3b8', border: '#334155' },
+  working: { label: 'WORKING', color: '#38bdf8', border: '#0284c7' },
+  thinking: { label: 'THINKING', color: '#a78bfa', border: '#7c3aed' },
+  break: { label: 'BREAK', color: '#fbbf24', border: '#d97706' },
+  error: { label: 'ERROR', color: '#f87171', border: '#dc2626' },
+  success: { label: 'DONE', color: '#34d399', border: '#059669' },
+  offline: { label: 'OFFLINE', color: '#64748b', border: '#334155' }
+};
 
 export function AgentPanel() {
   const id = useStore((s) => s.selectedAgentId);
@@ -9,92 +18,57 @@ export function AgentPanel() {
   const { selectAgent, openAgent, closeAgentMode } = useStore.getState();
   if (!id || !st) return null;
   const cfg = AGENTS.find((a) => a.id === id)!;
+  const theme = STATUS_THEME[st.status] || STATUS_THEME.idle;
 
   return (
-    <aside className={'panel' + (agentMode ? ' wide' : '')}>
-      <button className="x" onClick={() => selectAgent(null)}>×</button>
+    <aside className={'panel' + (agentMode ? ' wide' : '')} style={{ border: '1px solid #1e293b', background: '#0f172a' }}>
+      <button className="x" onClick={() => selectAgent(null)} style={{ color: '#94a3b8' }}>×</button>
 
       <div style={{ marginBottom: '12px' }}>
-        <h3 style={{ margin: '0 0 4px 0', fontSize: '1.35em', letterSpacing: '0.01em', color: '#f8fafc' }}>
-          {cfg.displayName}
-        </h3>
-        <p style={{ margin: 0, fontWeight: 700, color: '#38bdf8', fontSize: '0.9em' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+          <h3 style={{ margin: 0, fontSize: '1.1em', fontWeight: 600, color: '#f8fafc' }}>
+            {cfg.displayName}
+          </h3>
+          <span
+            style={{
+              fontSize: '10px',
+              fontWeight: 600,
+              color: theme.color,
+              padding: '2px 6px',
+              borderRadius: '4px',
+              background: '#1e293b',
+              border: `1px solid ${theme.border}`
+            }}
+          >
+            {theme.label}
+          </span>
+        </div>
+        <p style={{ margin: '4px 0 0 0', fontWeight: 500, color: '#94a3b8', fontSize: '0.85em' }}>
           {cfg.role}
         </p>
-        <p className="muted" style={{ margin: '4px 0 0 0', fontSize: '0.85em' }}>
-          Divisi: <strong style={{ color: '#e2e8f0' }}>{cfg.department}</strong>
+        <p style={{ margin: '2px 0 0 0', fontSize: '0.8em', color: '#64748b' }}>
+          Channel: <span style={{ color: '#38bdf8' }}>{cfg.department}</span>
         </p>
       </div>
 
-      <div style={{ margin: '8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <span
-          style={{
-            color: STATUS_COLOR[st.status] || '#38bdf8',
-            fontWeight: 800,
-            fontSize: '0.85em',
-            background: 'rgba(15, 23, 42, 0.6)',
-            padding: '3px 10px',
-            borderRadius: '999px',
-            border: `1px solid ${STATUS_COLOR[st.status] || '#38bdf8'}55`
-          }}
-        >
-          ● {st.status === 'idle' ? 'SEATED (STANDBY)' : st.status.toUpperCase()}
-        </span>
-      </div>
+      <dl style={{ marginTop: '12px', borderTop: '1px solid #1e293b', paddingTop: '8px' }}>
+        <dt style={{ color: '#64748b', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Tugas Saat Ini</dt>
+        <dd style={{ color: '#e2e8f0', fontSize: '12px' }}>{st.task || 'Standby menunggu instruksi Discord'}</dd>
 
-      {cfg.personality && cfg.personality.length > 0 && (
-        <div style={{ margin: '10px 0', display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-          {cfg.personality.map((p, idx) => (
-            <span
-              key={idx}
-              style={{
-                background: 'rgba(56, 189, 248, 0.12)',
-                color: '#38bdf8',
-                border: '1px solid rgba(56, 189, 248, 0.25)',
-                padding: '2px 8px',
-                borderRadius: '8px',
-                fontSize: '0.76em',
-                fontWeight: 600
-              }}
-            >
-              #{p}
-            </span>
-          ))}
-        </div>
-      )}
+        <dt style={{ color: '#64748b', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Aktivitas Real-Time</dt>
+        <dd style={{ color: '#cbd5e1', fontSize: '12px' }}>{st.activity || 'Siap di meja kerja'}</dd>
 
-      <dl style={{ marginTop: '12px' }}>
-        <dt>Status Meja Kerja</dt>
-        <dd style={{ color: '#10b981', fontWeight: 600 }}>Duduk di Kursi Kantor (Workstation)</dd>
-
-        <dt>Tugas Saat Ini</dt>
-        <dd>{st.task || 'Menunggu instruksi dari Discord'}</dd>
-
-        <dt>Aktivitas Real-Time</dt>
-        <dd>{st.activity || 'Siap bertugas'}</dd>
-
-        <dt>Progres Eksekusi</dt>
-        <dd>
-          <div className="bar">
-            <div style={{ width: st.progress + '%' }} />
-          </div>{' '}
-          {st.progress}%
-        </dd>
-
-        <dt>Lokasi Kantor</dt>
-        <dd>
+        <dt style={{ color: '#64748b', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Workstation</dt>
+        <dd style={{ color: '#94a3b8', fontSize: '12px' }}>
           Lantai {cfg.floor} · {cfg.workspace}
         </dd>
 
-        <dt>Technical ID</dt>
-        <dd style={{ fontFamily: 'monospace', opacity: 0.85, color: '#94a3b8' }}>{cfg.id}</dd>
-
         {st.recent.length > 0 && (
           <>
-            <dt>Log Aktivitas Terkini</dt>
+            <dt style={{ color: '#64748b', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Log Terkini</dt>
             <dd>
-              {st.recent.map((r, i) => (
-                <div key={i} style={{ fontSize: '0.85em', margin: '2px 0' }}>• {r}</div>
+              {st.recent.slice(-4).map((r, i) => (
+                <div key={i} style={{ fontSize: '11px', color: '#94a3b8', margin: '2px 0' }}>• {r}</div>
               ))}
             </dd>
           </>
@@ -102,16 +76,18 @@ export function AgentPanel() {
       </dl>
 
       {!agentMode && (
-        <button className="primary" onClick={openAgent} style={{ marginTop: '14px', width: '100%' }}>
-          Buka Terminal & Detail Agen
+        <button className="primary" onClick={openAgent} style={{ marginTop: '12px', width: '100%', fontSize: '12px', padding: '6px 10px' }}>
+          Buka Terminal & Stream Log
         </button>
       )}
 
       {agentMode && (
         <>
-          <h4 style={{ margin: '14px 0 6px 0', fontSize: '0.9em' }}>Terminal Live Stream</h4>
-          <pre className="log">{st.log.length ? st.log.join('\n') : 'Menunggu stream log dari server...'}</pre>
-          <button onClick={closeAgentMode} style={{ marginTop: '8px', width: '100%' }}>
+          <h4 style={{ margin: '12px 0 6px 0', fontSize: '0.85em', color: '#cbd5e1' }}>Terminal Stream</h4>
+          <pre className="log" style={{ background: '#020617', border: '1px solid #1e293b' }}>
+            {st.log.length ? st.log.join('\n') : 'Menunggu stream log dari server...'}
+          </pre>
+          <button onClick={closeAgentMode} style={{ marginTop: '8px', width: '100%', fontSize: '12px', padding: '6px 10px' }}>
             Tutup Mode Detail
           </button>
         </>
