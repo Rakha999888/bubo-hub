@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useStore } from '../../state/store';
 import { BUBO_CHARACTERS } from '../../data/characters/characters.config';
 import { AgentConfig } from '../../types';
+import { Agent3DPortrait } from './Agent3DPortrait';
 
 // Wall decor presets for each room row (3 desks per row)
 const ROW_DECOR = [
@@ -162,7 +163,7 @@ export function PixelOfficeRoom() {
         </div>
 
         <div style={{ fontSize: '12px', color: '#94a3b8' }}>
-          Format 3 Meja per Baris · Karakter SMLONE
+          Format 3 Meja per Baris · Karakter 3D Resmi Kantor
         </div>
       </div>
 
@@ -393,19 +394,7 @@ export function PixelOfficeRoom() {
                   const st = agents[c.id] || { status: 'idle', task: '', activity: 'Siap di meja kerja' };
                   const isWorking = st.status === 'working';
                   const isSelected = selectedAgentId === c.id;
-
-                  // EXACT character avatar data matching 3D office BuboCharacter!
-                  const skin = c.avatar.skinColor || '#f7d5a3';
-                  const hair = c.avatar.hairColor || '#2b2118';
-                  const top = c.avatar.topColor || '#0e2439';
-                  const accent = c.avatar.accentColor || '#38bdf8';
                   const isLeader = c.id === 'bubo-manager';
-                  const hasHeadphones = (c.avatar.props || []).includes('headphones');
-                  const hasHeadset = (c.avatar.props || []).includes('headset');
-                  const hasGlasses = c.id === 'bubo-backend-portal' || c.id === 'bubo-pdf';
-
-                  // Screen color matching Workstation in BuboBuilding.tsx
-                  const screenColor = isWorking ? '#10b981' : '#38bdf8';
 
                   return (
                     <div
@@ -424,7 +413,7 @@ export function PixelOfficeRoom() {
                         transition: 'transform 0.15s ease'
                       }}
                     >
-                      {/* 1. Name Tag Pill (Exact office badge style) */}
+                      {/* 1. Name Tag Pill (Header Badge) */}
                       <div
                         style={{
                           background: isLeader ? 'rgba(15, 23, 42, 0.95)' : 'rgba(15, 23, 42, 0.9)',
@@ -440,7 +429,8 @@ export function PixelOfficeRoom() {
                           gap: '6px',
                           marginBottom: '8px',
                           boxShadow: '0 6px 16px rgba(0,0,0,0.5)',
-                          whiteSpace: 'nowrap'
+                          whiteSpace: 'nowrap',
+                          zIndex: 2
                         }}
                       >
                         <span style={{ fontSize: '13px' }}>
@@ -465,370 +455,12 @@ export function PixelOfficeRoom() {
                         )}
                       </div>
 
-                      {/* 2. Floating Sleep 'z Z' Particles (if Idle) */}
-                      {!isWorking && (
-                        <div
-                          style={{
-                            position: 'absolute',
-                            top: '16px',
-                            right: '25%',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            pointerEvents: 'none',
-                            animation: 'buboFloatZ 2.2s infinite ease-in-out'
-                          }}
-                        >
-                          <span style={{ fontSize: '12px', fontWeight: 800, color: 'rgba(255,255,255,0.7)' }}>Z</span>
-                          <span style={{ fontSize: '9px', fontWeight: 700, color: 'rgba(255,255,255,0.45)', marginLeft: '6px' }}>z</span>
-                        </div>
-                      )}
-
-                      {/* 3. Workstation: SMLONE Office Character + Ergonomic Chair + Modern Desk */}
-                      <div
-                        style={{
-                          position: 'relative',
-                          width: '180px',
-                          height: '142px',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          justifyContent: 'flex-end'
-                        }}
-                      >
-                        {/* Navy Ergonomic Office Chair (Exact from BuboBuilding.tsx Workstation) */}
-                        <div
-                          style={{
-                            position: 'absolute',
-                            bottom: '50px',
-                            width: '64px',
-                            height: '76px',
-                            background: 'linear-gradient(180deg, #1b2838 0%, #101c33 100%)',
-                            borderRadius: '16px 16px 4px 4px',
-                            border: '3px solid #0b1426',
-                            boxShadow: 'inset 0 4px 8px rgba(255,255,255,0.12), 0 8px 16px rgba(0,0,0,0.5)'
-                          }}
-                        >
-                          {/* Contoured Headrest */}
-                          <div
-                            style={{
-                              position: 'absolute',
-                              top: '-8px',
-                              left: '50%',
-                              transform: 'translateX(-50%)',
-                              width: '38px',
-                              height: '12px',
-                              background: '#1b2838',
-                              border: '2.5px solid #0b1426',
-                              borderRadius: '6px'
-                            }}
-                          />
-                        </div>
-
-                        {/* Character Body (Sitting, Exact 3D Office Model Proportions) */}
-                        <div
-                          style={{
-                            position: 'absolute',
-                            bottom: '42px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            zIndex: 2,
-                            transform: isWorking ? 'none' : 'translateY(1px)'
-                          }}
-                        >
-                          {/* Hair (Exact style from c.avatar.hair) */}
-                          <div
-                            style={{
-                              width: c.avatar.hair === 'creative-long' ? '46px' : '42px',
-                              height: c.avatar.hair === 'creative-long' ? '24px' : '18px',
-                              background: hair,
-                              borderRadius: c.avatar.hair === 'creative-wavy' ? '18px 18px 8px 8px' : '14px 14px 2px 2px',
-                              marginBottom: '-8px',
-                              zIndex: 4,
-                              position: 'relative',
-                              boxShadow: '0 2px 5px rgba(0,0,0,0.4)'
-                            }}
-                          >
-                            {/* Hair highlight */}
-                            <div
-                              style={{
-                                position: 'absolute',
-                                top: '2px',
-                                left: '10px',
-                                width: '16px',
-                                height: '3px',
-                                background: 'rgba(255,255,255,0.22)',
-                                borderRadius: '999px'
-                              }}
-                            />
-                          </div>
-
-                          {/* Head (Natural Human Skin Tone from c.avatar.skinColor) */}
-                          <div
-                            style={{
-                              width: '38px',
-                              height: '34px',
-                              background: skin,
-                              borderRadius: '10px',
-                              border: '1.5px solid rgba(0,0,0,0.18)',
-                              position: 'relative',
-                              display: 'flex',
-                              flexDirection: 'column',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              boxShadow: '0 3px 8px rgba(0,0,0,0.25)',
-                              zIndex: 3
-                            }}
-                          >
-                            {/* Eyebrows */}
-                            <div style={{ display: 'flex', gap: '10px', marginBottom: '2px' }}>
-                              <div style={{ width: '6px', height: '2px', background: hair, borderRadius: '1px' }} />
-                              <div style={{ width: '6px', height: '2px', background: hair, borderRadius: '1px' }} />
-                            </div>
-
-                            {/* Eyes (Realistic Human Eyes with Highlights) */}
-                            {isWorking ? (
-                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
-                                <div style={{ display: 'flex', gap: '10px' }}>
-                                  <div style={{ width: '5px', height: '6px', background: '#0f172a', borderRadius: '50%', position: 'relative' }}>
-                                    <div style={{ position: 'absolute', top: '1px', left: '1px', width: '2px', height: '2px', background: '#ffffff', borderRadius: '50%' }} />
-                                  </div>
-                                  <div style={{ width: '5px', height: '6px', background: '#0f172a', borderRadius: '50%', position: 'relative' }}>
-                                    <div style={{ position: 'absolute', top: '1px', left: '1px', width: '2px', height: '2px', background: '#ffffff', borderRadius: '50%' }} />
-                                  </div>
-                                </div>
-                                <div style={{ width: '8px', height: '3px', borderBottom: '1.5px solid #78350f', borderRadius: '0 0 6px 6px' }} />
-                              </div>
-                            ) : (
-                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-                                <div style={{ display: 'flex', gap: '10px', marginTop: '1px' }}>
-                                  <div style={{ width: '6px', height: '3px', borderTop: '2px solid #522b14', borderRadius: '4px 4px 0 0' }} />
-                                  <div style={{ width: '6px', height: '3px', borderTop: '2px solid #522b14', borderRadius: '4px 4px 0 0' }} />
-                                </div>
-                                <div style={{ width: '6px', height: '2.5px', borderBottom: '1.5px solid #78350f', borderRadius: '0 0 4px 4px' }} />
-                              </div>
-                            )}
-
-                            {/* Glasses (if Darren or Milo) */}
-                            {hasGlasses && (
-                              <div
-                                style={{
-                                  position: 'absolute',
-                                  top: '11px',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '5px'
-                                }}
-                              >
-                                <div style={{ width: '9px', height: '9px', border: '1.5px solid #0f172a', borderRadius: '50%' }} />
-                                <div style={{ width: '4px', height: '1.5px', background: '#0f172a' }} />
-                                <div style={{ width: '9px', height: '9px', border: '1.5px solid #0f172a', borderRadius: '50%' }} />
-                              </div>
-                            )}
-
-                            {/* Headphones (if Luna, Niko, Kiro) */}
-                            {hasHeadphones && (
-                              <>
-                                <div style={{ position: 'absolute', left: '-5px', width: '6px', height: '14px', background: '#ffffff', borderRadius: '3px', border: '1.5px solid #0f172a' }} />
-                                <div style={{ position: 'absolute', right: '-5px', width: '6px', height: '14px', background: '#ffffff', borderRadius: '3px', border: '1.5px solid #0f172a' }} />
-                              </>
-                            )}
-
-                            {/* Operator Headset (if Theo) */}
-                            {hasHeadset && (
-                              <div style={{ position: 'absolute', right: '-4px', width: '6px', height: '12px', background: '#1e293b', borderRadius: '2px' }}>
-                                <div style={{ position: 'absolute', bottom: '2px', right: '4px', width: '12px', height: '2px', background: '#1e293b', transform: 'rotate(25deg)' }} />
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Torso & Human Outfit (Exact topColor from c.avatar.topColor) */}
-                          <div
-                            style={{
-                              width: '46px',
-                              height: '32px',
-                              background: top,
-                              borderRadius: '7px 7px 0 0',
-                              border: '1.5px solid rgba(0,0,0,0.3)',
-                              position: 'relative',
-                              display: 'flex',
-                              justifyContent: 'center',
-                              boxShadow: '0 4px 10px rgba(0,0,0,0.35)',
-                              marginTop: '-2px',
-                              zIndex: 2
-                            }}
-                          >
-                            {/* Shirt Collar / Tie / Accent */}
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                              <div style={{ width: '12px', height: '6px', background: '#ffffff', clipPath: 'polygon(0 0, 100% 0, 50% 100%)' }} />
-                              {isLeader ? (
-                                <div style={{ width: '5px', height: '14px', background: '#ea580c', clipPath: 'polygon(0 0, 100% 0, 70% 100%, 30% 100%)' }} />
-                              ) : (
-                                <div style={{ width: '4px', height: '12px', background: accent }} />
-                              )}
-                            </div>
-
-                            {/* Gold Badge on Chest (if Leader or Admin) */}
-                            {isLeader && (
-                              <div
-                                style={{
-                                  position: 'absolute',
-                                  top: '6px',
-                                  left: '6px',
-                                  width: '5px',
-                                  height: '7px',
-                                  background: '#fbbf24',
-                                  borderRadius: '1px',
-                                  boxShadow: '0 0 4px #fbbf24'
-                                }}
-                              />
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Modern SMLONE Workstation Desk (Matching Workstation in BuboBuilding.tsx) */}
-                        <div
-                          style={{
-                            position: 'relative',
-                            width: '176px',
-                            height: '52px',
-                            background: 'linear-gradient(180deg, #784c28 0%, #5a361a 100%)',
-                            borderRadius: '6px 6px 4px 4px',
-                            border: '2px solid #3d2210',
-                            boxShadow: '0 12px 24px rgba(0,0,0,0.65)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            padding: '0 10px',
-                            zIndex: 4
-                          }}
-                        >
-                          {/* Slim-Bezel Workstation PC Monitor (Centered) */}
-                          <div
-                            style={{
-                              position: 'absolute',
-                              top: '-28px',
-                              left: '50%',
-                              transform: 'translateX(-50%)',
-                              display: 'flex',
-                              flexDirection: 'column',
-                              alignItems: 'center'
-                            }}
-                          >
-                            {/* Monitor Screen Frame */}
-                            <div
-                              style={{
-                                width: '58px',
-                                height: '34px',
-                                background: '#1a1d25',
-                                border: '2px solid #0b1426',
-                                borderRadius: '4px',
-                                boxShadow: isWorking
-                                  ? '0 0 16px rgba(16, 185, 129, 0.75), inset 0 0 8px rgba(255,255,255,0.35)'
-                                  : '0 2px 8px rgba(0,0,0,0.4)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                position: 'relative',
-                                overflow: 'hidden'
-                              }}
-                            >
-                              {/* Display Glow / Active Status */}
-                              <div
-                                style={{
-                                  width: '100%',
-                                  height: '100%',
-                                  background: isWorking
-                                    ? 'linear-gradient(135deg, #064e3b 0%, #047857 100%)'
-                                    : 'linear-gradient(135deg, #0c4a6e 0%, #0369a1 100%)',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center'
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    width: '8px',
-                                    height: '8px',
-                                    borderRadius: '50%',
-                                    background: screenColor,
-                                    boxShadow: '0 0 8px ' + screenColor
-                                  }}
-                                />
-                              </div>
-                            </div>
-                            {/* Monitor Stand Base */}
-                            <div
-                              style={{
-                                width: '18px',
-                                height: '5px',
-                                background: '#2d3748',
-                                borderRadius: '1px'
-                              }}
-                            />
-                          </div>
-
-                          {/* Low-Profile Mechanical Keyboard */}
-                          <div
-                            style={{
-                              position: 'absolute',
-                              bottom: '6px',
-                              left: '50%',
-                              transform: 'translateX(-50%)',
-                              width: '48px',
-                              height: '10px',
-                              background: '#2d323e',
-                              borderRadius: '2px',
-                              border: '1px solid #1a1d25',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              gap: '2px'
-                            }}
-                          >
-                            {[0, 1, 2, 3].map((k) => (
-                              <div key={k} style={{ width: '7px', height: '4px', background: '#475569', borderRadius: '1px' }} />
-                            ))}
-                          </div>
-
-                          {/* Left Desk Drawer */}
-                          <div
-                            style={{
-                              width: '28px',
-                              height: '24px',
-                              background: '#4a2c16',
-                              borderRadius: '3px',
-                              border: '1px solid #2e1a0c',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center'
-                            }}
-                          >
-                            <div style={{ width: '5px', height: '2px', background: '#d97706' }} />
-                          </div>
-
-                          {/* Right Work Accessory (Coffee / Succulent / Notes) */}
-                          {c.id.includes('portal') && !c.id.includes('backend') ? (
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', transform: 'translateY(-6px)' }} title="Design Tablet & Stylus">
-                              <div style={{ fontSize: '11px' }}>📱</div>
-                            </div>
-                          ) : c.id.includes('qc') ? (
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', transform: 'translateY(-6px)' }} title="Mini Succulent Plant">
-                              <div style={{ fontSize: '11px' }}>🌱</div>
-                            </div>
-                          ) : (
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', transform: 'translateY(-10px)' }} title="Kopi Panas SMLONE">
-                              <div style={{ width: '3px', height: '5px', borderLeft: '1.5px solid rgba(255,255,255,0.6)', borderRadius: '2px', marginBottom: '2px' }} />
-                              <div style={{ width: '13px', height: '13px', background: '#f8fafc', borderRadius: '2px 2px 4px 4px', border: '1px solid #cbd5e1', position: 'relative' }}>
-                                <div style={{ position: 'absolute', right: '-4px', top: '2px', width: '3.5px', height: '7px', border: '1.5px solid #f8fafc', borderRadius: '0 3px 3px 0' }} />
-                              </div>
-                            </div>
-                          )}
-                        </div>
+                      {/* 2. REAL 3D WORKSTATION (Exact 3D Three.js Character & Desk from the Office!) */}
+                      <div style={{ width: '100%', maxWidth: '240px' }}>
+                        <Agent3DPortrait cfg={c} />
                       </div>
 
-                      {/* 4. Desk Label & Status Footers */}
+                      {/* 3. Desk Label & Status Footers */}
                       <div
                         style={{
                           marginTop: '10px',
@@ -893,16 +525,6 @@ export function PixelOfficeRoom() {
           );
         })}
       </div>
-
-      {/* Global CSS for floating Z animation */}
-      <style>{`
-        @keyframes buboFloatZ {
-          0% { transform: translateY(0px) scale(0.9); opacity: 0; }
-          40% { opacity: 0.85; }
-          80% { transform: translateY(-14px) scale(1.15); opacity: 0.5; }
-          100% { transform: translateY(-22px) scale(1.25); opacity: 0; }
-        }
-      `}</style>
     </div>
   );
 }

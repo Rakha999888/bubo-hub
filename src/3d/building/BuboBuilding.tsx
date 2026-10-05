@@ -30,7 +30,7 @@ function Plant({ x, z }: { x: number; z: number }) {
 }
 
 /** Standard SMLONE Workstation: Desk, Monitor, Keyboard, and Chair with SitAnchor at (x, 0.15, z + 0.85) */
-function Workstation({ cfg }: { cfg: AgentConfig }) {
+export function Workstation({ cfg }: { cfg: AgentConfig }) {
   const status = useStore((s) => s.agents[cfg.id]?.status || 'idle');
   const [x, z] = cfg.desk;
   const y0 = 0.15;
