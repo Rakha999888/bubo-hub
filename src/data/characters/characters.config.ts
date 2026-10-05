@@ -4,8 +4,8 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
   // ─── FLOOR 3: HEAD OFFICE & ADMIN ─────────────────────────────────
   {
     id: 'bubo-manager',
-    name: 'Bubo Coordinator',
-    displayName: 'Bubo Coordinator',
+    name: 'Atlas',
+    displayName: 'Atlas',
     role: 'Head of AI Operations & Koordinator Tim',
     department: '#💬・general-chat',
     floor: 3,
@@ -33,8 +33,8 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
   },
   {
     id: 'bubo-admin-portal',
-    name: 'Bubo Admin Portal',
-    displayName: 'Bubo Admin Portal',
+    name: 'Arden',
+    displayName: 'Arden',
     role: 'Dashboard Admin & Manajemen Sistem',
     department: '#🛡・bubo-admin-portal',
     floor: 3,
@@ -63,8 +63,8 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
   // ─── FLOOR 2: TECHNOLOGY & OPERATIONS HUB ──────────────────────────
   {
     id: 'bubo-n8n',
-    name: 'Bubo n8n',
-    displayName: 'Bubo n8n',
+    name: 'Niko',
+    displayName: 'Niko',
     role: 'Otomasi Alur Kerja & Integrasi Sistem',
     department: '#⚡・bubo-n8n',
     floor: 2,
@@ -91,8 +91,8 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
   },
   {
     id: 'bubo-portal',
-    name: 'Bubo Portal',
-    displayName: 'Bubo Portal',
+    name: 'Luna',
+    displayName: 'Luna',
     role: 'Frontend UI/UX Web Portal Trainee',
     department: '#🌐・bubo-portal',
     floor: 2,
@@ -119,8 +119,8 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
   },
   {
     id: 'bubo-backend-portal',
-    name: 'Bubo Backend',
-    displayName: 'Bubo Backend',
+    name: 'Darren',
+    displayName: 'Darren',
     role: 'Backend Engineering & Database PostgreSQL',
     department: '#💻・bubo-backend-portal',
     floor: 2,
@@ -147,8 +147,8 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
   },
   {
     id: 'bubo-qc-portal',
-    name: 'Bubo QC Portal',
-    displayName: 'Bubo QC Portal',
+    name: 'Riven',
+    displayName: 'Riven',
     role: 'Quality Control & Troubleshooting Bug',
     department: '#🔍・bubo-qc-portal',
     floor: 2,
@@ -175,8 +175,8 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
   },
   {
     id: 'bubo-ticketing',
-    name: 'Bubo Ticketing',
-    displayName: 'Bubo Ticketing',
+    name: 'Theo',
+    displayName: 'Theo',
     role: 'Manajemen Tiket & Jira Helpdesk',
     department: '#🎫・bubo-ticketing',
     floor: 2,
@@ -203,8 +203,8 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
   },
   {
     id: 'bubo-source-video',
-    name: 'Bubo Source Video',
-    displayName: 'Bubo Source Video',
+    name: 'Kiro',
+    displayName: 'Kiro',
     role: 'Produksi, Kurasi Materi & Skrip Video',
     department: '#🎬・bubo-source-video',
     floor: 2,
@@ -231,8 +231,8 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
   },
   {
     id: 'bubo-pdf',
-    name: 'Bubo PDF',
-    displayName: 'Bubo PDF',
+    name: 'Milo',
+    displayName: 'Milo',
     role: 'Pengolahan, Ekstraksi & Dokumen PDF',
     department: '#📄・bubo-pdf',
     floor: 2,
