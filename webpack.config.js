@@ -4,7 +4,7 @@ const webpack = require('webpack');
 
 module.exports = {
   entry: './src/index.tsx',
-  output: { path: path.resolve(__dirname, 'dist'), filename: '[name].[contenthash].js', clean: true },
+  output: { path: path.resolve(__dirname, 'dist'), filename: '[name].[contenthash].js', publicPath: '', clean: true },
   resolve: { extensions: ['.tsx', '.ts', '.js'] },
   module: {
     rules: [

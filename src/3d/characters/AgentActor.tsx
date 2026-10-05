@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
-import { AgentConfig, AgentStatus } from '../../types';
+import { AgentConfig, AgentStatus, FacialState } from '../../types';
 import { BREAK_SPOT } from '../../config/agents';
 import { BuboCharacter, Pose } from './BuboCharacter';
 import { useStore } from '../../state/store';
@@ -48,7 +48,14 @@ export function AgentActor({ cfg }: { cfg: AgentConfig }) {
     const atSeat = wantSit && dist < 0.12;
     p.sit = THREE.MathUtils.damp(p.sit, atSeat ? 1 : 0, 5, dt);
     p.typing = s.status === 'working' && p.sit > 0.9;
-    p.mood = s.status === 'error' ? 'error' : s.status === 'success' ? 'success' : s.status === 'thinking' ? 'think' : 'normal';
+
+    let mood: Pose['mood'] = 'normal';
+    if (s.status === 'error') mood = 'error';
+    else if (s.status === 'success') mood = 'success';
+    else if (s.status === 'thinking') mood = 'think';
+    else if (s.status === 'working') mood = 'focused';
+    else if (s.status === 'break') mood = 'happy';
+    p.mood = mood;
 
     const goalYaw = p.walking ? Math.atan2(to.x, to.z) : (atSeat || p.sit > 0.5) ? Math.PI : 0; // face desk when seated
     yaw.current += wrap(goalYaw - yaw.current) * Math.min(1, 8 * dt);
@@ -58,8 +65,25 @@ export function AgentActor({ cfg }: { cfg: AgentConfig }) {
   const color = STATUS_COLOR[st.status];
   return (
     <group ref={root} onClick={(e) => { e.stopPropagation(); selectAgent(cfg.id); }}>
-      <BuboCharacter pose={pose} accessory={cfg.accessory} manager={cfg.manager} dim={st.status === 'offline'} />
-      {selected && <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}><ringGeometry args={[0.55, 0.65, 32]} /><meshBasicMaterial color="#3b9dff" /></mesh>}
+      <BuboCharacter
+        pose={pose}
+        accessory={cfg.accessory}
+        avatar={cfg.avatar}
+        manager={cfg.manager}
+        dim={st.status === 'offline'}
+      />
+      {selected && (
+        <group position={[0, 0.04, 0]}>
+          <mesh rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[0.55, 0.68, 32]} />
+            <meshBasicMaterial color="#3b9dff" side={THREE.DoubleSide} />
+          </mesh>
+          <mesh rotation={[-Math.PI / 2, 0, 0]}>
+            <circleGeometry args={[0.54, 32]} />
+            <meshBasicMaterial color="#3b9dff" opacity={0.2} transparent side={THREE.DoubleSide} />
+          </mesh>
+        </group>
+      )}
       <Html position={[0, 2.35, 0]} center distanceFactor={9} zIndexRange={[10, 0]} style={{ pointerEvents: 'none' }}>
         <div className="agent-label">
           <b>{st.name}</b>

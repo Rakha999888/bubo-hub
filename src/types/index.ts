@@ -10,6 +10,37 @@ export type AccessoryId =
   | 'workflow-board' | 'ui-pen' | 'db-cylinder' | 'ticket' | 'camera'
   | 'pdf-doc' | 'server-rack' | 'admin-badge' | 'manager-tie';
 
+export type HairStyle =
+  | 'short-modern' | 'creative-wavy' | 'neat-dark' | 'friendly-medium'
+  | 'creative-long' | 'office-clean' | 'practical-short' | 'executive' | 'admin-cut';
+
+export type TopType =
+  | 'designer-hoodie' | 'tech-jacket' | 'dark-jacket' | 'support-shirt'
+  | 'creative-jacket' | 'doc-shirt' | 'utility-jacket' | 'business-blazer' | 'executive-blazer';
+
+export type BottomType =
+  | 'modern-pants' | 'dark-jeans' | 'utility-pants' | 'form-pants' | 'slim-pants';
+
+export type ShoeType =
+  | 'sneakers-pro' | 'sneakers-casual' | 'work-boots' | 'dress-shoes';
+
+export type FacialState =
+  | 'idle' | 'happy' | 'thinking' | 'focused' | 'surprised' | 'confused' | 'error' | 'success' | 'tired';
+
+export interface AvatarSpec {
+  hair: HairStyle;
+  hairColor: string;
+  top: TopType;
+  topColor: string;
+  accentColor: string;
+  bottom: BottomType;
+  bottomColor: string;
+  shoes: ShoeType;
+  shoeColor: string;
+  skinColor: string;
+  props: string[];
+}
+
 export type FloorId = 1 | 2 | 3;
 export type ViewMode = 'office' | 'agent';
 export type CameraLevel = 'city' | 'building' | 'floor';
@@ -20,6 +51,7 @@ export interface AgentConfig {
   accessory: AccessoryId;
   desk: [number, number];          // x,z on the floor (desk center)
   manager?: boolean;
+  avatar: AvatarSpec;
 }
 
 export interface RoomConfig {
