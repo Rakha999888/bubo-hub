@@ -82,11 +82,7 @@ export default function App() {
       )}
 
       {view === 'agent' && (
-        <>
-          <PixelOfficeRoom />
-          <AgentPanel />
-          <PromptBar />
-        </>
+        <PixelOfficeRoom />
       )}
     </div>
   );

@@ -48,7 +48,6 @@ export function PixelOfficeRoom() {
   const agents = useStore((s) => s.agents);
   const selectAgent = useStore((s) => s.selectAgent);
   const selectedAgentId = useStore((s) => s.selectedAgentId);
-  const openAgent = useStore((s) => s.openAgent);
 
   const [clockTime, setClockTime] = useState({ hours: 10, minutes: 8, seconds: 0 });
 
@@ -79,6 +78,14 @@ export function PixelOfficeRoom() {
   const workingCount = Object.values(agents).filter((a) => a.status === 'working').length;
   const cpuPercent = workingCount > 0 ? Math.min(100, 18 + workingCount * 22) : 8;
   const ramPercent = 52;
+
+  // Find currently selected agent config
+  const activeAgent = useMemo(() => {
+    if (!selectedAgentId) return null;
+    return BUBO_CHARACTERS.find((c) => c.id === selectedAgentId) || null;
+  }, [selectedAgentId]);
+
+  const activeStatus = activeAgent ? agents[activeAgent.id] || { status: 'idle', task: '', activity: 'Siap di meja kerja', recent: [] } : null;
 
   return (
     <div
@@ -163,7 +170,7 @@ export function PixelOfficeRoom() {
         </div>
 
         <div style={{ fontSize: '12px', color: '#94a3b8' }}>
-          Format 3 Meja per Baris · Karakter 3D Resmi Kantor
+          Klik meja agent untuk buka Profile Card
         </div>
       </div>
 
@@ -399,10 +406,7 @@ export function PixelOfficeRoom() {
                   return (
                     <div
                       key={c.id}
-                      onClick={() => {
-                        selectAgent(c.id);
-                        openAgent();
-                      }}
+                      onClick={() => selectAgent(c.id)}
                       style={{
                         display: 'flex',
                         flexDirection: 'column',
@@ -410,7 +414,8 @@ export function PixelOfficeRoom() {
                         cursor: 'pointer',
                         position: 'relative',
                         filter: isSelected ? 'drop-shadow(0 0 14px rgba(56, 189, 248, 0.45))' : 'none',
-                        transition: 'transform 0.15s ease'
+                        transform: isSelected ? 'scale(1.02)' : 'none',
+                        transition: 'transform 0.15s ease, filter 0.15s ease'
                       }}
                     >
                       {/* 1. Name Tag Pill (Header Badge) */}
@@ -525,6 +530,201 @@ export function PixelOfficeRoom() {
           );
         })}
       </div>
+
+      {/* ─── DEDICATED AGENT PROFILE CARD MODAL (Pops up on character click!) ─── */}
+      {activeAgent && activeStatus && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 100,
+            background: 'rgba(10, 15, 24, 0.78)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px'
+          }}
+          onClick={() => selectAgent(null)}
+        >
+          <div
+            style={{
+              width: '100%',
+              maxWidth: '430px',
+              background: '#151d2a',
+              borderRadius: '20px',
+              border: activeAgent.id === 'bubo-manager'
+                ? '2px solid #fbbf24'
+                : '1.5px solid rgba(148, 163, 184, 0.3)',
+              boxShadow: '0 25px 60px rgba(0, 0, 0, 0.85)',
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
+              position: 'relative'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '16px 20px',
+                borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+                background: 'rgba(255, 255, 255, 0.02)'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '18px' }}>
+                  {activeAgent.id === 'bubo-manager' ? '👑' : activeAgent.id.includes('admin') ? '🛡' : activeAgent.id.includes('n8n') ? '⚡' : activeAgent.id.includes('portal') && !activeAgent.id.includes('backend') ? '🌐' : activeAgent.id.includes('backend') ? '💻' : activeAgent.id.includes('qc') ? '🔍' : activeAgent.id.includes('ticketing') ? '🎫' : activeAgent.id.includes('video') ? '🎬' : activeAgent.id.includes('pdf') ? '📄' : '🏗'}
+                </span>
+                <span style={{ fontSize: '17px', fontWeight: 800, color: '#ffffff' }}>
+                  {activeAgent.displayName}
+                </span>
+                {activeAgent.id === 'bubo-manager' && (
+                  <span
+                    style={{
+                      background: '#fbbf24',
+                      color: '#0f172a',
+                      fontSize: '10px',
+                      fontWeight: 900,
+                      padding: '2px 6px',
+                      borderRadius: '4px'
+                    }}
+                  >
+                    KETUA
+                  </span>
+                )}
+              </div>
+
+              <button
+                onClick={() => selectAgent(null)}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: 'none',
+                  color: '#94a3b8',
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  fontSize: '18px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'background 0.2s ease'
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* 3D Character Workstation Preview in Modal */}
+            <div style={{ padding: '16px 20px 8px 20px' }}>
+              <div
+                style={{
+                  height: '190px',
+                  borderRadius: '12px',
+                  overflow: 'hidden',
+                  background: 'radial-gradient(circle at 50% 35%, #2a3444 0%, #151d28 100%)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  boxShadow: 'inset 0 4px 14px rgba(0,0,0,0.6)'
+                }}
+              >
+                <Agent3DPortrait cfg={activeAgent} />
+              </div>
+            </div>
+
+            {/* Agent Info & Real-Time Status */}
+            <div style={{ padding: '14px 20px 20px 20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {/* Role & Channel */}
+              <div>
+                <div style={{ fontSize: '14px', fontWeight: 700, color: '#f8fafc' }}>
+                  {activeAgent.role}
+                </div>
+                <div style={{ fontSize: '12px', color: '#38bdf8', fontFamily: 'monospace', marginTop: '2px' }}>
+                  {activeAgent.department} · {activeAgent.workspace}
+                </div>
+              </div>
+
+              {/* Status Badge */}
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  background: activeStatus.status === 'working' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(148, 163, 184, 0.12)',
+                  border: activeStatus.status === 'working' ? '1px solid #10b981' : '1px solid rgba(148, 163, 184, 0.25)',
+                  padding: '5px 12px',
+                  borderRadius: '999px',
+                  width: 'fit-content'
+                }}
+              >
+                <span
+                  style={{
+                    width: '7px',
+                    height: '7px',
+                    borderRadius: '50%',
+                    backgroundColor: activeStatus.status === 'working' ? '#10b981' : '#94a3b8',
+                    boxShadow: activeStatus.status === 'working' ? '0 0 8px #10b981' : 'none'
+                  }}
+                />
+                <span style={{ fontSize: '12px', fontWeight: 700, color: activeStatus.status === 'working' ? '#10b981' : '#cbd5e1' }}>
+                  {activeStatus.status === 'working' ? 'Bekerja · Sedang Aktif' : 'Santai · Siap Bertugas'}
+                </span>
+              </div>
+
+              {/* Task Details */}
+              <div
+                style={{
+                  background: 'rgba(0, 0, 0, 0.35)',
+                  borderRadius: '10px',
+                  padding: '12px 14px',
+                  border: '1px solid rgba(255, 255, 255, 0.05)',
+                  fontSize: '12px'
+                }}
+              >
+                <div style={{ color: '#64748b', fontSize: '10.5px', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 700 }}>
+                  Aktivitas Saat Ini
+                </div>
+                <div style={{ color: '#e2e8f0', marginTop: '4px', fontWeight: 500 }}>
+                  {activeStatus.activity || 'Siap di meja kerja'}
+                </div>
+
+                {activeStatus.task && (
+                  <>
+                    <div style={{ color: '#64748b', fontSize: '10.5px', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 700, marginTop: '8px' }}>
+                      Tugas Berjalan
+                    </div>
+                    <div style={{ color: '#38bdf8', marginTop: '2px', fontWeight: 600 }}>
+                      {activeStatus.task}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Action Close Button */}
+              <button
+                onClick={() => selectAgent(null)}
+                style={{
+                  marginTop: '4px',
+                  width: '100%',
+                  padding: '10px',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  borderRadius: '8px',
+                  color: '#ffffff',
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                Tutup Card
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -19,17 +19,7 @@ export function CameraRig() {
     let pos: [number, number, number], tgt: [number, number, number];
 
     if (view === 'agent') {
-      const activeId = selectedAgentId || 'bubo-manager';
-      const targetAgent = BUBO_CHARACTERS.find((c) => c.id === activeId) || BUBO_CHARACTERS[0];
-      const y = floorY(targetAgent.floor);
-      const [dx, dz] = targetAgent.desk;
-
-      // Close-up framing facing the character and desk:
-      // Character is at [dx, y + 0.45, dz + 0.85] facing -Z
-      // Desk is at [dx, y + 0.67, dz]
-      // Camera is in front of the desk looking at the character:
-      tgt = [dx, y + 0.95, dz + 0.5];
-      pos = [dx + 0.6, y + 1.35, dz - 2.2];
+      return;
     } else if (level === 'city') {
       pos = [34, 26, 42];
       tgt = [0, 4, 4];
