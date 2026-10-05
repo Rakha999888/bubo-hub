@@ -186,26 +186,6 @@ export function AgentActor({ cfg }: { cfg: AgentConfig }) {
             <span style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: statusColor, display: 'inline-block' }} />
             <span>{st.status === 'idle' ? 'STANDBY' : st.status.toUpperCase()}</span>
           </div>
-
-          {/* Active Real-Time Discord Task text (if in-flight) */}
-          {st.task && st.status !== 'idle' && (
-            <div
-              style={{
-                marginTop: '4px',
-                fontSize: '9px',
-                color: '#e2e8f0',
-                maxWidth: '190px',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                background: 'rgba(56, 189, 248, 0.2)',
-                padding: '2px 6px',
-                borderRadius: '4px',
-                border: '1px solid rgba(56, 189, 248, 0.35)'
-              }}
-            >
-              ⚡ {st.task}
-            </div>
-          )}
         </div>
       </Html>
     </group>

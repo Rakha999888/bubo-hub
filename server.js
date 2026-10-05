@@ -104,19 +104,19 @@ function dispatchAgentWork(agentId, taskText, activityText, originChannel) {
     agentId,
     patch: {
       status: 'working',
-      task: taskText.slice(0, 120),
-      activity: activityText || `Mengerjakan instruksi dari Discord (${originChannel})`,
-      progress: 35,
+      task: 'Sedang bertugas',
+      activity: 'Aktif di meja kerja',
+      progress: 45,
       animation: 'type',
       location: 'desk',
-      tool: 'Discord Live Event'
+      tool: 'Workstation'
     }
   });
 
   broadcast({
     type: 'agent_log',
     agentId,
-    line: `[${originChannel}] ${name}: "${taskText.slice(0, 100)}"`
+    line: `[${originChannel}] ${name}: Aktif memproses tugas.`
   });
 }
 
