@@ -16,64 +16,64 @@ app.use(express.static(path.join(__dirname, 'dist')));
 const DISCORD_CHANNELS = {
   '1553291734799220797': {
     agentId: 'bubo-manager',
-    name: 'Atlas',
+    name: 'Bubo Coordinator',
     channelName: '#💬・general-chat',
-    role: 'Bubo Manager',
+    role: 'Head of AI Operations & Koordinator Tim',
     isManager: true
   },
   '1553302924124360946': {
     agentId: 'bubo-n8n',
-    name: 'Niko',
+    name: 'Bubo n8n',
     channelName: '#⚡・bubo-n8n',
-    role: 'Automation Engineer'
+    role: 'Otomasi Alur Kerja & Integrasi Sistem'
   },
   '1553302926095552553': {
     agentId: 'bubo-portal',
-    name: 'Luna',
+    name: 'Bubo Portal',
     channelName: '#🌐・bubo-portal',
-    role: 'UI/UX & Frontend Engineer'
+    role: 'Frontend UI/UX Web Portal Trainee'
   },
   '1553346570827862094': {
     agentId: 'bubo-backend-portal',
-    name: 'Darren',
+    name: 'Bubo Backend',
     channelName: '#💻・bubo-backend-portal',
-    role: 'Backend Engineer'
+    role: 'Backend Engineering & Database PostgreSQL'
   },
   '1553398524584919151': {
     agentId: 'bubo-admin-portal',
-    name: 'Arden',
+    name: 'Bubo Admin Portal',
     channelName: '#🛡・bubo-admin-portal',
-    role: 'Admin System Specialist'
+    role: 'Dashboard Admin & Manajemen Sistem'
   },
   '1553406460199706624': {
     agentId: 'bubo-source-video',
-    name: 'Kiro',
+    name: 'Bubo Source Video',
     channelName: '#🎬・bubo-source-video',
-    role: 'Creative & Video Producer'
+    role: 'Produksi, Kurasi Materi & Skrip Video'
   },
   '1553406461445406994': {
     agentId: 'bubo-pdf',
-    name: 'Milo',
+    name: 'Bubo PDF',
     channelName: '#📄・bubo-pdf',
-    role: 'Document Processing Specialist'
+    role: 'Pengolahan, Ekstraksi & Dokumen PDF'
   },
   '1553545688116363325': {
     agentId: 'bubo-qc-portal',
-    name: 'Riven',
+    name: 'Bubo QC Portal',
     channelName: '#🔍・bubo-qc-portal',
-    role: 'QA Testing Engineer'
+    role: 'Quality Control & Troubleshooting Bug'
   },
   '1553800580621668457': {
     agentId: 'bubo-ticketing',
-    name: 'Theo',
+    name: 'Bubo Ticketing',
     channelName: '#🎫・bubo-ticketing',
-    role: 'Support & Ticketing Specialist'
+    role: 'Manajemen Tiket & Jira Helpdesk'
   },
   '1556298595299233833': {
     agentId: 'bubo-building',
     name: 'Bubo Building',
     channelName: '#🏗・bubo-building',
-    role: 'Infrastructure & DevOps'
+    role: 'Arsitektur Sistem & Server Build SMLONE'
   }
 };
 

@@ -15,18 +15,32 @@ export function AgentPanel() {
       <button className="x" onClick={() => selectAgent(null)}>×</button>
 
       <div style={{ marginBottom: '12px' }}>
-        <h3 style={{ margin: '0 0 2px 0', fontSize: '1.4em', letterSpacing: '0.02em' }}>{cfg.displayName}</h3>
-        <p className="muted" style={{ margin: 0, fontWeight: 600, color: '#94a3b8' }}>
-          {cfg.role.toUpperCase()}
+        <h3 style={{ margin: '0 0 4px 0', fontSize: '1.35em', letterSpacing: '0.01em', color: '#f8fafc' }}>
+          {cfg.displayName}
+        </h3>
+        <p style={{ margin: 0, fontWeight: 700, color: '#38bdf8', fontSize: '0.9em' }}>
+          {cfg.role}
         </p>
-        <p className="muted" style={{ margin: '2px 0 0 0', fontSize: '0.85em' }}>
-          Department: <strong style={{ color: '#e2e8f0' }}>{cfg.department}</strong>
+        <p className="muted" style={{ margin: '4px 0 0 0', fontSize: '0.85em' }}>
+          Divisi: <strong style={{ color: '#e2e8f0' }}>{cfg.department}</strong>
         </p>
       </div>
 
-      <p style={{ color: STATUS_COLOR[st.status], fontWeight: 700, margin: '8px 0' }}>
-        ● {st.status.toUpperCase()}
-      </p>
+      <div style={{ margin: '8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <span
+          style={{
+            color: STATUS_COLOR[st.status] || '#38bdf8',
+            fontWeight: 800,
+            fontSize: '0.85em',
+            background: 'rgba(15, 23, 42, 0.6)',
+            padding: '3px 10px',
+            borderRadius: '999px',
+            border: `1px solid ${STATUS_COLOR[st.status] || '#38bdf8'}55`
+          }}
+        >
+          ● {st.status === 'idle' ? 'SEATED (STANDBY)' : st.status.toUpperCase()}
+        </span>
+      </div>
 
       {cfg.personality && cfg.personality.length > 0 && (
         <div style={{ margin: '10px 0', display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
@@ -34,29 +48,32 @@ export function AgentPanel() {
             <span
               key={idx}
               style={{
-                background: 'rgba(59, 130, 246, 0.15)',
-                color: '#60a5fa',
-                border: '1px solid rgba(59, 130, 246, 0.3)',
+                background: 'rgba(56, 189, 248, 0.12)',
+                color: '#38bdf8',
+                border: '1px solid rgba(56, 189, 248, 0.25)',
                 padding: '2px 8px',
-                borderRadius: '12px',
-                fontSize: '0.78em',
-                fontWeight: 500
+                borderRadius: '8px',
+                fontSize: '0.76em',
+                fontWeight: 600
               }}
             >
-              • {p}
+              #{p}
             </span>
           ))}
         </div>
       )}
 
       <dl style={{ marginTop: '12px' }}>
-        <dt>Current Task</dt>
-        <dd>{st.task}</dd>
+        <dt>Status Meja Kerja</dt>
+        <dd style={{ color: '#10b981', fontWeight: 600 }}>Duduk di Kursi Kantor (Workstation)</dd>
 
-        <dt>Activity</dt>
-        <dd>{st.activity}</dd>
+        <dt>Tugas Saat Ini</dt>
+        <dd>{st.task || 'Menunggu instruksi dari Discord'}</dd>
 
-        <dt>Progress</dt>
+        <dt>Aktivitas Real-Time</dt>
+        <dd>{st.activity || 'Siap bertugas'}</dd>
+
+        <dt>Progres Eksekusi</dt>
         <dd>
           <div className="bar">
             <div style={{ width: st.progress + '%' }} />
@@ -64,39 +81,38 @@ export function AgentPanel() {
           {st.progress}%
         </dd>
 
-        <dt>Location / Workspace</dt>
+        <dt>Lokasi Kantor</dt>
         <dd>
-          Floor {cfg.floor} · {cfg.workspace}
+          Lantai {cfg.floor} · {cfg.workspace}
         </dd>
 
-        <dt>Technical Agent ID</dt>
-        <dd style={{ fontFamily: 'monospace', opacity: 0.8 }}>{cfg.id}</dd>
+        <dt>Technical ID</dt>
+        <dd style={{ fontFamily: 'monospace', opacity: 0.85, color: '#94a3b8' }}>{cfg.id}</dd>
 
-        <dt>Current Tool</dt>
-        <dd>{st.tool}</dd>
-
-        <dt>Recent Activity</dt>
-        <dd>
-          {st.recent.length ? (
-            st.recent.map((r, i) => <div key={i}>• {r}</div>)
-          ) : (
-            <span className="muted">No activity yet</span>
-          )}
-        </dd>
+        {st.recent.length > 0 && (
+          <>
+            <dt>Log Aktivitas Terkini</dt>
+            <dd>
+              {st.recent.map((r, i) => (
+                <div key={i} style={{ fontSize: '0.85em', margin: '2px 0' }}>• {r}</div>
+              ))}
+            </dd>
+          </>
+        )}
       </dl>
 
       {!agentMode && (
-        <button className="primary" onClick={openAgent} style={{ marginTop: '12px', width: '100%' }}>
-          Open Agent View
+        <button className="primary" onClick={openAgent} style={{ marginTop: '14px', width: '100%' }}>
+          Buka Terminal & Detail Agen
         </button>
       )}
 
       {agentMode && (
         <>
-          <h4>Agent Console Logs</h4>
-          <pre className="log">{st.log.length ? st.log.join('\n') : 'No logs yet'}</pre>
+          <h4 style={{ margin: '14px 0 6px 0', fontSize: '0.9em' }}>Terminal Live Stream</h4>
+          <pre className="log">{st.log.length ? st.log.join('\n') : 'Menunggu stream log dari server...'}</pre>
           <button onClick={closeAgentMode} style={{ marginTop: '8px', width: '100%' }}>
-            Close Agent Mode
+            Tutup Mode Detail
           </button>
         </>
       )}
