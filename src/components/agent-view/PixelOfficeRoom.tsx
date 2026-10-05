@@ -46,9 +46,7 @@ const ROW_DECOR = [
 
 export function PixelOfficeRoom() {
   const agents = useStore((s) => s.agents);
-  const selectAgent = useStore((s) => s.selectAgent);
-  const selectedAgentId = useStore((s) => s.selectedAgentId);
-
+  const [modalAgentId, setModalAgentId] = useState<string | null>(null);
   const [clockTime, setClockTime] = useState({ hours: 10, minutes: 8, seconds: 0 });
 
   useEffect(() => {
@@ -79,11 +77,11 @@ export function PixelOfficeRoom() {
   const cpuPercent = workingCount > 0 ? Math.min(100, 18 + workingCount * 22) : 8;
   const ramPercent = 52;
 
-  // Find currently selected agent config
+  // Active agent selected for modal card
   const activeAgent = useMemo(() => {
-    if (!selectedAgentId) return null;
-    return BUBO_CHARACTERS.find((c) => c.id === selectedAgentId) || null;
-  }, [selectedAgentId]);
+    if (!modalAgentId) return null;
+    return BUBO_CHARACTERS.find((c) => c.id === modalAgentId) || null;
+  }, [modalAgentId]);
 
   const activeStatus = activeAgent ? agents[activeAgent.id] || { status: 'idle', task: '', activity: 'Siap di meja kerja', recent: [] } : null;
 
@@ -400,20 +398,20 @@ export function PixelOfficeRoom() {
                 {rowChars.map((c) => {
                   const st = agents[c.id] || { status: 'idle', task: '', activity: 'Siap di meja kerja' };
                   const isWorking = st.status === 'working';
-                  const isSelected = selectedAgentId === c.id;
+                  const isSelected = modalAgentId === c.id;
                   const isLeader = c.id === 'bubo-manager';
 
                   return (
                     <div
                       key={c.id}
-                      onClick={() => selectAgent(c.id)}
+                      onClick={() => setModalAgentId(c.id)}
                       style={{
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
                         cursor: 'pointer',
                         position: 'relative',
-                        filter: isSelected ? 'drop-shadow(0 0 14px rgba(56, 189, 248, 0.45))' : 'none',
+                        filter: isSelected ? 'drop-shadow(0 0 16px rgba(56, 189, 248, 0.6))' : 'none',
                         transform: isSelected ? 'scale(1.02)' : 'none',
                         transition: 'transform 0.15s ease, filter 0.15s ease'
                       }}
@@ -462,7 +460,7 @@ export function PixelOfficeRoom() {
 
                       {/* 2. REAL 3D WORKSTATION (Exact 3D Three.js Character & Desk from the Office!) */}
                       <div style={{ width: '100%', maxWidth: '240px' }}>
-                        <Agent3DPortrait cfg={c} />
+                        <Agent3DPortrait cfg={c} interactive={false} />
                       </div>
 
                       {/* 3. Desk Label & Status Footers */}
@@ -545,7 +543,7 @@ export function PixelOfficeRoom() {
             justifyContent: 'center',
             padding: '20px'
           }}
-          onClick={() => selectAgent(null)}
+          onClick={() => setModalAgentId(null)}
         >
           <div
             style={{
@@ -599,7 +597,7 @@ export function PixelOfficeRoom() {
               </div>
 
               <button
-                onClick={() => selectAgent(null)}
+                onClick={() => setModalAgentId(null)}
                 style={{
                   background: 'rgba(255, 255, 255, 0.08)',
                   border: 'none',
@@ -619,11 +617,11 @@ export function PixelOfficeRoom() {
               </button>
             </div>
 
-            {/* 3D Character Workstation Preview in Modal */}
+            {/* 3D Character Workstation Preview in Modal (Interactive 360 preview!) */}
             <div style={{ padding: '16px 20px 8px 20px' }}>
               <div
                 style={{
-                  height: '190px',
+                  height: '200px',
                   borderRadius: '12px',
                   overflow: 'hidden',
                   background: 'radial-gradient(circle at 50% 35%, #2a3444 0%, #151d28 100%)',
@@ -631,7 +629,7 @@ export function PixelOfficeRoom() {
                   boxShadow: 'inset 0 4px 14px rgba(0,0,0,0.6)'
                 }}
               >
-                <Agent3DPortrait cfg={activeAgent} />
+                <Agent3DPortrait cfg={activeAgent} interactive={true} />
               </div>
             </div>
 
@@ -705,7 +703,7 @@ export function PixelOfficeRoom() {
 
               {/* Action Close Button */}
               <button
-                onClick={() => selectAgent(null)}
+                onClick={() => setModalAgentId(null)}
                 style={{
                   marginTop: '4px',
                   width: '100%',
