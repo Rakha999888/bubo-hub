@@ -326,6 +326,7 @@ export function PixelOfficeRoom() {
               style={{
                 width: '100%',
                 maxWidth: '960px',
+                flexShrink: 0,
                 borderRadius: '16px',
                 overflow: 'hidden',
                 background: '#1a222e',

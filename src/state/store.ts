@@ -28,14 +28,7 @@ interface UIState {
 export const useStore = create<UIState>((set, get) => ({
   view: 'office', floor: 2, cameraLevel: 'city',
   selectedAgentId: null, agentMode: false, agents: initialAgents(),
-  setView: (view) => set((s) => {
-    if (view === 'agent') {
-      const activeId = s.selectedAgentId || 'bubo-manager';
-      const targetAgent = AGENTS.find((a) => a.id === activeId) || AGENTS[0];
-      return { view, selectedAgentId: activeId, floor: targetAgent.floor as FloorId, cameraLevel: 'floor' };
-    }
-    return { view, selectedAgentId: null, agentMode: false };
-  }),
+  setView: (view) => set({ view, selectedAgentId: null, agentMode: false }),
   setFloor: (floor) => set({ floor, cameraLevel: 'floor' }),
   setCameraLevel: (cameraLevel) => set({ cameraLevel }),
   selectAgent: (selectedAgentId) => set((s) => {
