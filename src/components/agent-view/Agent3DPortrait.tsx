@@ -1,8 +1,19 @@
-import React, { useMemo } from 'react';
-import { Canvas } from '@react-three/fiber';
+import React, { useMemo, useEffect } from 'react';
+import { Canvas, useThree } from '@react-three/fiber';
 import { AgentConfig } from '../../types';
 import { Workstation } from '../../3d/building/BuboBuilding';
 import { AgentActor } from '../../3d/characters/AgentActor';
+
+function FrontCamera() {
+  const { camera } = useThree();
+  useEffect(() => {
+    // Position camera in front of the desk looking across the desk into the character's face & torso
+    camera.position.set(0, 1.32, -2.05);
+    camera.lookAt(0, 0.82, 0.35);
+    camera.updateProjectionMatrix();
+  }, [camera]);
+  return null;
+}
 
 export function Agent3DPortrait({ cfg }: { cfg: AgentConfig }) {
   // Center desk coordinate so it positions right at (0, 0, 0)
@@ -19,19 +30,21 @@ export function Agent3DPortrait({ cfg }: { cfg: AgentConfig }) {
         position: 'relative',
         borderRadius: '8px',
         overflow: 'hidden',
-        background: 'radial-gradient(circle at 50% 30%, #2a3444 0%, #151d28 100%)',
+        background: 'radial-gradient(circle at 50% 35%, #2a3444 0%, #151d28 100%)',
         border: '1.5px solid rgba(255, 255, 255, 0.08)',
         boxShadow: 'inset 0 4px 12px rgba(0,0,0,0.5)'
       }}
     >
       <Canvas
-        camera={{ position: [0, 1.45, 2.7], fov: 32 }}
+        camera={{ position: [0, 1.32, -2.05], fov: 36 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       >
+        <FrontCamera />
         <ambientLight intensity={1.1} />
-        <directionalLight position={[3, 5, 4]} intensity={1.3} />
-        <pointLight position={[0, 2, 1]} intensity={0.6} color="#ffd9a0" />
+        <directionalLight position={[0, 4, -3]} intensity={1.4} />
+        <directionalLight position={[3, 3, 2]} intensity={0.6} />
+        <pointLight position={[0, 1.5, 0]} intensity={0.6} color="#ffd9a0" />
         <group position={[0, -0.68, 0]}>
           <Workstation cfg={localCfg} />
           <AgentActor cfg={localCfg} showNameplate={false} />
