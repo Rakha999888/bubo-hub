@@ -7,7 +7,7 @@ import { ViewSwitcher } from './components/navigation/ViewSwitcher';
 import { FloorSelector } from './components/navigation/FloorSelector';
 import { AgentPanel } from './components/agent-panel/AgentPanel';
 import { PromptBar } from './components/prompt/PromptBar';
-import { AgentFocusHUD } from './components/agent-view/AgentFocusHUD';
+import { PixelOfficeRoom } from './components/agent-view/PixelOfficeRoom';
 import { useStore } from './state/store';
 import { STATUS_COLOR } from './3d/characters/AgentActor';
 import { CameraLevel } from './types';
@@ -81,7 +81,13 @@ export default function App() {
         </>
       )}
 
-      {view === 'agent' && <AgentFocusHUD />}
+      {view === 'agent' && (
+        <>
+          <PixelOfficeRoom />
+          <AgentPanel />
+          <PromptBar />
+        </>
+      )}
     </div>
   );
 }
