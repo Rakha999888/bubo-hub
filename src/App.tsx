@@ -7,6 +7,7 @@ import { ViewSwitcher } from './components/navigation/ViewSwitcher';
 import { FloorSelector } from './components/navigation/FloorSelector';
 import { AgentPanel } from './components/agent-panel/AgentPanel';
 import { PromptBar } from './components/prompt/PromptBar';
+import { AgentGridView } from './components/agent-view/AgentGridView';
 import { useStore } from './state/store';
 import { STATUS_COLOR } from './3d/characters/AgentActor';
 import { CameraLevel } from './types';
@@ -66,18 +67,21 @@ export default function App() {
       </Canvas>
 
       {view === 'office' && (
-        <div className="levels">
-          {(['city', 'building', 'floor'] as CameraLevel[]).map((l) => (
-            <button key={l} className={level === l ? 'on' : ''} onClick={() => setLevel(l)}>
-              {l === 'city' ? 'Kota' : l === 'building' ? 'Gedung' : 'Lantai'}
-            </button>
-          ))}
-        </div>
+        <>
+          <div className="levels">
+            {(['city', 'building', 'floor'] as CameraLevel[]).map((l) => (
+              <button key={l} className={level === l ? 'on' : ''} onClick={() => setLevel(l)}>
+                {l === 'city' ? 'Kota' : l === 'building' ? 'Gedung' : 'Lantai'}
+              </button>
+            ))}
+          </div>
+          <FloorSelector />
+          <AgentPanel />
+          <PromptBar />
+        </>
       )}
 
-      <FloorSelector />
-      <AgentPanel />
-      <PromptBar />
+      {view === 'agent' && <AgentGridView />}
     </div>
   );
 }
