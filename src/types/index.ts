@@ -8,15 +8,15 @@ export type AnimationName =
 
 export type AccessoryId =
   | 'workflow-board' | 'ui-pen' | 'db-cylinder' | 'ticket' | 'camera'
-  | 'pdf-doc' | 'server-rack' | 'admin-badge' | 'manager-tie';
+  | 'pdf-doc' | 'server-rack' | 'admin-badge' | 'manager-tie' | 'qc-lens';
 
 export type HairStyle =
   | 'short-modern' | 'creative-wavy' | 'neat-dark' | 'friendly-medium'
-  | 'creative-long' | 'office-clean' | 'practical-short' | 'executive' | 'admin-cut';
+  | 'creative-long' | 'office-clean' | 'practical-short' | 'executive' | 'admin-cut' | 'qa-spiky';
 
 export type TopType =
   | 'designer-hoodie' | 'tech-jacket' | 'dark-jacket' | 'support-shirt'
-  | 'creative-jacket' | 'doc-shirt' | 'utility-jacket' | 'business-blazer' | 'executive-blazer';
+  | 'creative-jacket' | 'doc-shirt' | 'utility-jacket' | 'business-blazer' | 'executive-blazer' | 'qa-vest';
 
 export type BottomType =
   | 'modern-pants' | 'dark-jeans' | 'utility-pants' | 'form-pants' | 'slim-pants';
@@ -46,8 +46,17 @@ export type ViewMode = 'office' | 'agent';
 export type CameraLevel = 'city' | 'building' | 'floor';
 
 export interface AgentConfig {
-  id: string; name: string; department: string; role: string;
-  floor: FloorId; room: string; website: string | null;
+  id: string;                      // Technical ID (bubo-n8n)
+  name: string;                    // Human Name (Niko)
+  displayName: string;             // Full display name (Niko)
+  role: string;                    // Job title (Automation Engineer)
+  department: string;              // Department name (Automation & Integration)
+  floor: FloorId;
+  room: string;
+  website: string | null;
+  personality: string[];           // Personality traits (['fast', 'technical', 'energetic'])
+  visualTheme: string;             // Color theme accent ('cyan')
+  workspace: string;               // Workspace name ('automation-lab')
   accessory: AccessoryId;
   desk: [number, number];          // x,z on the floor (desk center)
   manager?: boolean;

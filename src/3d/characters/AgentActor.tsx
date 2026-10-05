@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
-import { AgentConfig, AgentStatus, FacialState } from '../../types';
+import { AgentConfig, AgentStatus } from '../../types';
 import { BREAK_SPOT } from '../../config/agents';
 import { BuboCharacter, Pose } from './BuboCharacter';
 import { useStore } from '../../state/store';
@@ -84,11 +84,11 @@ export function AgentActor({ cfg }: { cfg: AgentConfig }) {
           </mesh>
         </group>
       )}
-      <Html position={[0, 2.35, 0]} center distanceFactor={9} zIndexRange={[10, 0]} style={{ pointerEvents: 'none' }}>
+      <Html position={[0, 2.4, 0]} center distanceFactor={9} zIndexRange={[10, 0]} style={{ pointerEvents: 'none' }}>
         <div className="agent-label">
-          <b>{st.name}</b>
-          <span style={{ color }}>● {st.status.toUpperCase()}</span>
-          {st.status === 'working' && <i>{st.activity}</i>}
+          <b style={{ fontSize: '1.05em', color: '#ffffff' }}>{cfg.displayName}</b>
+          <span style={{ fontSize: '0.82em', opacity: 0.85, display: 'block', margin: '1px 0' }}>{cfg.role}</span>
+          <span style={{ color, fontSize: '0.8em', fontWeight: 600 }}>● {st.status.toUpperCase()}</span>
         </div>
       </Html>
     </group>
