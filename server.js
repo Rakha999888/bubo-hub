@@ -104,8 +104,8 @@ function dispatchAgentWork(agentId, taskText, activityText, originChannel) {
     agentId,
     patch: {
       status: 'working',
-      task: 'Sedang bertugas',
-      activity: 'Aktif di meja kerja',
+      task: taskText || 'Sedang memproses instruksi prompt...',
+      activity: activityText || 'Bekerja aktif di depan laptop',
       progress: 45,
       animation: 'type',
       location: 'desk',
@@ -139,7 +139,8 @@ function finishAgentWork(agentId, summaryText) {
       agentId,
       patch: {
         status: 'idle',
-        activity: 'Idle',
+        task: '',
+        activity: 'Selesai tugas, bebas beraktivitas',
         progress: 0,
         animation: 'idle',
         tool: '-'

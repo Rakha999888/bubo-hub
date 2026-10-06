@@ -7,7 +7,7 @@ import { hermes } from '../services/hermes/hermesClient';
 const initialAgents = (): Record<string, AgentState> =>
   Object.fromEntries(AGENTS.map((a) => [a.id, {
     id: a.id, name: a.name, department: a.department, floor: a.floor,
-    status: 'idle', task: 'Waiting for instructions', activity: 'Idle', progress: 0,
+    status: 'idle', task: '', activity: 'Standby menunggu prompt / tugas', progress: 0,
     location: 'desk', animation: 'idle', tool: '-', recent: [], log: []
   } as AgentState]));
 
@@ -51,6 +51,12 @@ export const useStore = create<UIState>((set, get) => ({
     return { agents: { ...s.agents, [e.agentId]: { ...cur, ...e.patch } } };
   }),
   sendPrompt: (agentId, text) => {
+    // When user sends a prompt, character immediately switches to working at their laptop!
+    get().applyEvent({
+      type: 'agent_state',
+      agentId,
+      patch: { status: 'working', task: text, activity: 'Sedang bekerja di depan laptop...' }
+    });
     get().applyEvent({ type: 'agent_log', agentId, line: `User: ${text}` });
     hermes.sendPrompt(agentId, text);
   }

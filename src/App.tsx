@@ -169,9 +169,9 @@ export default function App() {
 
       {view === 'office' && (
         <>
+          <PromptBar />
           <FloorSelector />
           <AgentPanel />
-          <PromptBar />
         </>
       )}
 

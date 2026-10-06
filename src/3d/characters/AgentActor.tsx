@@ -94,8 +94,10 @@ export function AgentActor({
     const p = pose.current;
     const t = state.clock.elapsedTime;
 
-    // Priority 1: Real active Hermes task (working / thinking) overrides everything
-    const isHermesBusy = s.status === 'working' || s.status === 'thinking' || s.status === 'error';
+    // Priority 1: ONLY work at laptop when there is a real prompt / task or Hermes is busy working!
+    // If no active prompt or task, character remains FREE to roam / relax / not type!
+    const hasActivePromptOrTask = !!s.task && s.task.trim().length > 0;
+    const isHermesBusy = (s.status === 'working' || s.status === 'thinking' || s.status === 'error') && hasActivePromptOrTask;
 
     let dynamicTarget = anchors.sit;
     let isSofa = false;
