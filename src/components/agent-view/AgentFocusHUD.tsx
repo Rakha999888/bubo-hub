@@ -62,7 +62,7 @@ export function AgentFocusHUD() {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <b style={{ fontSize: '13.5px', color: '#f8fafc' }}>Tim SMLONE AI Hub</b>
+          <b style={{ fontSize: '13.5px', color: '#f8fafc' }}>Tim AI Hub</b>
           <span
             style={{
               background: 'rgba(52, 211, 153, 0.15)',

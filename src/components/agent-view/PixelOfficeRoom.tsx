@@ -16,7 +16,7 @@ const ROW_DECOR = [
   },
   {
     title: 'Ruang 2 · Desain UI/UX & Rekayasa Web',
-    noteText: 'OPERASIONAL 24/7 SISTEM SMLONE',
+    noteText: 'OPERASIONAL 24/7 SISTEM AKTIF',
     noteRotate: '2.5deg',
     showWindow: false,
     showClock: true,
@@ -182,7 +182,7 @@ export function PixelOfficeRoom({ initialAgentId }: { initialAgentId?: string | 
                       {decor.title}
                     </div>
                     <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '2px' }}>
-                      Kapasitas 3 Meja Kerja · SMLONE Active Fleet
+                      Kapasitas 3 Meja Kerja · Active Fleet
                     </div>
                   </div>
                 </div>

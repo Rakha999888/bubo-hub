@@ -72,24 +72,24 @@ export function AgentGridView() {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: '#f8fafc' }}>
-                Tim SMLONE AI Hub
+                Tim AI Hub
               </h2>
               <span
                 style={{
                   background: 'rgba(52, 211, 153, 0.15)',
                   color: '#34d399',
-                  border: '1px solid rgba(52, 211, 153, 0.3)',
+                  border: '1px solid rgba(52, 211, 153, 0.35)',
                   padding: '2px 8px',
                   borderRadius: '999px',
                   fontSize: '11px',
                   fontWeight: 700
                 }}
               >
-                ● Online
+                Aktif
               </span>
             </div>
             <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px' }}>
-              Divisi Operasional & Rekayasa SMLONE · 8 Agent Aktif
+              Divisi Operasional & Rekayasa · 8 Agent Aktif
             </div>
           </div>
         </div>

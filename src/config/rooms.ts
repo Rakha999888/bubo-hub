@@ -1,7 +1,7 @@
 import { RoomConfig } from '../types';
 
 export const FLOOR_NAMES: Record<number, string> = {
-  1: 'SMLONE Digital Headquarters'
+  1: 'Digital Headquarters'
 };
 
 export const FLOOR_HEIGHT = 4;
