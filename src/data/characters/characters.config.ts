@@ -4,8 +4,8 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
   // ─── 1. BUBO COORDINATOR (Technical ID: bubo-manager) ───────────────────
   {
     id: 'bubo-manager',
-    name: 'Bubo Coordinator',
-    displayName: 'Bubo Coordinator',
+    name: 'Rakha',
+    displayName: 'Rakha',
     role: 'Head of AI Operations & Koordinator Tim',
     department: '#general-chat',
     floor: 3,
@@ -35,8 +35,8 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
   // ─── 2. BUBO N8N (Technical ID: bubo-n8n) ────────────────────────────────
   {
     id: 'bubo-n8n',
-    name: 'Bubo n8n',
-    displayName: 'Bubo n8n',
+    name: 'Koko',
+    displayName: 'Koko',
     role: 'Otomasi Alur Kerja & Integrasi Sistem',
     department: '#bubo-n8n',
     floor: 1,
@@ -65,8 +65,8 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
   // ─── 3. BUBO PORTAL (Technical ID: bubo-portal) ──────────────────────────
   {
     id: 'bubo-portal',
-    name: 'Bubo Portal',
-    displayName: 'Bubo Portal',
+    name: 'Budi',
+    displayName: 'Budi',
     role: 'Frontend UI/UX Web Portal Trainee',
     department: '#bubo-portal',
     floor: 2,
@@ -95,8 +95,8 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
   // ─── 4. BUBO BACKEND (Technical ID: bubo-backend-portal) ──────────────────
   {
     id: 'bubo-backend-portal',
-    name: 'Bubo Backend',
-    displayName: 'Bubo Backend',
+    name: 'Samsul',
+    displayName: 'Samsul',
     role: 'Backend Engineering & Database PostgreSQL',
     department: '#bubo-backend-portal',
     floor: 2,
@@ -125,8 +125,8 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
   // ─── 5. BUBO ADMIN PORTAL (Technical ID: bubo-admin-portal) ──────────────
   {
     id: 'bubo-admin-portal',
-    name: 'Bubo Admin Portal',
-    displayName: 'Bubo Admin Portal',
+    name: 'Pina',
+    displayName: 'Pina',
     role: 'Dashboard Admin & Manajemen Sistem',
     department: '#bubo-admin-portal',
     floor: 3,
@@ -155,8 +155,8 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
   // ─── 6. BUBO SOURCE VIDEO (Technical ID: bubo-source-video) ──────────────
   {
     id: 'bubo-source-video',
-    name: 'Bubo Source Video',
-    displayName: 'Bubo Source Video',
+    name: 'Alpin',
+    displayName: 'Alpin',
     role: 'Produksi, Kurasi Materi & Skrip Video',
     department: '#bubo-source-video',
     floor: 2,
@@ -215,8 +215,8 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
   // ─── 8. BUBO QC PORTAL (Technical ID: bubo-qc-portal) ────────────────────
   {
     id: 'bubo-qc-portal',
-    name: 'Bubo QC Portal',
-    displayName: 'Bubo QC Portal',
+    name: 'Juki',
+    displayName: 'Juki',
     role: 'Quality Control & Troubleshooting Bug',
     department: '#bubo-qc-portal',
     floor: 2,
@@ -245,8 +245,8 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
   // ─── 9. BUBO TICKETING (Technical ID: bubo-ticketing) ────────────────────
   {
     id: 'bubo-ticketing',
-    name: 'Bubo Ticketing',
-    displayName: 'Bubo Ticketing',
+    name: 'Roki',
+    displayName: 'Roki',
     role: 'Manajemen Tiket & Jira Helpdesk',
     department: '#bubo-ticketing',
     floor: 2,
@@ -275,8 +275,8 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
   // ─── 10. BUBO BUILDING (Technical ID: bubo-building) ─────────────────────
   {
     id: 'bubo-building',
-    name: 'Bubo Building',
-    displayName: 'Bubo Building',
+    name: 'Koko',
+    displayName: 'Koko',
     role: 'Arsitektur Sistem & Server Build SMLONE',
     department: '#bubo-building',
     floor: 1,
