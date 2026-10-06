@@ -331,8 +331,8 @@ export function BuboBuilding({
       {/* Front Low Border Baseboard (So scene never exposes raw floor clip) */}
       <Box p={[0, 0.4, 6.6]} s={[38, 0.8, 0.5]} c="#1e293b" />
 
-      {/* Exterior Realistic Glass Windows with Modern Aluminum Mullions (spaced apart from center official portraits) */}
-      {[-14, -10, -5.5, 5.5, 10, 14].map((x) => (
+      {/* Exterior Realistic Glass Windows with Modern Aluminum Mullions (spaced to never overlap wall decor) */}
+      {[-14, -10.5, -5.5, 7.8, 11.5, 15].map((x) => (
         <group key={x}>
           {/* Outer Glass Window Pane */}
           <Box p={[x, 2.4, -6.32]} s={[3.2, 1.8, 0.04]} c="#e0f2fe" e={0.05} />
@@ -451,8 +451,8 @@ export function BuboBuilding({
         </group>
       ))}
 
-      {/* 2. Office Information & Notice Bulletin Board (Pantry area) */}
-      <group position={[6.0, 2.3, -6.32]}>
+      {/* 2. Office Information & Notice Bulletin Board (Pantry area, placed on solid wall between windows) */}
+      <group position={[4.6, 2.3, -6.32]}>
         <Box p={[0, 0, 0]} s={[1.8, 1.4, 0.04]} c="#854d0e" />
         <Box p={[0, 0, 0.02]} s={[1.65, 1.25, 0.02]} c="#d97706" />
         {/* Memo notes pinned on board */}
@@ -462,8 +462,8 @@ export function BuboBuilding({
         <Box p={[0.42, -0.2, 0.04]} s={[0.3, 0.38, 0.01]} c="#86efac" />
       </group>
 
-      {/* 3. Wall Certificate / Achievement Diplomas (Executive Wing) */}
-      <group position={[-7.8, 2.3, -6.32]}>
+      {/* 3. Wall Certificate / Achievement Diplomas (Executive Wing, placed on solid wall between windows) */}
+      <group position={[-7.7, 2.3, -6.32]}>
         <Box p={[0, 0.35, 0]} s={[1.1, 0.75, 0.04]} c="#ca8a04" />
         <Box p={[0, 0.35, 0.02]} s={[0.98, 0.65, 0.02]} c="#f8fafc" />
         <Box p={[0, 0.35, 0.03]} s={[0.7, 0.2, 0.01]} c="#1e293b" />
