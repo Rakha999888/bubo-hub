@@ -35,9 +35,15 @@ const ROW_DECOR = [
   }
 ];
 
-export function PixelOfficeRoom() {
+export function PixelOfficeRoom({ initialAgentId }: { initialAgentId?: string | null }) {
   const agents = useStore((s) => s.agents);
-  const [modalAgentId, setModalAgentId] = useState<string | null>(null);
+  const [modalAgentId, setModalAgentId] = useState<string | null>(initialAgentId || null);
+
+  useEffect(() => {
+    if (initialAgentId) {
+      setModalAgentId(initialAgentId);
+    }
+  }, [initialAgentId]);
   const [clockTime, setClockTime] = useState({ hours: 10, minutes: 8, seconds: 0 });
 
   useEffect(() => {

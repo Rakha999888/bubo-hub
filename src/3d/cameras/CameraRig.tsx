@@ -21,15 +21,16 @@ export function CameraRig() {
     if (view === 'agent') {
       return;
     } else if (level === 'city') {
-      pos = [34, 26, 42];
-      tgt = [0, 4, 4];
+      pos = [28, 32, 28];
+      tgt = [0, 4, 0];
     } else if (level === 'building') {
-      pos = [15, 11, 24];
+      pos = [16, 22, 18];
       tgt = [0, 4, 0];
     } else {
       const y = floorY(floor);
-      pos = [0, y + 3.2, 16];
-      tgt = [0, y + 1.2, 0];
+      // Top-Down Isometric Angle (~55 degrees downward) observing full floor layout
+      pos = [0, y + 13, 10];
+      tgt = [0, y + 0.8, 0.5];
     }
 
     const c = controls.current;

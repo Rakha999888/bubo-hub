@@ -128,7 +128,13 @@ function ServerRacks() {
   );
 }
 
-function Floor({ f }: { f: FloorId }) {
+function Floor({
+  f,
+  onContextMenu
+}: {
+  f: FloorId;
+  onContextMenu?: (e: any, agent: AgentConfig) => void;
+}) {
   const y = floorY(f);
   const rooms = ROOMS.filter((r) => r.floor === f);
   const agents = AGENTS.filter((a) => a.floor === f);
@@ -165,7 +171,7 @@ function Floor({ f }: { f: FloorId }) {
       {agents.map((a) => (
         <group key={a.id}>
           <Workstation cfg={a} />
-          <AgentActor cfg={a} />
+          <AgentActor cfg={a} showNameplate={false} onContextMenu={onContextMenu} />
         </group>
       ))}
 
@@ -174,6 +180,13 @@ function Floor({ f }: { f: FloorId }) {
         <>
           <Lounge />
           <ServerRacks />
+        </>
+      )}
+      {f === 2 && (
+        <>
+          <Lounge />
+          <Plant x={-6.3} z={3.8} />
+          <Plant x={6.2} z={4} />
         </>
       )}
       {f === 3 && (
@@ -186,17 +199,15 @@ function Floor({ f }: { f: FloorId }) {
           <Plant x={-6.2} z={3.6} />
         </>
       )}
-      {f === 2 && (
-        <>
-          <Plant x={-6.3} z={3.8} />
-          <Plant x={6.2} z={4} />
-        </>
-      )}
     </group>
   );
 }
 
-export function BuboBuilding() {
+export function BuboBuilding({
+  onContextMenu
+}: {
+  onContextMenu?: (e: any, agent: AgentConfig) => void;
+}) {
   const view = useStore((s) => s.view);
   const floor = useStore((s) => s.floor);
   const floors = ([1, 2, 3] as FloorId[]).filter((f) => view === 'office' || f <= floor);
@@ -204,7 +215,7 @@ export function BuboBuilding() {
   return (
     <group>
       {floors.map((f) => (
-        <Floor key={f} f={f} />
+        <Floor key={f} f={f} onContextMenu={onContextMenu} />
       ))}
       {floors.filter((f) => f < 3 && floors.includes((f + 1) as FloorId)).map((f) => (
         <Stairs key={f} from={f} />

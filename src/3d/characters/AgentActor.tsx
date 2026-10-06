@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { AgentConfig, AgentStatus } from '../../types';
-import { BREAK_SPOT } from '../../config/agents';
+import { BREAK_SPOT, SOFA_SEATS, OFFICE_WAYPOINTS } from '../../config/agents';
 import { BuboCharacter, Pose } from './BuboCharacter';
 import { useStore } from '../../state/store';
 
@@ -39,7 +39,15 @@ const wrap = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
  * Seated on their workstation chair in office.
  * Above head: 3D badge showing full Bubo name, exact Discord channel, and division with real-time status.
  */
-export function AgentActor({ cfg, showNameplate = true }: { cfg: AgentConfig; showNameplate?: boolean }) {
+export function AgentActor({
+  cfg,
+  showNameplate = false,
+  onContextMenu
+}: {
+  cfg: AgentConfig;
+  showNameplate?: boolean;
+  onContextMenu?: (e: any, agent: AgentConfig) => void;
+}) {
   const allAgents = useStore((s) => s.agents);
   const st = allAgents[cfg.id] || { status: 'idle', task: '', activity: '' };
   const selected = useStore((s) => s.selectedAgentId === cfg.id);
@@ -80,84 +88,110 @@ export function AgentActor({ cfg, showNameplate = true }: { cfg: AgentConfig; sh
     const p = pose.current;
     const t = state.clock.elapsedTime;
 
-    // Custom Dynamic Motor Behavior: Rakha (Manager Walkaround & Inspection)
-    let dynamicTarget = anchors.sit;
-    let shouldWalk = false;
+    // Priority 1: Real active Hermes task (working / thinking) overrides everything
+    const isHermesBusy = s.status === 'working' || s.status === 'thinking' || s.status === 'error';
 
-    if (cfg.id === 'bubo-manager') {
-      // 60-second routine: 0-25s seated desk, 25-35s walk to office inspection point 1, 35-45s walk to observation window, 45-60s return
-      const cycle = t % 60;
-      if (cycle >= 25 && cycle < 38) {
-        dynamicTarget = new THREE.Vector3(-1.8, 0.15, 0.6); // walking to office observation zone
-        shouldWalk = true;
-      } else if (cycle >= 38 && cycle < 50) {
-        dynamicTarget = new THREE.Vector3(1.2, 0.15, 1.8); // observing lounge / meeting entrance
-        shouldWalk = true;
+    // Character personality hash for desynchronized staggered autonomous schedule
+    const charOffset = useMemo(() => {
+      let hash = 0;
+      for (let i = 0; i < cfg.id.length; i++) hash = (hash * 31 + cfg.id.charCodeAt(i)) % 1000;
+      return (hash / 1000) * 45; // 0..45s offset
+    }, [cfg.id]);
+
+    let dynamicTarget = anchors.sit;
+    let isSofa = false;
+
+    if (isHermesBusy) {
+      // Must return immediately to workstation and work!
+      dynamicTarget = anchors.sit;
+      isSofa = false;
+    } else if (cfg.id === 'bubo-manager') {
+      // Rakha Manager Walkaround: 70s cycle
+      const cycle = (t + charOffset) % 70;
+      if (cycle >= 20 && cycle < 35) {
+        dynamicTarget = new THREE.Vector3(-1.8, 0.15, 0.6); // inspect floor corridor
+      } else if (cycle >= 35 && cycle < 48) {
+        dynamicTarget = new THREE.Vector3(1.2, 0.15, 1.8); // look at lounge / meeting area
+      } else if (cycle >= 48 && cycle < 58) {
+        dynamicTarget = new THREE.Vector3(3.2, 0.15, 2.2); // standing near lounge observing
       } else {
         dynamicTarget = anchors.sit;
-        shouldWalk = false;
       }
     } else if (cfg.id === 'bubo-building') {
-      // Custom Dynamic Motor Behavior: Koko (Senior Software Engineer Mentoring & PR review)
-      // Check if Budi (FE) or Samsul (BE) has error, or periodic walkaround mentoring
+      // Koko Senior Engineer Checkup & Sofa Coffee: 80s cycle
       const budiErr = allAgents['bubo-portal']?.status === 'error';
       const samsulErr = allAgents['bubo-backend-portal']?.status === 'error';
 
       if (budiErr) {
-        dynamicTarget = new THREE.Vector3(-1.5, 0.15, -1.6); // beside Budi desk
-        shouldWalk = true;
+        dynamicTarget = new THREE.Vector3(-1.5, 0.15, -1.6); // beside Budi
       } else if (samsulErr) {
-        dynamicTarget = new THREE.Vector3(1.5, 0.15, -1.6); // beside Samsul desk
-        shouldWalk = true;
+        dynamicTarget = new THREE.Vector3(1.5, 0.15, -1.6); // beside Samsul
       } else {
-        // Periodic 75s senior checkup
-        const cycle = t % 75;
-        if (cycle >= 40 && cycle < 55) {
-          dynamicTarget = new THREE.Vector3(1.0, 0.15, -1.5); // checking server & architecture
-          shouldWalk = true;
+        const cycle = (t + charOffset) % 80;
+        if (cycle >= 25 && cycle < 45) {
+          // Relax on sofa seat 1
+          dynamicTarget = new THREE.Vector3(2.8, 0.15, 2.2);
+          isSofa = true;
+        } else if (cycle >= 45 && cycle < 60) {
+          dynamicTarget = new THREE.Vector3(0, 0.15, 0); // walking hallway
         } else {
           dynamicTarget = anchors.sit;
-          shouldWalk = false;
         }
       }
     } else {
-      const wantSit = s.status !== 'break';
-      dynamicTarget = wantSit ? anchors.sit : anchors.brk;
-      shouldWalk = !wantSit;
+      // Other 6 agents: Autonomous Idle / Sofa / Lounge Walk system
+      // Cycle: 65s period
+      const cycle = (t + charOffset) % 65;
+      const sofaSeats = SOFA_SEATS[cfg.floor] || SOFA_SEATS[2];
+      const assignedSeat = sofaSeats[charOffset % sofaSeats.length] || sofaSeats[0];
+
+      if (s.status === 'break' || cycle >= 32 && cycle < 54) {
+        // Break period: head to sofa and relax!
+        dynamicTarget = new THREE.Vector3(assignedSeat.pos[0], assignedSeat.pos[1], assignedSeat.pos[2]);
+        isSofa = true;
+      } else if (cycle >= 54 && cycle < 60) {
+        // Stretch / water break near hallway
+        dynamicTarget = new THREE.Vector3(cfg.desk[0] > 0 ? 1.0 : -1.0, 0.15, 0.2);
+      } else {
+        // Standard idle at desk
+        dynamicTarget = anchors.sit;
+      }
     }
 
     const to = dynamicTarget.clone().sub(g.position);
     to.y = 0;
     const dist = to.length();
 
-    const atSeat = dynamicTarget === anchors.sit && dist < 0.2;
-    p.sit = THREE.MathUtils.damp(p.sit, atSeat ? 1 : 0, 5, dt);
+    // Natural sitting transition: seated at workstation OR on sofa
+    const isAtRest = dist < 0.25 && (dynamicTarget === anchors.sit || isSofa);
+    p.sit = THREE.MathUtils.damp(p.sit, isAtRest ? 1 : 0, 4.5, dt);
 
-    const canMove = p.sit < 0.3;
-    p.walking = dist > 0.12 && canMove;
+    const canMove = p.sit < 0.35;
+    p.walking = dist > 0.15 && canMove;
 
     if (p.walking) {
-      const speed = cfg.id === 'bubo-manager' ? 1.4 : 1.6;
+      const speed = cfg.id === 'bubo-manager' ? 1.35 : 1.5;
       g.position.addScaledVector(to.normalize(), Math.min(dist, speed * dt));
     }
 
-    // Role-specific typing & activities
-    if (cfg.id === 'bubo-manager') {
-      p.typing = atSeat && s.status === 'working';
-    } else if (cfg.id === 'bubo-building') {
-      // Koko slow deliberate typing
-      p.typing = atSeat && (s.status === 'working' || s.status === 'thinking');
+    // Role-specific typing / relaxing
+    if (isSofa && isAtRest) {
+      p.typing = false;
+      // Relaxed behavior on sofa
+      if (cfg.id === 'bubo-portal' || cfg.id === 'bubo-ticketing') {
+        p.mood = 'happy'; // relaxing on phone
+      } else if (cfg.id === 'bubo-admin-portal') {
+        p.mood = 'think'; // sketching on tablet
+      } else {
+        p.mood = 'normal';
+      }
+    } else if (dynamicTarget === anchors.sit && isAtRest) {
+      p.typing = isHermesBusy;
+      p.mood = isHermesBusy ? 'focused' : 'normal';
     } else {
-      p.typing = atSeat && (s.status === 'working' || s.status === 'thinking');
+      p.typing = false;
+      p.mood = 'normal';
     }
-
-    let mood: Pose['mood'] = 'normal';
-    if (s.status === 'error') mood = 'error';
-    else if (s.status === 'success') mood = 'success';
-    else if (s.status === 'thinking') mood = 'think';
-    else if (s.status === 'working') mood = 'focused';
-    else if (s.status === 'break') mood = 'happy';
-    p.mood = mood;
 
     const goalYaw = p.walking ? Math.atan2(to.x, to.z) : Math.PI;
     yaw.current += wrap(goalYaw - yaw.current) * Math.min(1, 8 * dt);
@@ -168,7 +202,22 @@ export function AgentActor({ cfg, showNameplate = true }: { cfg: AgentConfig; sh
   const isManager = cfg.manager;
 
   return (
-    <group ref={root} onClick={(e) => { e.stopPropagation(); selectAgent(cfg.id); }}>
+    <group
+      ref={root}
+      onClick={(e) => {
+        e.stopPropagation();
+        selectAgent(cfg.id);
+      }}
+      onContextMenu={(e) => {
+        e.stopPropagation();
+        if (onContextMenu) {
+          onContextMenu(e, cfg);
+        } else {
+          // Default context action: select and allow user inspect
+          selectAgent(cfg.id);
+        }
+      }}
+    >
       <BuboCharacter
         pose={pose}
         accessory={cfg.accessory}
