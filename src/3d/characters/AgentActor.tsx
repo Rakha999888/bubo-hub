@@ -105,7 +105,7 @@ export function AgentActor({
       dynamicTarget = anchors.sit;
       isSofa = false;
     } else if (cfg.id === 'bubo-manager') {
-      // Rakha Manager Walkaround: 70s cycle
+      // Rakha Manager: Floor 3 Manager Office & Observation Lounge
       const cycle = (t + charOffset) % 70;
       if (cycle >= 20 && cycle < 35) {
         dynamicTarget = new THREE.Vector3(-1.8, 0.15, 0.6); // inspect floor corridor
@@ -116,8 +116,19 @@ export function AgentActor({
       } else {
         dynamicTarget = anchors.sit;
       }
+    } else if (cfg.id === 'bubo-admin-portal') {
+      // Pina UI/UX: Floor 3 Admin Office & Design Lounge
+      const cycle = (t + charOffset) % 70;
+      if (cycle >= 25 && cycle < 45) {
+        dynamicTarget = new THREE.Vector3(1.2, 0.15, 3.2); // sofa seat Floor 3 (max 1 person)
+        isSofa = true;
+      } else if (cycle >= 45 && cycle < 58) {
+        dynamicTarget = new THREE.Vector3(-1.5, 0.15, 1.5); // standing balcony
+      } else {
+        dynamicTarget = anchors.sit;
+      }
     } else if (cfg.id === 'bubo-building') {
-      // Koko Senior Engineer Checkup & Coffee: 80s cycle
+      // Koko Senior Engineer Checkup & Coffee: 80s cycle (Floor 1 & mentoring)
       const budiErr = allAgents['bubo-portal']?.status === 'error';
       const samsulErr = allAgents['bubo-backend-portal']?.status === 'error';
 
@@ -128,39 +139,51 @@ export function AgentActor({
       } else {
         const cycle = (t + charOffset) % 80;
         if (cycle >= 25 && cycle < 45) {
-          // Relax on sofa seat 1 (max 1-2 people)
+          // Relax on Floor 1 sofa seat 1
           dynamicTarget = new THREE.Vector3(3.1, 0.15, 2.2);
           isSofa = true;
         } else if (cycle >= 45 && cycle < 60) {
-          dynamicTarget = new THREE.Vector3(0, 0.15, 0); // walking hallway
+          dynamicTarget = new THREE.Vector3(-3.5, 0.15, -2.5); // checking server rack
         } else {
           dynamicTarget = anchors.sit;
         }
       }
     } else {
-      // Other agents: Strict 1-2 person sofa capacity
-      // Only 1 extra agent allowed on sofa at any moment; others roam freely (water cooler, window, balcony, coffee bar)
-      const cycle = (t + charOffset) % 75;
-      const agentNum = Math.floor(charOffset) % 5; // index 0..4
+      // Floor 2 Roaming: Unique separate destinations across entire office
+      // Destinations:
+      // - 1 agent on sofa seat (max 1 person from this pool, total sofa <= 2)
+      // - Coffee maker / pantry [5.5, 0.15, -3.8]
+      // - Vending machine / snack bar [5.8, 0.15, -1.8]
+      // - Water cooler & plant corridor [-6.0, 0.15, 3.2]
+      // - Window viewing balcony [4.8, 0.15, 3.2]
+      // - Central communication aisle [0.0, 0.15, 0.2]
+      // - Whiteboard / ideation zone [-4.2, 0.15, -0.8]
+      // - Tech discussion nook [2.0, 0.15, -1.8]
 
-      if (s.status === 'break' || (cycle >= 35 && cycle < 55 && agentNum === 0)) {
-        // Only 1 assigned agent on sofa seat 2 (total 1-2 person on sofa max)
-        const sofaSeats = SOFA_SEATS[cfg.floor] || SOFA_SEATS[2];
-        const assignedSeat = sofaSeats[1] || sofaSeats[0];
-        dynamicTarget = new THREE.Vector3(assignedSeat.pos[0], assignedSeat.pos[1], assignedSeat.pos[2]);
-        isSofa = true;
-      } else if (cycle >= 25 && cycle < 42) {
-        // Wander to coffee maker / lounge entry
-        dynamicTarget = new THREE.Vector3(2.2, 0.15, 0.8);
-      } else if (cycle >= 42 && cycle < 58) {
-        // Wander to window view / balcony
-        dynamicTarget = new THREE.Vector3(cfg.desk[0] > 0 ? 5.2 : -5.2, 0.15, 2.6);
-      } else if (cycle >= 58 && cycle < 66) {
-        // Stand near hallway / stretch
-        dynamicTarget = new THREE.Vector3(0.5, 0.15, -0.4);
+      const destOptions: Record<string, { pos: [number, number, number]; isSofa?: boolean }> = {
+        'bubo-portal': { pos: [2.2, 0.15, -1.8] }, // Budi: tech discussion nook near center
+        'bubo-backend-portal': { pos: [5.5, 0.15, -3.6] }, // Samsul: coffee maker / pantry
+        'bubo-qc-portal': { pos: [5.8, 0.15, -1.8] }, // Juki: snack area / checking wall
+        'bubo-source-video': { pos: [3.7, 0.15, 2.2], isSofa: true }, // Alpin: sofa seat 2 (relaxed on phone/music)
+        'bubo-ticketing': { pos: [-5.8, 0.15, 3.2] } // Roki: window & plant corridor
+      };
+
+      const myDest = destOptions[cfg.id] || { pos: [0.0, 0.15, 0.5] };
+
+      const cycle = (t + charOffset) % 75;
+      if (s.status === 'break' || (cycle >= 30 && cycle < 55)) {
+        // Roam to unique assigned personal destination — NOT clustering!
+        dynamicTarget = new THREE.Vector3(myDest.pos[0], myDest.pos[1], myDest.pos[2]);
+        isSofa = !!myDest.isSofa;
+      } else if (cycle >= 55 && cycle < 64) {
+        // Short stretch in hallway midway to desk
+        const midX = (cfg.desk[0] + myDest.pos[0]) * 0.5;
+        dynamicTarget = new THREE.Vector3(midX, 0.15, 0.2);
+        isSofa = false;
       } else {
-        // Standard idle at desk
+        // Working / seated at own desk
         dynamicTarget = anchors.sit;
+        isSofa = false;
       }
     }
 
