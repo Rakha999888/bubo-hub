@@ -131,56 +131,41 @@ function HairMesh({ style, color }: { style: string; color: string }) {
   }
 }
 
-// ─── EXPRESSIVE FACE COMPONENT WITH NATURAL BLINK & WARM SMILE ───────
+// ─── EXPRESSIVE FACE COMPONENT WITH NATURAL BLINK & CLEAN NATURAL MOUTH ───
 function ExpressiveFace({ mood }: { mood: FacialState | 'normal' | 'error' | 'success' | 'think' | 'happy' | 'focused' }) {
   const eyesGroup = useRef<THREE.Group>(null);
-  const mouthMesh = useRef<THREE.Mesh>(null);
 
   let baseEyeScaleY = 1;
-  let browAngle = 0.08; // slightly friendly relaxed brow by default
+  let browAngle = 0.05;
   let browY = 0.20;
-  let mouthRadius = 0.14; // friendly warm curved smile
-  let mouthSmile = true;
 
   if (mood === 'error') {
     browAngle = -0.25;
-    mouthSmile = false;
     baseEyeScaleY = 0.7;
-    mouthRadius = 0.11;
   } else if (mood === 'happy' || mood === 'success') {
-    browY = 0.23;
-    browAngle = 0.15;
-    mouthRadius = 0.17;
+    browY = 0.22;
+    browAngle = 0.1;
     baseEyeScaleY = 1.05;
   } else if (mood === 'think' || mood === 'thinking') {
     browAngle = 0.2;
     browY = 0.21;
     baseEyeScaleY = 0.85;
-    mouthRadius = 0.12;
   } else if (mood === 'focused') {
     browAngle = -0.12;
     baseEyeScaleY = 0.85;
-    mouthRadius = 0.13;
   }
 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
     if (eyesGroup.current) {
-      // Natural human blinking rhythm (every ~3.5 to 4 seconds, quick 0.12s close)
+      // Natural human blinking rhythm (every ~3.8 seconds, quick 0.12s close)
       const blinkCycle = t % 3.8;
       let blinkScale = 1.0;
       if (blinkCycle > 3.65) {
-        // Closing eyes into a quick blink slit
-        const p = (blinkCycle - 3.65) / 0.15; // 0..1
+        const p = (blinkCycle - 3.65) / 0.15;
         blinkScale = Math.sin(p * Math.PI) < 0.8 ? 0.08 : 0.85;
       }
       eyesGroup.current.scale.y = baseEyeScaleY * blinkScale;
-    }
-
-    if (mouthMesh.current && mouthSmile) {
-      // Subtle smiling breath & cheerful expression
-      const smileBounce = 1 + Math.sin(t * 2.5) * 0.06;
-      mouthMesh.current.scale.set(smileBounce, smileBounce, 1);
     }
   });
 
@@ -221,29 +206,11 @@ function ExpressiveFace({ mood }: { mood: FacialState | 'normal' | 'error' | 'su
         </mesh>
       ))}
 
-      {/* Warm Smiling Mouth */}
-      <mesh
-        ref={mouthMesh}
-        position={[0, -0.14, 0.01]}
-        rotation={[0, 0, mouthSmile ? Math.PI : 0]}
-      >
-        <torusGeometry args={[mouthRadius, 0.022, 8, 16, Math.PI]} />
-        <meshStandardMaterial color={mouthSmile ? '#b91c1c' : '#4a2e16'} roughness={0.4} />
+      {/* Clean Natural Neutral Mouth (Garis bibir biasa / normal netral) */}
+      <mesh position={[0, -0.14, 0.01]}>
+        <boxGeometry args={[0.16, 0.022, 0.015]} />
+        <meshStandardMaterial color="#4a2e16" roughness={0.5} />
       </mesh>
-
-      {/* Subtle Rosy Cheeks when smiling */}
-      {mouthSmile && (
-        <>
-          <mesh position={[-0.26, -0.06, 0.01]}>
-            <circleGeometry args={[0.055, 12]} />
-            <meshBasicMaterial color="#fb7185" transparent opacity={0.45} />
-          </mesh>
-          <mesh position={[0.26, -0.06, 0.01]}>
-            <circleGeometry args={[0.055, 12]} />
-            <meshBasicMaterial color="#fb7185" transparent opacity={0.45} />
-          </mesh>
-        </>
-      )}
     </group>
   );
 }
