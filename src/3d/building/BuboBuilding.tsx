@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import * as THREE from 'three';
@@ -16,6 +16,61 @@ const Box = ({ p, s, c, e = 0 }: { p: [number, number, number]; s: [number, numb
     <meshStandardMaterial color={c} emissive={c} emissiveIntensity={e} roughness={0.7} />
   </mesh>
 );
+
+/** Framed Official Portrait Component */
+function FramedPhoto({
+  position,
+  url,
+  label
+}: {
+  position: [number, number, number];
+  url: string;
+  label?: string;
+}) {
+  const [texture, setTexture] = useState<THREE.Texture | null>(null);
+
+  useEffect(() => {
+    const loader = new THREE.TextureLoader();
+    loader.load(
+      url,
+      (tex) => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        setTexture(tex);
+      },
+      undefined,
+      (err) => console.error('Failed to load framed photo texture', url, err)
+    );
+  }, [url]);
+
+  return (
+    <group position={position}>
+      {/* Outer Golden/Wood Frame */}
+      <Box p={[0, 0, 0]} s={[1.24, 1.54, 0.06]} c="#854d0e" />
+      {/* Inner Black Mat Border */}
+      <Box p={[0, 0, 0.02]} s={[1.14, 1.44, 0.04]} c="#0f172a" />
+
+      {/* Picture Canvas Plane */}
+      <mesh position={[0, 0, 0.045]}>
+        <planeGeometry args={[1.06, 1.36]} />
+        {texture ? (
+          <meshBasicMaterial map={texture} />
+        ) : (
+          <meshStandardMaterial color="#334155" />
+        )}
+      </mesh>
+
+      {/* Subtle label plate if specified */}
+      {label && (
+        <group position={[0, -0.84, 0.04]}>
+          <Box p={[0, 0, 0]} s={[1.0, 0.16, 0.02]} c="#ca8a04" />
+          <Text position={[0, 0, 0.02]} fontSize={0.08} color="#000000" anchorX="center" anchorY="middle">
+            {label}
+          </Text>
+        </group>
+      )}
+    </group>
+  );
+}
 
 function Plant({ x, z }: { x: number; z: number }) {
   return (
@@ -332,44 +387,28 @@ export function BuboBuilding({
         <Box p={[0, 0.45, 1.3]} s={[0.45, 0.08, 0.45]} c="#1e293b" />
       </group>
 
-      {/* ─── 5. CENTER: MOTIVATIONAL & CORPORATE OFFICE POSTERS WALL ─── */}
-      {/* Set of Professional Framed Posters mounted on back wall behind workstations */}
-      <group position={[0, 2.3, -6.3]}>
-        {/* Poster 1 (Left): Tech Innovation Poster (Deep Navy & Cyan) */}
-        <group position={[-2.4, 0, 0]}>
-          {/* Black Slim Picture Frame */}
-          <Box p={[0, 0, 0]} s={[1.7, 2.2, 0.06]} c="#0f172a" />
-          {/* Inner Poster Art Canvas */}
-          <Box p={[0, 0, 0.035]} s={[1.5, 2.0, 0.02]} c="#1e293b" />
-          {/* Abstract Tech Geometric Shapes */}
-          <Box p={[0, 0.35, 0.05]} s={[0.85, 0.85, 0.01]} c="#0ea5e9" />
-          <Box p={[0, -0.35, 0.05]} s={[1.1, 0.12, 0.01]} c="#f8fafc" />
-          <Box p={[0, -0.55, 0.05]} s={[0.7, 0.08, 0.01]} c="#64748b" />
+      {/* ─── 5. CENTER: OFFICIAL PORTRAITS & CORPORATE POSTERS ─── */}
+      {/* Official State Portraits: President Prabowo Subianto (Left) & Vice President Gibran Rakabuming Raka (Right) */}
+      <group position={[0, 2.5, -6.32]}>
+        {/* Indonesian State Emblem / Garuda Pancasila Minimal Gold Medallion in Center */}
+        <group position={[0, 0.45, 0]}>
+          <Box p={[0, 0, 0]} s={[0.8, 0.8, 0.04]} c="#ca8a04" e={0.2} />
+          <Box p={[0, 0, 0.02]} s={[0.6, 0.6, 0.02]} c="#eab308" e={0.3} />
         </group>
 
-        {/* Poster 2 (Center): Corporate Vision & Culture Poster (Slate & Emerald Accent) */}
-        <group position={[0, 0, 0]}>
-          {/* Black Slim Picture Frame */}
-          <Box p={[0, 0, 0]} s={[1.8, 2.3, 0.06]} c="#0f172a" />
-          {/* Inner Poster Art Canvas */}
-          <Box p={[0, 0, 0.035]} s={[1.6, 2.1, 0.02]} c="#f8fafc" />
-          {/* Modern Minimalist Art Blocks */}
-          <Box p={[0, 0.4, 0.05]} s={[1.0, 0.6, 0.01]} c="#047857" />
-          <Box p={[0, -0.15, 0.05]} s={[1.2, 0.16, 0.01]} c="#0f172a" />
-          <Box p={[0, -0.42, 0.05]} s={[0.9, 0.08, 0.01]} c="#475569" />
-        </group>
+        {/* Official Portrait: Presiden Republik Indonesia Prabowo Subianto */}
+        <FramedPhoto
+          position={[-1.7, 0, 0]}
+          url="./presiden_prabowo.jpg"
+          label="Presiden RI"
+        />
 
-        {/* Poster 3 (Right): SMLONE Architecture / Blueprint Graphic (Indigo & Amber) */}
-        <group position={[2.4, 0, 0]}>
-          {/* Black Slim Picture Frame */}
-          <Box p={[0, 0, 0]} s={[1.7, 2.2, 0.06]} c="#0f172a" />
-          {/* Inner Poster Art Canvas */}
-          <Box p={[0, 0, 0.035]} s={[1.5, 2.0, 0.02]} c="#1e1b4b" />
-          {/* Graphic Accent Lines */}
-          <Box p={[0, 0.3, 0.05]} s={[0.9, 0.9, 0.01]} c="#6366f1" />
-          <Box p={[0, -0.3, 0.05]} s={[1.0, 0.14, 0.01]} c="#f59e0b" />
-          <Box p={[0, -0.52, 0.05]} s={[0.65, 0.08, 0.01]} c="#cbd5e1" />
-        </group>
+        {/* Official Portrait: Wakil Presiden Republik Indonesia Gibran Rakabuming Raka */}
+        <FramedPhoto
+          position={[1.7, 0, 0]}
+          url="./wapres_gibran.jpg"
+          label="Wakil Presiden RI"
+        />
       </group>
 
       {/* ─── 6. RIGHT TOP: PANTRY & KITCHENETTE ─── */}

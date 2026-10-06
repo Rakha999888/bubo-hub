@@ -7,7 +7,7 @@ class SimpleCopyPlugin {
   apply(compiler) {
     compiler.hooks.afterEmit.tap('SimpleCopyPlugin', (compilation) => {
       const outputPath = compiler.options.output.path;
-      const files = ['manifest.json', 'icon.svg', 'sw.js'];
+      const files = ['manifest.json', 'icon.svg', 'sw.js', 'presiden_prabowo.jpg', 'wapres_gibran.jpg'];
       files.forEach((file) => {
         const src = path.resolve(__dirname, 'public', file);
         const dest = path.resolve(outputPath, file);
