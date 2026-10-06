@@ -55,7 +55,7 @@ function FramedPhoto({
         {texture ? (
           <meshBasicMaterial map={texture} />
         ) : (
-          <meshStandardMaterial color="#334155" />
+          <meshStandardMaterial color="#475569" />
         )}
       </mesh>
 
@@ -112,6 +112,9 @@ export function Workstation({ cfg }: { cfg: AgentConfig }) {
       {/* Desk Legs */}
       <Box p={[x - 0.92, y0 + 0.33, z]} s={[0.06, 0.66, 1]} c="#6f4f31" />
       <Box p={[x + 0.92, y0 + 0.33, z]} s={[0.06, 0.66, 1]} c="#6f4f31" />
+
+      {/* Front Privacy Acoustic Modesty Panel / Partition (Dark Slate Gray) */}
+      <Box p={[x, y0 + 0.85, z - 0.52]} s={[1.96, 0.38, 0.04]} c="#334155" />
 
       {/* Monitor Frame & Screen */}
       <Box p={[x, y0 + 1.0, z - 0.2]} s={[0.9, 0.52, 0.05]} c="#1a1d25" />
@@ -328,12 +331,22 @@ export function BuboBuilding({
       {/* Front Low Border Baseboard (So scene never exposes raw floor clip) */}
       <Box p={[0, 0.4, 6.6]} s={[38, 0.8, 0.5]} c="#1e293b" />
 
-      {/* Exterior Panoramic Window Panes along the Back Wall */}
+      {/* Exterior Realistic Glass Windows with Modern Aluminum Mullions */}
       {[-14, -10, -5, 0, 5, 10, 14].map((x) => (
         <group key={x}>
-          <Box p={[x, 2.4, -6.32]} s={[3.2, 1.8, 0.06]} c="#93c5fd" e={0.35} />
-          <Box p={[x, 2.4, -6.34]} s={[0.08, 1.8, 0.08]} c="#334155" />
-          <Box p={[x, 2.4, -6.34]} s={[3.2, 0.08, 0.08]} c="#334155" />
+          {/* Outer Glass Window Pane */}
+          <Box p={[x, 2.4, -6.32]} s={[3.2, 1.8, 0.04]} c="#e0f2fe" e={0.05} />
+          {/* Realistic Window Outer Frame */}
+          <Box p={[x, 2.4, -6.3]} s={[3.24, 0.08, 0.06]} c="#1e293b" />
+          <Box p={[x, 3.3, -6.3]} s={[3.24, 0.08, 0.06]} c="#1e293b" />
+          <Box p={[x, 1.5, -6.3]} s={[3.24, 0.08, 0.06]} c="#1e293b" />
+          <Box p={[x - 1.6, 2.4, -6.3]} s={[0.08, 1.8, 0.06]} c="#1e293b" />
+          <Box p={[x + 1.6, 2.4, -6.3]} s={[0.08, 1.8, 0.06]} c="#1e293b" />
+          {/* Center Vertical Mullion & Crossbar */}
+          <Box p={[x, 2.4, -6.3]} s={[0.06, 1.8, 0.06]} c="#334155" />
+          <Box p={[x, 2.4, -6.3]} s={[3.2, 0.06, 0.06]} c="#334155" />
+          {/* Subtle Window Sill */}
+          <Box p={[x, 1.46, -6.24]} s={[3.3, 0.06, 0.16]} c="#475569" />
         </group>
       ))}
 

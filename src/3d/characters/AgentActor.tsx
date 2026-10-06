@@ -113,17 +113,17 @@ export function AgentActor({
       // Spends time relaxing at sofa, chatting at meeting table, or pantry!
       const cycle = (t + charOffset) % 60;
 
-      // Unique spacious destinations across wide horizontal single floor
+      // Distributed destinations across entire office (NO clustering at right side!)
       const destOptions: Record<string, { pos: [number, number, number]; isSofa?: boolean }> = {
-        'bubo-manager': { pos: [-13.5, 0.15, 3.2], isSofa: true },     // Executive lounge sofa
-        'bubo-admin-portal': { pos: [-12.0, 0.15, 1.2] },              // Executive meeting area
-        'bubo-portal': { pos: [2.5, 0.15, 2.5] },                      // Central discussion table
-        'bubo-backend-portal': { pos: [7.2, 0.15, -4.0] },             // Coffee Bar & Pantry
-        'bubo-qc-portal': { pos: [8.8, 0.15, -2.0] },                  // Snack counter
-        'bubo-source-video': { pos: [14.0, 0.15, 2.0], isSofa: true },  // Game Room Beanbags
-        'bubo-ticketing': { pos: [15.2, 0.15, 2.0], isSofa: true },     // Game Room Sofa
-        'bubo-building': { pos: [14.0, 0.15, -2.5] },                  // Quiet Rest pod
-        'bubo-n8n': { pos: [9.2, 0.15, -4.0] }                         // Pantry kitchenette
+        'bubo-manager': { pos: [-13.5, 0.15, 3.2], isSofa: true },     // Executive lounge sofa (Far Left)
+        'bubo-admin-portal': { pos: [-10.5, 0.15, 2.5] },              // Executive meeting table (Left)
+        'bubo-portal': { pos: [-4.0, 0.15, 2.2] },                     // Central corridor left
+        'bubo-backend-portal': { pos: [0.0, 0.15, 2.5] },              // Central discussion area (Center)
+        'bubo-qc-portal': { pos: [4.0, 0.15, 2.2] },                   // Central corridor right
+        'bubo-n8n': { pos: [7.5, 0.15, -3.5] },                         // Coffee Bar & Pantry (Mid Right)
+        'bubo-source-video': { pos: [9.0, 0.15, -1.5] },                // Cafe standing table (Mid Right)
+        'bubo-ticketing': { pos: [14.0, 0.15, 2.2], isSofa: true },     // Game Room Beanbags (Far Right)
+        'bubo-building': { pos: [15.0, 0.15, -3.8] }                   // Quiet Sleeping Pods (Far Right Back)
       };
 
       const myDest = destOptions[cfg.id] || { pos: [0.0, 0.15, 1.5] };
