@@ -263,6 +263,17 @@ function PropItem({ name, accentColor }: { name: string; accentColor: string }) 
           </mesh>
         </group>
       );
+    case 'laptop':
+      return (
+        <group position={[-0.34, -0.32, 0.18]} rotation={[0.2, 0.3, -0.1]}>
+          <boxGeometry args={[0.36, 0.26, 0.03]} />
+          {mat('#1e293b')}
+          <mesh position={[0, 0, 0.02]}>
+            <boxGeometry args={[0.32, 0.22, 0.005]} />
+            {mat(accentColor, 0.8)}
+          </mesh>
+        </group>
+      );
     case 'id-badge':
     case 'manager-badge':
       return (

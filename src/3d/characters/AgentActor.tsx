@@ -22,16 +22,14 @@ export const STATUS_COLOR: Record<AgentStatus, string> = {
 };
 
 const DISCORD_META: Record<string, { emoji: string; channel: string; division: string }> = {
-  'bubo-manager': { emoji: '💬', channel: '#💬・general-chat', division: 'General Coordinator' },
-  'bubo-n8n': { emoji: '⚡', channel: '#⚡・bubo-n8n', division: 'n8n Automation' },
-  'bubo-portal': { emoji: '🌐', channel: '#🌐・bubo-portal', division: 'Portal FE' },
-  'bubo-backend-portal': { emoji: '💻', channel: '#💻・bubo-backend-portal', division: 'Backend & DB' },
-  'bubo-admin-portal': { emoji: '🛡', channel: '#🛡・bubo-admin-portal', division: 'Admin System' },
+  'bubo-manager': { emoji: '👑', channel: '#💬・general-chat', division: 'Management' },
+  'bubo-building': { emoji: '🏗', channel: '#🏗・bubo-building', division: 'Software Engineering' },
+  'bubo-portal': { emoji: '🌐', channel: '#🌐・bubo-portal', division: 'Frontend Engineering' },
+  'bubo-admin-portal': { emoji: '🎨', channel: '#🛡・bubo-admin-portal', division: 'UI/UX Design' },
+  'bubo-backend-portal': { emoji: '💻', channel: '#💻・bubo-backend-portal', division: 'Backend Development' },
+  'bubo-qc-portal': { emoji: '🔍', channel: '#🔍・bubo-qc-portal', division: 'QA Automation' },
   'bubo-source-video': { emoji: '🎬', channel: '#🎬・bubo-source-video', division: 'Video Production' },
-  'bubo-pdf': { emoji: '📄', channel: '#📄・bubo-pdf', division: 'PDF Processing' },
-  'bubo-qc-portal': { emoji: '🔍', channel: '#🔍・bubo-qc-portal', division: 'QC & Troubleshooting' },
-  'bubo-ticketing': { emoji: '🎫', channel: '#🎫・bubo-ticketing', division: 'Ticketing & Jira' },
-  'bubo-building': { emoji: '🏗', channel: '#🏗・bubo-building', division: 'System Architecture & Build' }
+  'bubo-ticketing': { emoji: '🎫', channel: '#🎫・bubo-ticketing', division: 'Ticketing & Support' }
 };
 
 const wrap = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
@@ -42,7 +40,8 @@ const wrap = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
  * Above head: 3D badge showing full Bubo name, exact Discord channel, and division with real-time status.
  */
 export function AgentActor({ cfg, showNameplate = true }: { cfg: AgentConfig; showNameplate?: boolean }) {
-  const st = useStore((s) => s.agents[cfg.id] || { status: 'idle', task: '', activity: '' });
+  const allAgents = useStore((s) => s.agents);
+  const st = allAgents[cfg.id] || { status: 'idle', task: '', activity: '' };
   const selected = useStore((s) => s.selectedAgentId === cfg.id);
   const selectAgent = useStore((s) => s.selectAgent);
   const root = useRef<THREE.Group>(null);
@@ -74,29 +73,83 @@ export function AgentActor({ cfg, showNameplate = true }: { cfg: AgentConfig; sh
     yaw.current = Math.PI;
   }, [anchors]);
 
-  useFrame((_, dt) => {
+  useFrame((state, dt) => {
     const g = root.current;
     if (!g) return;
     const s = latest.current;
     const p = pose.current;
+    const t = state.clock.elapsedTime;
 
-    const wantSit = s.status !== 'break';
-    const target = wantSit ? anchors.sit : anchors.brk;
+    // Custom Dynamic Motor Behavior: Rakha (Manager Walkaround & Inspection)
+    let dynamicTarget = anchors.sit;
+    let shouldWalk = false;
 
-    const to = target.clone().sub(g.position);
+    if (cfg.id === 'bubo-manager') {
+      // 60-second routine: 0-25s seated desk, 25-35s walk to office inspection point 1, 35-45s walk to observation window, 45-60s return
+      const cycle = t % 60;
+      if (cycle >= 25 && cycle < 38) {
+        dynamicTarget = new THREE.Vector3(-1.8, 0.15, 0.6); // walking to office observation zone
+        shouldWalk = true;
+      } else if (cycle >= 38 && cycle < 50) {
+        dynamicTarget = new THREE.Vector3(1.2, 0.15, 1.8); // observing lounge / meeting entrance
+        shouldWalk = true;
+      } else {
+        dynamicTarget = anchors.sit;
+        shouldWalk = false;
+      }
+    } else if (cfg.id === 'bubo-building') {
+      // Custom Dynamic Motor Behavior: Koko (Senior Software Engineer Mentoring & PR review)
+      // Check if Budi (FE) or Samsul (BE) has error, or periodic walkaround mentoring
+      const budiErr = allAgents['bubo-portal']?.status === 'error';
+      const samsulErr = allAgents['bubo-backend-portal']?.status === 'error';
+
+      if (budiErr) {
+        dynamicTarget = new THREE.Vector3(-1.5, 0.15, -1.6); // beside Budi desk
+        shouldWalk = true;
+      } else if (samsulErr) {
+        dynamicTarget = new THREE.Vector3(1.5, 0.15, -1.6); // beside Samsul desk
+        shouldWalk = true;
+      } else {
+        // Periodic 75s senior checkup
+        const cycle = t % 75;
+        if (cycle >= 40 && cycle < 55) {
+          dynamicTarget = new THREE.Vector3(1.0, 0.15, -1.5); // checking server & architecture
+          shouldWalk = true;
+        } else {
+          dynamicTarget = anchors.sit;
+          shouldWalk = false;
+        }
+      }
+    } else {
+      const wantSit = s.status !== 'break';
+      dynamicTarget = wantSit ? anchors.sit : anchors.brk;
+      shouldWalk = !wantSit;
+    }
+
+    const to = dynamicTarget.clone().sub(g.position);
     to.y = 0;
     const dist = to.length();
 
-    const canMove = p.sit < 0.2;
-    p.walking = !wantSit && dist > 0.08 && canMove;
+    const atSeat = dynamicTarget === anchors.sit && dist < 0.2;
+    p.sit = THREE.MathUtils.damp(p.sit, atSeat ? 1 : 0, 5, dt);
+
+    const canMove = p.sit < 0.3;
+    p.walking = dist > 0.12 && canMove;
 
     if (p.walking) {
-      g.position.addScaledVector(to.normalize(), Math.min(dist, 1.8 * dt));
+      const speed = cfg.id === 'bubo-manager' ? 1.4 : 1.6;
+      g.position.addScaledVector(to.normalize(), Math.min(dist, speed * dt));
     }
 
-    const atSeat = wantSit && dist < 0.15;
-    p.sit = THREE.MathUtils.damp(p.sit, atSeat ? 1 : 0, 6, dt);
-    p.typing = (s.status === 'working' || s.status === 'thinking') && p.sit > 0.8;
+    // Role-specific typing & activities
+    if (cfg.id === 'bubo-manager') {
+      p.typing = atSeat && s.status === 'working';
+    } else if (cfg.id === 'bubo-building') {
+      // Koko slow deliberate typing
+      p.typing = atSeat && (s.status === 'working' || s.status === 'thinking');
+    } else {
+      p.typing = atSeat && (s.status === 'working' || s.status === 'thinking');
+    }
 
     let mood: Pose['mood'] = 'normal';
     if (s.status === 'error') mood = 'error';

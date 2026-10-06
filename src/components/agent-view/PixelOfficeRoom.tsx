@@ -7,7 +7,7 @@ import { Agent3DPortrait } from './Agent3DPortrait';
 // Wall decor presets for each room row (3 desks per row)
 const ROW_DECOR = [
   {
-    title: 'Ruang 1 · Eksekutif & Otomasi',
+    title: 'Ruang 1 · Manajemen & Rekayasa Utama',
     noteText: '☕ KOPI DULU BARU PROMPT',
     noteIcon: '☕',
     noteRotate: '-2deg',
@@ -16,7 +16,7 @@ const ROW_DECOR = [
     showServer: true
   },
   {
-    title: 'Ruang 2 · Rekayasa Web & Quality Control',
+    title: 'Ruang 2 · Desain UI/UX & Rekayasa Web',
     noteText: '🤖 KERJA 24/7 TANPA NGELUH',
     noteIcon: '🤖',
     noteRotate: '2.5deg',
@@ -31,15 +31,6 @@ const ROW_DECOR = [
     noteRotate: '-1.5deg',
     showWindow: true,
     showClock: false,
-    showServer: true
-  },
-  {
-    title: 'Ruang 4 · Infrastruktur & DevOps Hub',
-    noteText: '🏗 SISTEM AMAN DAN SOLID',
-    noteIcon: '🛡',
-    noteRotate: '2deg',
-    showWindow: false,
-    showClock: true,
     showServer: true
   }
 ];
@@ -437,12 +428,12 @@ export function PixelOfficeRoom() {
                         }}
                       >
                         <span style={{ fontSize: '13px' }}>
-                          {isLeader ? '👑' : c.id.includes('admin') ? '🛡' : c.id.includes('n8n') ? '⚡' : c.id.includes('portal') && !c.id.includes('backend') ? '🌐' : c.id.includes('backend') ? '💻' : c.id.includes('qc') ? '🔍' : c.id.includes('ticketing') ? '🎫' : c.id.includes('video') ? '🎬' : c.id.includes('pdf') ? '📄' : '🏗'}
+                          {isLeader ? '👑' : c.id === 'bubo-building' ? '🏗' : c.id.includes('admin') ? '🎨' : c.id.includes('portal') && !c.id.includes('backend') ? '🌐' : c.id.includes('backend') ? '💻' : c.id.includes('qc') ? '🔍' : c.id.includes('ticketing') ? '🎫' : '🎬'}
                         </span>
                         <span style={{ fontSize: '12.5px', fontWeight: 800, color: '#ffffff' }}>
                           {c.displayName}
                         </span>
-                        {isLeader && (
+                        {isLeader ? (
                           <span
                             style={{
                               background: '#fbbf24',
@@ -453,9 +444,22 @@ export function PixelOfficeRoom() {
                               borderRadius: '4px'
                             }}
                           >
-                            KETUA
+                            MANAGER
                           </span>
-                        )}
+                        ) : c.id === 'bubo-building' ? (
+                          <span
+                            style={{
+                              background: '#06b6d4',
+                              color: '#0f172a',
+                              fontSize: '8.5px',
+                              fontWeight: 900,
+                              padding: '1px 4px',
+                              borderRadius: '4px'
+                            }}
+                          >
+                            SENIOR
+                          </span>
+                        ) : null}
                       </div>
 
                       {/* 2. REAL 3D WORKSTATION (Exact 3D Three.js Character & Desk from the Office!) */}
@@ -575,12 +579,12 @@ export function PixelOfficeRoom() {
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>
-                  {activeAgent.id === 'bubo-manager' ? '👑' : activeAgent.id.includes('admin') ? '🛡' : activeAgent.id.includes('n8n') ? '⚡' : activeAgent.id.includes('portal') && !activeAgent.id.includes('backend') ? '🌐' : activeAgent.id.includes('backend') ? '💻' : activeAgent.id.includes('qc') ? '🔍' : activeAgent.id.includes('ticketing') ? '🎫' : activeAgent.id.includes('video') ? '🎬' : activeAgent.id.includes('pdf') ? '📄' : '🏗'}
+                  {activeAgent.id === 'bubo-manager' ? '👑' : activeAgent.id === 'bubo-building' ? '🏗' : activeAgent.id.includes('admin') ? '🎨' : activeAgent.id.includes('portal') && !activeAgent.id.includes('backend') ? '🌐' : activeAgent.id.includes('backend') ? '💻' : activeAgent.id.includes('qc') ? '🔍' : activeAgent.id.includes('ticketing') ? '🎫' : '🎬'}
                 </span>
                 <span style={{ fontSize: '17px', fontWeight: 800, color: '#ffffff' }}>
                   {activeAgent.displayName}
                 </span>
-                {activeAgent.id === 'bubo-manager' && (
+                {activeAgent.id === 'bubo-manager' ? (
                   <span
                     style={{
                       background: '#fbbf24',
@@ -591,9 +595,22 @@ export function PixelOfficeRoom() {
                       borderRadius: '4px'
                     }}
                   >
-                    KETUA
+                    MANAGER
                   </span>
-                )}
+                ) : activeAgent.id === 'bubo-building' ? (
+                  <span
+                    style={{
+                      background: '#06b6d4',
+                      color: '#0f172a',
+                      fontSize: '10px',
+                      fontWeight: 900,
+                      padding: '2px 6px',
+                      borderRadius: '4px'
+                    }}
+                  >
+                    SENIOR
+                  </span>
+                ) : null}
               </div>
 
               <button

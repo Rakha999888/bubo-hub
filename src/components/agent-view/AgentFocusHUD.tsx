@@ -2,16 +2,14 @@ import { useStore } from '../../state/store';
 import { BUBO_CHARACTERS } from '../../data/characters/characters.config';
 
 const DISCORD_META: Record<string, { emoji: string; channel: string; division: string; tag?: string }> = {
-  'bubo-manager': { emoji: '💬', channel: '#💬・general-chat', division: 'General Coordinator', tag: 'KETUA' },
-  'bubo-admin-portal': { emoji: '🛡', channel: '#🛡・bubo-admin-portal', division: 'Admin System' },
-  'bubo-n8n': { emoji: '⚡', channel: '#⚡・bubo-n8n', division: 'n8n Automation' },
-  'bubo-portal': { emoji: '🌐', channel: '#🌐・bubo-portal', division: 'Portal FE' },
-  'bubo-backend-portal': { emoji: '💻', channel: '#💻・bubo-backend-portal', division: 'Backend & DB' },
-  'bubo-qc-portal': { emoji: '🔍', channel: '#🔍・bubo-qc-portal', division: 'QC & Troubleshooting' },
-  'bubo-ticketing': { emoji: '🎫', channel: '#🎫・bubo-ticketing', division: 'Ticketing & Jira' },
+  'bubo-manager': { emoji: '👑', channel: '#💬・general-chat', division: 'Management', tag: 'MANAGER' },
+  'bubo-building': { emoji: '🏗', channel: '#🏗・bubo-building', division: 'Software Engineering', tag: 'SENIOR' },
+  'bubo-portal': { emoji: '🌐', channel: '#🌐・bubo-portal', division: 'Frontend Engineering' },
+  'bubo-admin-portal': { emoji: '🎨', channel: '#🛡・bubo-admin-portal', division: 'UI/UX Design' },
+  'bubo-backend-portal': { emoji: '💻', channel: '#💻・bubo-backend-portal', division: 'Backend Development' },
+  'bubo-qc-portal': { emoji: '🔍', channel: '#🔍・bubo-qc-portal', division: 'QA Automation' },
   'bubo-source-video': { emoji: '🎬', channel: '#🎬・bubo-source-video', division: 'Video Production' },
-  'bubo-pdf': { emoji: '📄', channel: '#📄・bubo-pdf', division: 'PDF Processing' },
-  'bubo-building': { emoji: '🏗', channel: '#🏗・bubo-building', division: 'Architecture & Build' },
+  'bubo-ticketing': { emoji: '🎫', channel: '#🎫・bubo-ticketing', division: 'Ticketing & Support' }
 };
 
 export function AgentFocusHUD() {
@@ -82,7 +80,7 @@ export function AgentFocusHUD() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '11px' }}>
           <span style={{ color: '#94a3b8' }}>CPU: <b style={{ color: '#38bdf8' }}>14%</b></span>
           <span style={{ color: '#94a3b8' }}>RAM: <b style={{ color: '#a78bfa' }}>48%</b></span>
-          <span style={{ color: '#94a3b8' }}>Total: <b style={{ color: '#34d399' }}>10 agent</b></span>
+          <span style={{ color: '#94a3b8' }}>Total: <b style={{ color: '#34d399' }}>8 agent</b></span>
         </div>
       </div>
 

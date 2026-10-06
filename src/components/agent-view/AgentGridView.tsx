@@ -3,16 +3,14 @@ import { useStore } from '../../state/store';
 import { BUBO_CHARACTERS } from '../../data/characters/characters.config';
 
 const DISCORD_META: Record<string, { emoji: string; channel: string; division: string; tag?: string }> = {
-  'bubo-manager': { emoji: '💬', channel: '#💬・general-chat', division: 'General Coordinator', tag: 'KETUA' },
-  'bubo-admin-portal': { emoji: '🛡', channel: '#🛡・bubo-admin-portal', division: 'Admin System' },
-  'bubo-n8n': { emoji: '⚡', channel: '#⚡・bubo-n8n', division: 'n8n Automation' },
-  'bubo-portal': { emoji: '🌐', channel: '#🌐・bubo-portal', division: 'Portal FE' },
-  'bubo-backend-portal': { emoji: '💻', channel: '#💻・bubo-backend-portal', division: 'Backend & DB' },
-  'bubo-qc-portal': { emoji: '🔍', channel: '#🔍・bubo-qc-portal', division: 'QC & Troubleshooting' },
-  'bubo-ticketing': { emoji: '🎫', channel: '#🎫・bubo-ticketing', division: 'Ticketing & Jira' },
+  'bubo-manager': { emoji: '👑', channel: '#💬・general-chat', division: 'Management', tag: 'MANAGER' },
+  'bubo-building': { emoji: '🏗', channel: '#🏗・bubo-building', division: 'Software Engineering', tag: 'SENIOR' },
+  'bubo-portal': { emoji: '🌐', channel: '#🌐・bubo-portal', division: 'Frontend Engineering' },
+  'bubo-admin-portal': { emoji: '🎨', channel: '#🛡・bubo-admin-portal', division: 'UI/UX Design' },
+  'bubo-backend-portal': { emoji: '💻', channel: '#💻・bubo-backend-portal', division: 'Backend Development' },
+  'bubo-qc-portal': { emoji: '🔍', channel: '#🔍・bubo-qc-portal', division: 'QA Automation' },
   'bubo-source-video': { emoji: '🎬', channel: '#🎬・bubo-source-video', division: 'Video Production' },
-  'bubo-pdf': { emoji: '📄', channel: '#📄・bubo-pdf', division: 'PDF Processing' },
-  'bubo-building': { emoji: '🏗', channel: '#🏗・bubo-building', division: 'Architecture & Build' },
+  'bubo-ticketing': { emoji: '🎫', channel: '#🎫・bubo-ticketing', division: 'Ticketing & Support' }
 };
 
 export function AgentGridView() {
@@ -88,7 +86,7 @@ export function AgentGridView() {
               </span>
             </div>
             <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px' }}>
-              Divisi Operasional & Infrastruktur SMLONE · 10 Agent Aktif
+              Divisi Operasional & Rekayasa SMLONE · 8 Agent Aktif
             </div>
           </div>
         </div>
@@ -102,7 +100,7 @@ export function AgentGridView() {
             <span style={{ color: '#64748b' }}>RAM:</span> <b style={{ color: '#a78bfa' }}>48%</b>
           </div>
           <div style={{ background: '#0b1324', padding: '6px 12px', borderRadius: '8px', border: '1px solid #1e293b', fontSize: '12px' }}>
-            <span style={{ color: '#64748b' }}>Total:</span> <b style={{ color: '#34d399' }}>10 Agent</b>
+            <span style={{ color: '#64748b' }}>Total:</span> <b style={{ color: '#34d399' }}>8 Agent</b>
           </div>
 
           {/* Floor Filters */}

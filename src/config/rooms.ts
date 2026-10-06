@@ -14,7 +14,7 @@ export const ROOMS: RoomConfig[] = [
   {
     id: 'manager-office',
     floor: 3,
-    name: 'Head of AI Operations',
+    name: 'Manager Office',
     type: 'executive',
     agentIds: ['bubo-manager'],
     center: [-3.2, -1.8],
@@ -24,7 +24,7 @@ export const ROOMS: RoomConfig[] = [
   {
     id: 'admin-office',
     floor: 3,
-    name: 'Admin System Management',
+    name: 'UI/UX Design Studio',
     type: 'admin',
     agentIds: ['bubo-admin-portal'],
     center: [3.2, -1.8],
@@ -33,16 +33,6 @@ export const ROOMS: RoomConfig[] = [
   },
 
   // ─── FLOOR 2: TECHNOLOGY & OPERATIONS HUB ──────────────────────────
-  {
-    id: 'automation-lab',
-    floor: 2,
-    name: 'Automation & Integration',
-    type: 'automation',
-    agentIds: ['bubo-n8n'],
-    center: [-4.5, -2.5],
-    size: [2.8, 3.2],
-    color: '#0f766e'
-  },
   {
     id: 'frontend-studio',
     floor: 2,
@@ -56,7 +46,7 @@ export const ROOMS: RoomConfig[] = [
   {
     id: 'backend-room',
     floor: 2,
-    name: 'Backend & Database',
+    name: 'Backend Engineering',
     type: 'backend',
     agentIds: ['bubo-backend-portal'],
     center: [1.5, -2.5],
@@ -66,7 +56,7 @@ export const ROOMS: RoomConfig[] = [
   {
     id: 'qc-room',
     floor: 2,
-    name: 'QC & Troubleshooting',
+    name: 'QA Automation',
     type: 'qc',
     agentIds: ['bubo-qc-portal'],
     center: [4.5, -2.5],
@@ -76,7 +66,7 @@ export const ROOMS: RoomConfig[] = [
   {
     id: 'helpdesk',
     floor: 2,
-    name: 'IT Ticketing & Jira',
+    name: 'IT Helpdesk & Ticketing',
     type: 'support',
     agentIds: ['bubo-ticketing'],
     center: [-4.5, 1.8],
@@ -86,29 +76,19 @@ export const ROOMS: RoomConfig[] = [
   {
     id: 'video-studio',
     floor: 2,
-    name: 'Video & Creative Script',
+    name: 'Video Production',
     type: 'video',
     agentIds: ['bubo-source-video'],
     center: [-1.5, 1.8],
     size: [2.8, 3.2],
     color: '#6b21a8'
   },
-  {
-    id: 'doc-room',
-    floor: 2,
-    name: 'PDF & Document Operations',
-    type: 'documents',
-    agentIds: ['bubo-pdf'],
-    center: [1.5, 1.8],
-    size: [2.8, 3.2],
-    color: '#15803d'
-  },
 
   // ─── FLOOR 1: INFRASTRUCTURE HUB ──────────────────────────────────
   {
     id: 'infra-room',
     floor: 1,
-    name: 'DevOps & Server Build',
+    name: 'Senior Engineering & Architecture',
     type: 'infra',
     agentIds: ['bubo-building'],
     center: [-3.5, -1.8],
