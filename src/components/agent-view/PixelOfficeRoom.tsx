@@ -97,74 +97,7 @@ export function PixelOfficeRoom({ initialAgentId }: { initialAgentId?: string | 
         userSelect: 'none'
       }}
     >
-      {/* ─── RETRO HEADER (CPU, RAM, FLEET STATUS) ────────────────────────── */}
-      <div
-        style={{
-          height: '52px',
-          background: 'rgba(18, 24, 34, 0.98)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 24px',
-          zIndex: 30,
-          flexShrink: 0
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '15px', fontWeight: 800, letterSpacing: '0.02em', color: '#ffffff' }}>
-              OFFICE SMLONE
-            </span>
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '5px',
-                background: 'rgba(52, 211, 153, 0.15)',
-                color: '#34d399',
-                border: '1px solid rgba(52, 211, 153, 0.35)',
-                padding: '2px 8px',
-                borderRadius: '999px',
-                fontSize: '11px',
-                fontWeight: 700
-              }}
-            >
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#34d399' }} />
-              online
-            </span>
-          </div>
-
-          <div style={{ width: '1px', height: '18px', background: 'rgba(255,255,255,0.1)' }} />
-
-          {/* Metric Bars */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ color: '#94a3b8' }}>CPU</span>
-              <div style={{ width: '54px', height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '999px', overflow: 'hidden' }}>
-                <div style={{ width: String(cpuPercent) + '%', height: '100%', background: cpuPercent > 60 ? '#ef4444' : '#10b981', transition: 'width 0.3s ease' }} />
-              </div>
-              <span style={{ color: cpuPercent > 60 ? '#ef4444' : '#f8fafc', fontWeight: 700 }}>{cpuPercent}%</span>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ color: '#94a3b8' }}>RAM</span>
-              <div style={{ width: '54px', height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '999px', overflow: 'hidden' }}>
-                <div style={{ width: String(ramPercent) + '%', height: '100%', background: '#14b8a6' }} />
-              </div>
-              <span style={{ color: '#f8fafc', fontWeight: 700 }}>{ramPercent}%</span>
-            </div>
-
-            <div style={{ color: '#94a3b8' }}>
-              <b style={{ color: '#f8fafc' }}>{totalAgents}</b> agent
-            </div>
-          </div>
-        </div>
-
-        <div style={{ fontSize: '12px', color: '#94a3b8' }}>
-          Klik meja agent untuk buka Profile Card
-        </div>
-      </div>
+      {/* ─── RETRO HEADER REMOVED ────────────────────────── */}
 
       {/* ─── VERTICAL SCROLLING OFFICE STAGE (3 - 3 - 3 PER ROW) ──────────────── */}
       <div
