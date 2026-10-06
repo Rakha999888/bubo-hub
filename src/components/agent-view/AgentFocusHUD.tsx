@@ -1,15 +1,18 @@
 import { useStore } from '../../state/store';
 import { BUBO_CHARACTERS } from '../../data/characters/characters.config';
 
-const DISCORD_META: Record<string, { emoji: string; channel: string; division: string; tag?: string }> = {
-  'bubo-manager': { emoji: '👑', channel: '#💬・general-chat', division: 'Management', tag: 'MANAGER' },
-  'bubo-building': { emoji: '🏗', channel: '#🏗・bubo-building', division: 'Software Engineering', tag: 'SENIOR' },
-  'bubo-portal': { emoji: '🌐', channel: '#🌐・bubo-portal', division: 'Frontend Engineering' },
-  'bubo-admin-portal': { emoji: '🎨', channel: '#🛡・bubo-admin-portal', division: 'UI/UX Design' },
-  'bubo-backend-portal': { emoji: '💻', channel: '#💻・bubo-backend-portal', division: 'Backend Development' },
-  'bubo-qc-portal': { emoji: '🔍', channel: '#🔍・bubo-qc-portal', division: 'QA Automation' },
-  'bubo-source-video': { emoji: '🎬', channel: '#🎬・bubo-source-video', division: 'Video Production' },
-  'bubo-ticketing': { emoji: '🎫', channel: '#🎫・bubo-ticketing', division: 'Ticketing & Support' }
+// Map Technical ID to clean professional department tag
+const DISCORD_META: Record<string, { channel: string; division: string; tag?: string }> = {
+  'bubo-manager': { channel: '#general-chat', division: 'Coordinator', tag: 'COORDINATOR' },
+  'bubo-n8n': { channel: '#bubo-n8n', division: 'n8n Automation', tag: 'N8N' },
+  'bubo-portal': { channel: '#bubo-portal', division: 'Frontend Portal', tag: 'PORTAL' },
+  'bubo-backend-portal': { channel: '#bubo-backend-portal', division: 'Backend Portal', tag: 'BACKEND' },
+  'bubo-admin-portal': { channel: '#bubo-admin-portal', division: 'Admin Portal', tag: 'ADMIN' },
+  'bubo-source-video': { channel: '#bubo-source-video', division: 'Source Video', tag: 'VIDEO' },
+  'bubo-pdf': { channel: '#bubo-pdf', division: 'PDF Processing', tag: 'PDF' },
+  'bubo-qc-portal': { channel: '#bubo-qc-portal', division: 'QC Portal', tag: 'QC' },
+  'bubo-ticketing': { channel: '#bubo-ticketing', division: 'Ticketing Helpdesk', tag: 'TICKETING' },
+  'bubo-building': { channel: '#bubo-building', division: 'Building & Infra', tag: 'BUILDING' }
 };
 
 export function AgentFocusHUD() {
@@ -104,17 +107,16 @@ export function AgentFocusHUD() {
         {/* Header: Avatar Silhouette + Name */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '20px' }}>{meta.emoji}</span>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <b style={{ fontSize: '15px', color: '#f8fafc' }}>{activeChar.displayName}</b>
                 {meta.tag && (
                   <span
                     style={{
-                      background: '#e0b341',
+                      background: activeChar.id === 'bubo-manager' ? '#fbbf24' : '#38bdf8',
                       color: '#0f172a',
-                      fontSize: '9px',
-                      fontWeight: 900,
+                      fontSize: '8.5px',
+                      fontWeight: 800,
                       padding: '1px 5px',
                       borderRadius: '4px'
                     }}
@@ -123,7 +125,7 @@ export function AgentFocusHUD() {
                   </span>
                 )}
               </div>
-              <div style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 600 }}>{meta.channel}</div>
+              <div style={{ fontSize: '11px', color: '#94a3b8' }}>{activeChar.role}</div>
             </div>
           </div>
 
@@ -174,7 +176,7 @@ export function AgentFocusHUD() {
 
         {/* Hint */}
         <div style={{ marginTop: '10px', fontSize: '9.5px', color: '#64748b', textAlign: 'center' }}>
-          💡 Drag layar untuk putar kamera 360° ke karakter
+          Drag layar untuk putar kamera 360° ke karakter
         </div>
       </div>
 
@@ -248,7 +250,6 @@ export function AgentFocusHUD() {
                   transition: 'all 0.15s ease'
                 }}
               >
-                <span>{cMeta.emoji}</span>
                 <span>{c.displayName}</span>
                 {cMeta.tag && (
                   <span

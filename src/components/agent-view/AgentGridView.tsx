@@ -2,15 +2,18 @@ import { useState } from 'react';
 import { useStore } from '../../state/store';
 import { BUBO_CHARACTERS } from '../../data/characters/characters.config';
 
-const DISCORD_META: Record<string, { emoji: string; channel: string; division: string; tag?: string }> = {
-  'bubo-manager': { emoji: '👑', channel: '#💬・general-chat', division: 'Management', tag: 'MANAGER' },
-  'bubo-building': { emoji: '🏗', channel: '#🏗・bubo-building', division: 'Software Engineering', tag: 'SENIOR' },
-  'bubo-portal': { emoji: '🌐', channel: '#🌐・bubo-portal', division: 'Frontend Engineering' },
-  'bubo-admin-portal': { emoji: '🎨', channel: '#🛡・bubo-admin-portal', division: 'UI/UX Design' },
-  'bubo-backend-portal': { emoji: '💻', channel: '#💻・bubo-backend-portal', division: 'Backend Development' },
-  'bubo-qc-portal': { emoji: '🔍', channel: '#🔍・bubo-qc-portal', division: 'QA Automation' },
-  'bubo-source-video': { emoji: '🎬', channel: '#🎬・bubo-source-video', division: 'Video Production' },
-  'bubo-ticketing': { emoji: '🎫', channel: '#🎫・bubo-ticketing', division: 'Ticketing & Support' }
+// Map Technical ID to clean professional department tag
+const DISCORD_META: Record<string, { channel: string; division: string; tag?: string }> = {
+  'bubo-manager': { channel: '#general-chat', division: 'Coordinator', tag: 'COORDINATOR' },
+  'bubo-n8n': { channel: '#bubo-n8n', division: 'n8n Automation', tag: 'N8N' },
+  'bubo-portal': { channel: '#bubo-portal', division: 'Frontend Portal', tag: 'PORTAL' },
+  'bubo-backend-portal': { channel: '#bubo-backend-portal', division: 'Backend Portal', tag: 'BACKEND' },
+  'bubo-admin-portal': { channel: '#bubo-admin-portal', division: 'Admin Portal', tag: 'ADMIN' },
+  'bubo-source-video': { channel: '#bubo-source-video', division: 'Source Video', tag: 'VIDEO' },
+  'bubo-pdf': { channel: '#bubo-pdf', division: 'PDF Processing', tag: 'PDF' },
+  'bubo-qc-portal': { channel: '#bubo-qc-portal', division: 'QC Portal', tag: 'QC' },
+  'bubo-ticketing': { channel: '#bubo-ticketing', division: 'Ticketing Helpdesk', tag: 'TICKETING' },
+  'bubo-building': { channel: '#bubo-building', division: 'Building & Infra', tag: 'BUILDING' }
 };
 
 export function AgentGridView() {
@@ -179,10 +182,12 @@ export function AgentGridView() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '18px'
+                        fontSize: '14px',
+                        fontWeight: 800,
+                        color: '#f8fafc'
                       }}
                     >
-                      {meta.emoji}
+                      {c.displayName.charAt(0)}
                     </div>
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -286,7 +291,7 @@ export function AgentGridView() {
                   gap: '6px'
                 }}
               >
-                <span>🔍</span> Lihat Meja di Kantor 3D
+                Lihat Meja di Kantor 3D
               </button>
             </div>
           );

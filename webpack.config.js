@@ -1,6 +1,23 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
+const fs = require('fs');
+
+class SimpleCopyPlugin {
+  apply(compiler) {
+    compiler.hooks.afterEmit.tap('SimpleCopyPlugin', (compilation) => {
+      const outputPath = compiler.options.output.path;
+      const files = ['manifest.json', 'icon.svg', 'sw.js'];
+      files.forEach((file) => {
+        const src = path.resolve(__dirname, 'public', file);
+        const dest = path.resolve(outputPath, file);
+        if (fs.existsSync(src)) {
+          fs.copyFileSync(src, dest);
+        }
+      });
+    });
+  }
+}
 
 module.exports = {
   entry: './src/index.tsx',
@@ -15,6 +32,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({ template: './public/index.html' }),
+    new SimpleCopyPlugin(),
     // Set HERMES_WS_URL=ws://host:port/agents to use a real Hermes AgentOS socket.
     new webpack.DefinePlugin({ 'process.env.HERMES_WS_URL': JSON.stringify(process.env.HERMES_WS_URL || '') })
   ],

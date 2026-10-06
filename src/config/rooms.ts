@@ -84,6 +84,16 @@ export const ROOMS: RoomConfig[] = [
     size: [2.8, 3.2],
     color: '#6b21a8'
   },
+  {
+    id: 'pdf-hub',
+    floor: 2,
+    name: 'PDF & Document Intelligence',
+    type: 'support',
+    agentIds: ['bubo-pdf'],
+    center: [-3.0, 1.8],
+    size: [2.8, 3.2],
+    color: '#b91c1c'
+  },
 
   // ─── FLOOR 1: INFRASTRUCTURE HUB ──────────────────────────────────
   {
@@ -91,7 +101,7 @@ export const ROOMS: RoomConfig[] = [
     floor: 1,
     name: 'Senior Engineering & Architecture',
     type: 'infra',
-    agentIds: ['bubo-building'],
+    agentIds: ['bubo-building', 'bubo-n8n'],
     center: [-3.5, -1.8],
     size: [6, 5.2],
     color: '#0e7490'

@@ -8,8 +8,7 @@ import { Agent3DPortrait } from './Agent3DPortrait';
 const ROW_DECOR = [
   {
     title: 'Ruang 1 · Manajemen & Rekayasa Utama',
-    noteText: '☕ KOPI DULU BARU PROMPT',
-    noteIcon: '☕',
+    noteText: 'KOPI DULU BARU PROMPT',
     noteRotate: '-2deg',
     showWindow: true,
     showClock: true,
@@ -17,8 +16,7 @@ const ROW_DECOR = [
   },
   {
     title: 'Ruang 2 · Desain UI/UX & Rekayasa Web',
-    noteText: '🤖 KERJA 24/7 TANPA NGELUH',
-    noteIcon: '🤖',
+    noteText: 'OPERASIONAL 24/7 SISTEM SMLONE',
     noteRotate: '2.5deg',
     showWindow: false,
     showClock: true,
@@ -26,8 +24,7 @@ const ROW_DECOR = [
   },
   {
     title: 'Ruang 3 · Operasional Tiket & Media Kreatif',
-    noteText: '⚡ CUAN BERSAMA SMLONE',
-    noteIcon: '🔥',
+    noteText: 'INTEGRASI & OTOMASI SISTEM',
     noteRotate: '-1.5deg',
     showWindow: true,
     showClock: false,
@@ -276,7 +273,6 @@ export function PixelOfficeRoom({ initialAgentId }: { initialAgentId?: string | 
                     zIndex: 2
                   }}
                 >
-                  <span style={{ fontSize: '13px' }}>{decor.noteIcon}</span>
                   <span>{decor.noteText}</span>
                 </div>
 
@@ -433,9 +429,6 @@ export function PixelOfficeRoom({ initialAgentId }: { initialAgentId?: string | 
                           zIndex: 2
                         }}
                       >
-                        <span style={{ fontSize: '13px' }}>
-                          {isLeader ? '👑' : c.id === 'bubo-building' ? '🏗' : c.id.includes('admin') ? '🎨' : c.id.includes('portal') && !c.id.includes('backend') ? '🌐' : c.id.includes('backend') ? '💻' : c.id.includes('qc') ? '🔍' : c.id.includes('ticketing') ? '🎫' : '🎬'}
-                        </span>
                         <span style={{ fontSize: '12.5px', fontWeight: 800, color: '#ffffff' }}>
                           {c.displayName}
                         </span>
@@ -450,7 +443,7 @@ export function PixelOfficeRoom({ initialAgentId }: { initialAgentId?: string | 
                               borderRadius: '4px'
                             }}
                           >
-                            MANAGER
+                            COORDINATOR
                           </span>
                         ) : c.id === 'bubo-building' ? (
                           <span
@@ -463,7 +456,7 @@ export function PixelOfficeRoom({ initialAgentId }: { initialAgentId?: string | 
                               borderRadius: '4px'
                             }}
                           >
-                            SENIOR
+                            BUILDING
                           </span>
                         ) : null}
                       </div>
@@ -584,9 +577,6 @@ export function PixelOfficeRoom({ initialAgentId }: { initialAgentId?: string | 
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '18px' }}>
-                  {activeAgent.id === 'bubo-manager' ? '👑' : activeAgent.id === 'bubo-building' ? '🏗' : activeAgent.id.includes('admin') ? '🎨' : activeAgent.id.includes('portal') && !activeAgent.id.includes('backend') ? '🌐' : activeAgent.id.includes('backend') ? '💻' : activeAgent.id.includes('qc') ? '🔍' : activeAgent.id.includes('ticketing') ? '🎫' : '🎬'}
-                </span>
                 <span style={{ fontSize: '17px', fontWeight: 800, color: '#ffffff' }}>
                   {activeAgent.displayName}
                 </span>
@@ -601,7 +591,7 @@ export function PixelOfficeRoom({ initialAgentId }: { initialAgentId?: string | 
                       borderRadius: '4px'
                     }}
                   >
-                    MANAGER
+                    COORDINATOR
                   </span>
                 ) : activeAgent.id === 'bubo-building' ? (
                   <span
@@ -614,7 +604,7 @@ export function PixelOfficeRoom({ initialAgentId }: { initialAgentId?: string | 
                       borderRadius: '4px'
                     }}
                   >
-                    SENIOR
+                    BUILDING
                   </span>
                 ) : null}
               </div>

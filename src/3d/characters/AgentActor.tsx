@@ -20,15 +20,18 @@ export const STATUS_COLOR: Record<AgentStatus, string> = {
   offline: '#64748b'
 };
 
-const DISCORD_META: Record<string, { emoji: string; channel: string; division: string }> = {
-  'bubo-manager': { emoji: '👑', channel: '#💬・general-chat', division: 'Management' },
-  'bubo-building': { emoji: '🏗', channel: '#🏗・bubo-building', division: 'Software Engineering' },
-  'bubo-portal': { emoji: '🌐', channel: '#🌐・bubo-portal', division: 'Frontend Engineering' },
-  'bubo-admin-portal': { emoji: '🎨', channel: '#🛡・bubo-admin-portal', division: 'UI/UX Design' },
-  'bubo-backend-portal': { emoji: '💻', channel: '#💻・bubo-backend-portal', division: 'Backend Development' },
-  'bubo-qc-portal': { emoji: '🔍', channel: '#🔍・bubo-qc-portal', division: 'QA Automation' },
-  'bubo-source-video': { emoji: '🎬', channel: '#🎬・bubo-source-video', division: 'Video Production' },
-  'bubo-ticketing': { emoji: '🎫', channel: '#🎫・bubo-ticketing', division: 'Ticketing & Support' }
+// Clean Discord Channel mapping (no emojis)
+const DISCORD_META: Record<string, { channel: string; division: string }> = {
+  'bubo-manager': { channel: '#general-chat', division: 'Coordinator' },
+  'bubo-n8n': { channel: '#bubo-n8n', division: 'n8n Automation' },
+  'bubo-portal': { channel: '#bubo-portal', division: 'Frontend Portal' },
+  'bubo-backend-portal': { channel: '#bubo-backend-portal', division: 'Backend Portal' },
+  'bubo-admin-portal': { channel: '#bubo-admin-portal', division: 'Admin Portal' },
+  'bubo-source-video': { channel: '#bubo-source-video', division: 'Source Video' },
+  'bubo-pdf': { channel: '#bubo-pdf', division: 'PDF Processing' },
+  'bubo-qc-portal': { channel: '#bubo-qc-portal', division: 'QC Portal' },
+  'bubo-ticketing': { channel: '#bubo-ticketing', division: 'Ticketing Helpdesk' },
+  'bubo-building': { channel: '#bubo-building', division: 'Building & Infra' }
 };
 
 const wrap = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
@@ -58,9 +61,8 @@ export function AgentActor({
   latest.current = st;
 
   const meta = DISCORD_META[cfg.id] || {
-    emoji: '🤖',
     channel: cfg.department || '#general',
-    division: cfg.role || 'Division'
+    division: cfg.workspace || 'General'
   };
 
   // Exact anchor matching Workstation chair at (x, 0.15, z + 0.85)
