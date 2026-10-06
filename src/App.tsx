@@ -7,7 +7,7 @@ import { CameraRig } from './3d/cameras/CameraRig';
 import { ViewSwitcher } from './components/navigation/ViewSwitcher';
 // Floor selector omitted in single-floor expansive design
 import { AgentPanel } from './components/agent-panel/AgentPanel';
-import { PromptBar } from './components/prompt/PromptBar';
+// PromptBar removed as requested by user
 import { PixelOfficeRoom } from './components/agent-view/PixelOfficeRoom';
 import { useStore } from './state/store';
 import { STATUS_COLOR } from './3d/characters/AgentActor';
@@ -169,7 +169,6 @@ export default function App() {
 
       {view === 'office' && (
         <>
-          <PromptBar />
           <AgentPanel />
         </>
       )}
