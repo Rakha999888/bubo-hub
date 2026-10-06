@@ -51,9 +51,12 @@ export function CameraRig() {
       makeDefault
       enabled={true}
       enablePan={true}
-      minDistance={1.2}
-      maxDistance={90}
-      maxPolarAngle={Math.PI / 2.05}
+      minDistance={10}
+      maxDistance={45}
+      minPolarAngle={Math.PI / 6}
+      maxPolarAngle={Math.PI / 2.3}
+      minAzimuthAngle={-Math.PI / 4}
+      maxAzimuthAngle={Math.PI / 4}
     />
   );
 }

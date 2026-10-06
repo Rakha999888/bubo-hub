@@ -304,12 +304,12 @@ export function BuboBuilding({
       <Box p={[0, 0, 0]} s={[36, 0.35, 13]} c="#e2d4be" />
 
       {/* Perimeter Exterior Walls (Background & Left/Right) */}
-      {/* Back Wall with large panoramic windows (cutaway foreground) */}
-      <Box p={[0, 2.2, -6.5]} s={[36, 4.2, 0.3]} c="#0f172a" />
+      {/* Back Wall with solid enclosing structure */}
+      <Box p={[0, 2.5, -6.6]} s={[38, 5.0, 0.5]} c="#0f172a" />
       {/* Left Wall (Executive Wing) */}
-      <Box p={[-18, 2.2, 0]} s={[0.3, 4.2, 13]} c="#1e293b" />
+      <Box p={[-18.5, 2.5, 0]} s={[0.5, 5.0, 14]} c="#1e293b" />
       {/* Executive Wall Art Poster (Large Vertical) */}
-      <group position={[-17.82, 2.4, 0]}>
+      <group position={[-18.2, 2.4, 0]}>
         <Box p={[0, 0, 0]} s={[0.04, 2.2, 1.6]} c="#0f172a" />
         <Box p={[0.02, 0, 0]} s={[0.02, 2.0, 1.4]} c="#334155" />
         <Box p={[0.035, 0.3, 0]} s={[0.01, 0.8, 0.9]} c="#f59e0b" />
@@ -317,14 +317,16 @@ export function BuboBuilding({
       </group>
 
       {/* Right Wall (Entertainment & Rest Wing) */}
-      <Box p={[18, 2.2, 0]} s={[0.3, 4.2, 13]} c="#1e293b" />
+      <Box p={[18.5, 2.5, 0]} s={[0.5, 5.0, 14]} c="#1e293b" />
       {/* Game Room Creative Canvas Poster */}
-      <group position={[17.82, 2.4, 1.2]}>
+      <group position={[18.2, 2.4, 1.2]}>
         <Box p={[0, 0, 0]} s={[0.04, 2.2, 1.6]} c="#0f172a" />
         <Box p={[-0.02, 0, 0]} s={[0.02, 2.0, 1.4]} c="#020617" />
         <Box p={[-0.035, 0.3, 0]} s={[0.01, 0.8, 0.9]} c="#38bdf8" />
         <Box p={[-0.035, -0.4, 0]} s={[0.01, 0.12, 1.0]} c="#a855f7" />
       </group>
+      {/* Front Low Border Baseboard (So scene never exposes raw floor clip) */}
+      <Box p={[0, 0.4, 6.6]} s={[38, 0.8, 0.5]} c="#1e293b" />
 
       {/* Exterior Panoramic Window Panes along the Back Wall */}
       {[-14, -10, -5, 0, 5, 10, 14].map((x) => (

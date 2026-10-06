@@ -90,8 +90,8 @@ export function BuboCity() {
         <meshStandardMaterial color="#bbf7d0" roughness={0.9} />
       </mesh>
       {/* Surrounding Park Trees outside the wide office */}
-      {[-26, -22, 22, 26].map((x) =>
-        [-12, 0, 12].map((z) => (
+      {[-24, -20, 20, 24].map((x) =>
+        [-8, 0, 8].map((z) => (
           <group key={`${x}-${z}`} position={[x, 0, z]}>
             <B p={[0, 1.2, 0]} s={[0.3, 2.4, 0.3]} c="#78350f" />
             <mesh position={[0, 2.8, 0]} castShadow>
