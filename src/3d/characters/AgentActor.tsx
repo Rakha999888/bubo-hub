@@ -117,7 +117,7 @@ export function AgentActor({
         dynamicTarget = anchors.sit;
       }
     } else if (cfg.id === 'bubo-building') {
-      // Koko Senior Engineer Checkup & Sofa Coffee: 80s cycle
+      // Koko Senior Engineer Checkup & Coffee: 80s cycle
       const budiErr = allAgents['bubo-portal']?.status === 'error';
       const samsulErr = allAgents['bubo-backend-portal']?.status === 'error';
 
@@ -128,8 +128,8 @@ export function AgentActor({
       } else {
         const cycle = (t + charOffset) % 80;
         if (cycle >= 25 && cycle < 45) {
-          // Relax on sofa seat 1
-          dynamicTarget = new THREE.Vector3(2.8, 0.15, 2.2);
+          // Relax on sofa seat 1 (max 1-2 people)
+          dynamicTarget = new THREE.Vector3(3.1, 0.15, 2.2);
           isSofa = true;
         } else if (cycle >= 45 && cycle < 60) {
           dynamicTarget = new THREE.Vector3(0, 0.15, 0); // walking hallway
@@ -138,20 +138,26 @@ export function AgentActor({
         }
       }
     } else {
-      // Other 6 agents: Autonomous Idle / Sofa / Lounge Walk system
-      // Cycle: 65s period
-      const cycle = (t + charOffset) % 65;
-      const sofaSeats = SOFA_SEATS[cfg.floor] || SOFA_SEATS[2];
-      const seatIdx = Math.floor(charOffset) % sofaSeats.length;
-      const assignedSeat = sofaSeats[seatIdx] || sofaSeats[0];
+      // Other agents: Strict 1-2 person sofa capacity
+      // Only 1 extra agent allowed on sofa at any moment; others roam freely (water cooler, window, balcony, coffee bar)
+      const cycle = (t + charOffset) % 75;
+      const agentNum = Math.floor(charOffset) % 5; // index 0..4
 
-      if (s.status === 'break' || cycle >= 32 && cycle < 54) {
-        // Break period: head to sofa and relax!
+      if (s.status === 'break' || (cycle >= 35 && cycle < 55 && agentNum === 0)) {
+        // Only 1 assigned agent on sofa seat 2 (total 1-2 person on sofa max)
+        const sofaSeats = SOFA_SEATS[cfg.floor] || SOFA_SEATS[2];
+        const assignedSeat = sofaSeats[1] || sofaSeats[0];
         dynamicTarget = new THREE.Vector3(assignedSeat.pos[0], assignedSeat.pos[1], assignedSeat.pos[2]);
         isSofa = true;
-      } else if (cycle >= 54 && cycle < 60) {
-        // Stretch / water break near hallway
-        dynamicTarget = new THREE.Vector3(cfg.desk[0] > 0 ? 1.0 : -1.0, 0.15, 0.2);
+      } else if (cycle >= 25 && cycle < 42) {
+        // Wander to coffee maker / lounge entry
+        dynamicTarget = new THREE.Vector3(2.2, 0.15, 0.8);
+      } else if (cycle >= 42 && cycle < 58) {
+        // Wander to window view / balcony
+        dynamicTarget = new THREE.Vector3(cfg.desk[0] > 0 ? 5.2 : -5.2, 0.15, 2.6);
+      } else if (cycle >= 58 && cycle < 66) {
+        // Stand near hallway / stretch
+        dynamicTarget = new THREE.Vector3(0.5, 0.15, -0.4);
       } else {
         // Standard idle at desk
         dynamicTarget = anchors.sit;

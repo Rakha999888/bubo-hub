@@ -8,18 +8,16 @@ export const BREAK_SPOT: Record<number, [number, number]> = { 1: [3.4, 2.2], 2: 
 /** Dedicated Sofa Seat Anchors: characters approach, align with seat, sit down naturally */
 export const SOFA_SEATS: Record<number, Array<{ id: string; pos: [number, number, number]; rotY: number }>> = {
   1: [
-    { id: 'f1-s1', pos: [2.8, 0.15, 2.2], rotY: Math.PI },
-    { id: 'f1-s2', pos: [3.4, 0.15, 2.2], rotY: Math.PI },
-    { id: 'f1-s3', pos: [4.0, 0.15, 2.2], rotY: Math.PI }
+    { id: 'f1-s1', pos: [3.1, 0.15, 2.2], rotY: Math.PI },
+    { id: 'f1-s2', pos: [3.7, 0.15, 2.2], rotY: Math.PI }
   ],
   2: [
-    { id: 'f2-s1', pos: [2.8, 0.15, 2.2], rotY: Math.PI },
-    { id: 'f2-s2', pos: [3.4, 0.15, 2.2], rotY: Math.PI },
-    { id: 'f2-s3', pos: [4.0, 0.15, 2.2], rotY: Math.PI }
+    { id: 'f2-s1', pos: [3.1, 0.15, 2.2], rotY: Math.PI },
+    { id: 'f2-s2', pos: [3.7, 0.15, 2.2], rotY: Math.PI }
   ],
   3: [
-    { id: 'f3-s1', pos: [-1.2, 0.15, 3.3], rotY: Math.PI },
-    { id: 'f3-s2', pos: [1.2, 0.15, 3.3], rotY: Math.PI }
+    { id: 'f3-s1', pos: [0.9, 0.15, 3.3], rotY: Math.PI },
+    { id: 'f3-s2', pos: [1.5, 0.15, 3.3], rotY: Math.PI }
   ]
 };
 
