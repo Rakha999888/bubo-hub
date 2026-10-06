@@ -389,11 +389,18 @@ export function BuboBuilding({
 
       {/* ─── 5. CENTER: OFFICIAL PORTRAITS & CORPORATE POSTERS ─── */}
       {/* Official State Portraits: President Prabowo Subianto (Left) & Vice President Gibran Rakabuming Raka (Right) */}
-      <group position={[0, 2.5, -6.32]}>
-        {/* Indonesian State Emblem / Garuda Pancasila Minimal Gold Medallion in Center */}
+      <group position={[0, 2.35, -6.32]}>
+        {/* Indonesian State Emblem / Garuda Pancasila with Golden Wings & Shield */}
         <group position={[0, 0.45, 0]}>
-          <Box p={[0, 0, 0]} s={[0.8, 0.8, 0.04]} c="#ca8a04" e={0.2} />
-          <Box p={[0, 0, 0.02]} s={[0.6, 0.6, 0.02]} c="#eab308" e={0.3} />
+          <Box p={[0, 0, 0]} s={[0.85, 0.85, 0.04]} c="#ca8a04" e={0.2} />
+          {/* Wings */}
+          <Box p={[-0.32, 0.12, 0.02]} s={[0.45, 0.35, 0.02]} c="#eab308" e={0.25} />
+          <Box p={[0.32, 0.12, 0.02]} s={[0.45, 0.35, 0.02]} c="#eab308" e={0.25} />
+          {/* Center Shield Pancasila */}
+          <Box p={[0, -0.05, 0.03]} s={[0.32, 0.36, 0.02]} c="#b91c1c" />
+          <Box p={[0, -0.05, 0.04]} s={[0.18, 0.2, 0.02]} c="#ffffff" />
+          {/* Bhinneka Tunggal Ika Ribbon scroll */}
+          <Box p={[0, -0.28, 0.02]} s={[0.62, 0.1, 0.02]} c="#fef08a" />
         </group>
 
         {/* Official Portrait: Presiden Republik Indonesia Prabowo Subianto */}
@@ -409,6 +416,74 @@ export function BuboBuilding({
           url="./wapres_gibran.jpg"
           label="Wakil Presiden RI"
         />
+
+        {/* Wall Clock above center emblem */}
+        <group position={[0, 1.25, 0]}>
+          <Box p={[0, 0, 0]} s={[0.7, 0.7, 0.04]} c="#0f172a" />
+          <Box p={[0, 0, 0.02]} s={[0.62, 0.62, 0.02]} c="#ffffff" />
+          <Box p={[0, 0.08, 0.03]} s={[0.04, 0.2, 0.01]} c="#0f172a" />
+          <Box p={[0.08, 0, 0.03]} s={[0.2, 0.04, 0.01]} c="#ef4444" />
+        </group>
+      </group>
+
+      {/* ─── WALL DECORATIONS ACROSS ENTIRE OFFICE ─── */}
+      {/* 1. Wood Wall Sconces / Warm LED Up-Down Accent Wall Lights */}
+      {[-16.5, -12, -7.5, -4.5, 4.5, 7.5, 12, 16.5].map((lx) => (
+        <group key={'sconce-' + lx} position={[lx, 3.2, -6.32]}>
+          <Box p={[0, 0, 0]} s={[0.2, 0.35, 0.06]} c="#334155" />
+          <Box p={[0, 0.12, 0.04]} s={[0.14, 0.06, 0.04]} c="#fef08a" e={1} />
+          <Box p={[0, -0.12, 0.04]} s={[0.14, 0.06, 0.04]} c="#fef08a" e={1} />
+        </group>
+      ))}
+
+      {/* 2. Office Information & Notice Bulletin Board (Pantry area) */}
+      <group position={[6.0, 2.3, -6.32]}>
+        <Box p={[0, 0, 0]} s={[1.8, 1.4, 0.04]} c="#854d0e" />
+        <Box p={[0, 0, 0.02]} s={[1.65, 1.25, 0.02]} c="#d97706" />
+        {/* Memo notes pinned on board */}
+        <Box p={[-0.45, 0.25, 0.04]} s={[0.35, 0.4, 0.01]} c="#ffffff" />
+        <Box p={[0.2, 0.3, 0.04]} s={[0.4, 0.35, 0.01]} c="#fef08a" />
+        <Box p={[-0.2, -0.25, 0.04]} s={[0.45, 0.3, 0.01]} c="#93c5fd" />
+        <Box p={[0.42, -0.2, 0.04]} s={[0.3, 0.38, 0.01]} c="#86efac" />
+      </group>
+
+      {/* 3. Wall Certificate / Achievement Diplomas (Executive Wing) */}
+      <group position={[-7.8, 2.3, -6.32]}>
+        <Box p={[0, 0.35, 0]} s={[1.1, 0.75, 0.04]} c="#ca8a04" />
+        <Box p={[0, 0.35, 0.02]} s={[0.98, 0.65, 0.02]} c="#f8fafc" />
+        <Box p={[0, 0.35, 0.03]} s={[0.7, 0.2, 0.01]} c="#1e293b" />
+
+        <Box p={[0, -0.45, 0]} s={[1.1, 0.75, 0.04]} c="#ca8a04" />
+        <Box p={[0, -0.45, 0.02]} s={[0.98, 0.65, 0.02]} c="#f8fafc" />
+        <Box p={[0, -0.45, 0.03]} s={[0.7, 0.2, 0.01]} c="#1e293b" />
+      </group>
+
+      {/* 4. Left Wall: Acoustic Wood Slat Wall Panels & Corporate Motto */}
+      {[-4.5, -3.2, 3.2, 4.5].map((wz) => (
+        <group key={'w-panel-' + wz} position={[-17.82, 2.2, wz]}>
+          <Box p={[0, 0, 0]} s={[0.04, 3.2, 0.8]} c="#334155" />
+          {/* Vertical wood ribs */}
+          {[-0.28, -0.1, 0.1, 0.28].map((rx) => (
+            <Box key={rx} p={[0.03, 0, rx]} s={[0.02, 3.1, 0.08]} c="#a16207" />
+          ))}
+        </group>
+      ))}
+
+      {/* 5. Right Wall: Wall Shelves with decorative succulent pots & Neon Bar */}
+      <group position={[17.82, 2.8, -3.0]}>
+        <Box p={[0, 0, 0]} s={[0.04, 0.06, 2.2]} c="#0f172a" />
+        {/* Books & mini pot on shelf */}
+        <Box p={[-0.08, 0.15, -0.6]} s={[0.15, 0.25, 0.4]} c="#3b82f6" />
+        <Box p={[-0.08, 0.15, 0.1]} s={[0.15, 0.25, 0.3]} c="#10b981" />
+        {/* Mini plant pot */}
+        <Box p={[-0.08, 0.1, 0.7]} s={[0.2, 0.16, 0.2]} c="#f8fafc" />
+        <Box p={[-0.08, 0.24, 0.7]} s={[0.16, 0.14, 0.16]} c="#22c55e" />
+      </group>
+
+      <group position={[17.82, 1.8, -3.0]}>
+        <Box p={[0, 0, 0]} s={[0.04, 0.06, 2.2]} c="#0f172a" />
+        <Box p={[-0.08, 0.15, -0.3]} s={[0.15, 0.22, 0.5]} c="#e11d48" />
+        <Box p={[-0.08, 0.15, 0.5]} s={[0.15, 0.22, 0.4]} c="#eab308" />
       </group>
 
       {/* ─── 6. RIGHT TOP: PANTRY & KITCHENETTE ─── */}
