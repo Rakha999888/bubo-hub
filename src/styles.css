@@ -35,8 +35,7 @@ button { font:inherit; color:var(--text); background:transparent; border:1px sol
 .floors small { display:block; color:var(--muted); font-size:10px; }
 .floors .on small { color:#dbeafe; }
 
-.levels { position:absolute; z-index:4; left:50%; transform:translateX(-50%); top:120px; display:flex; gap:6px; }
-.levels button { background:rgba(16,28,51,.92); font-size:12px; padding:4px 10px; }
+
 
 .panel {
   position:absolute; z-index:6; right:14px; top:64px; width:310px;

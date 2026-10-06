@@ -169,13 +169,6 @@ export default function App() {
 
       {view === 'office' && (
         <>
-          <div className="levels">
-            {(['city', 'building', 'floor'] as CameraLevel[]).map((l) => (
-              <button key={l} className={level === l ? 'on' : ''} onClick={() => setLevel(l)}>
-                {l === 'city' ? 'Kota' : l === 'building' ? 'Gedung' : 'Lantai'}
-              </button>
-            ))}
-          </div>
           <FloorSelector />
           <AgentPanel />
           <PromptBar />
