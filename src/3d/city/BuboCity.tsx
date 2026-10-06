@@ -82,29 +82,25 @@ function Neighbors() {
 }
 
 export function BuboCity() {
-  const lines = useMemo(() => Array.from({ length: 8 }, (_, i) => 10.5 + i * 1.7), []);
   return (
-    <group>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.16, 0]} receiveShadow><planeGeometry args={[200, 200]} /><meshStandardMaterial color="#8fbf8a" /></mesh>
-      <B p={[0, -0.1, 16]} s={[200, 0.1, 7]} c="#4a4f58" />                          {/* main road */}
-      <B p={[26, -0.1, 0]} s={[7, 0.1, 200]} c="#4a4f58" />                          {/* cross road */}
-      {Array.from({ length: 24 }, (_, i) => <B key={i} p={[-56 + i * 5, -0.04, 16]} s={[2, 0.02, 0.15]} c="#f5f1d0" />)}
-      {Array.from({ length: 6 }, (_, i) => <B key={'c' + i} p={[20 + i * 0, -0.04, 13.2 + i * 1.2]} s={[1.6, 0.02, 0.6]} c="#ffffff" />)}   {/* crosswalk */}
-      <B p={[0, -0.05, 8.8]} s={[22, 0.1, 9]} c="#cfc9bb" />                        {/* sidewalk + plaza */}
-      <B p={[16, -0.08, 9]} s={[14, 0.06, 6.5]} c="#5e636d" />                      {/* parking lot */}
-      {lines.map((x, i) => <B key={i} p={[x + 0.1, -0.03, 9]} s={[0.1, 0.02, 4.5]} c="#fff" />)}
-      <ParkedCar x={11.4} z={9} c="#e9524a" /><ParkedCar x={14.8} z={9} c="#3b82c4" /><ParkedCar x={18.2} z={9} c="#dcdcdc" />
-      <group position={[21.2, 0, 9]}><B p={[0, 0.3, 0]} s={[0.4, 0.6, 1.4]} c="#222" /></group>   {/* motorcycle */}
-      <B p={[22.5, 0.7, 6.4]} s={[0.1, 1.4, 0.1]} c="#555" /><B p={[22.5, 1.5, 6.4]} s={[0.9, 0.5, 0.06]} c="#2b6cb0" />
-      <Text position={[22.5, 1.5, 6.45]} fontSize={0.28} color="#fff">P</Text>
-      <B p={[9.6, 0.5, 6.5]} s={[0.1, 1, 0.1]} c="#444" /><B p={[9.6, 0.15, 6.5]} s={[0.1, 0.3, 2]} c="#7a5232" />   {/* entrance barrier */}
-      <B p={[-4, 0.25, 6.4]} s={[1.8, 0.1, 0.4]} c="#7a5232" />                                                           {/* bench */}
-      {[-9, 9].map((x) => <group key={x} position={[x, 0, 9.5]}><B p={[0, 2, 0]} s={[0.1, 4, 0.1]} c="#444" /><mesh position={[0, 4.1, 0]}><sphereGeometry args={[0.25, 8, 8]} /><meshStandardMaterial color="#fff3b0" emissive="#fff3b0" emissiveIntensity={0.8} /></mesh></group>)}
-      {/* main entrance */}
-      <B p={[-1.6, 1.2, 5.3]} s={[0.2, 2.4, 0.2]} c="#1c2b45" /><B p={[1.6, 1.2, 5.3]} s={[0.2, 2.4, 0.2]} c="#1c2b45" /><B p={[0, 2.5, 5.3]} s={[3.6, 0.3, 0.5]} c="#1fa59a" />
-      <Text position={[0, 2.5, 5.58]} fontSize={0.22} color="#fff">BUBO-HUB MAIN ENTRANCE</Text>
-      <Text position={[0, 7, -5.4]} rotation={[0, 0, 0]} fontSize={0.9} color="#1c2b45">BUBO-HUB</Text>
-      <Trees /><Neighbors /><Traffic />
+    <group position={[0, -0.25, 0]}>
+      {/* Clean Surrounding Ground */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]} receiveShadow>
+        <planeGeometry args={[240, 240]} />
+        <meshStandardMaterial color="#bbf7d0" roughness={0.9} />
+      </mesh>
+      {/* Surrounding Park Trees outside the wide office */}
+      {[-26, -22, 22, 26].map((x) =>
+        [-12, 0, 12].map((z) => (
+          <group key={`${x}-${z}`} position={[x, 0, z]}>
+            <B p={[0, 1.2, 0]} s={[0.3, 2.4, 0.3]} c="#78350f" />
+            <mesh position={[0, 2.8, 0]} castShadow>
+              <dodecahedronGeometry args={[1.6, 1]} />
+              <meshStandardMaterial color="#16a34a" roughness={0.8} />
+            </mesh>
+          </group>
+        ))
+      )}
     </group>
   );
 }

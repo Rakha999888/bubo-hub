@@ -27,10 +27,10 @@ export function CameraRig() {
       pos = [16, 22, 18];
       tgt = [0, 4, 0];
     } else {
-      const y = floorY(floor);
-      // Top-Down Isometric Angle (~55 degrees downward) observing full floor layout
-      pos = [0, y + 13, 10];
-      tgt = [0, y + 0.8, 0.5];
+      // Wide sprawling horizontal single-floor office:
+      // Isometric view looking at the full breadth of the office from front-left angled perspective
+      pos = [2, 21, 24];
+      tgt = [0.5, 0.5, -0.5];
     }
 
     const c = controls.current;

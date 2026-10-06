@@ -5,7 +5,7 @@ import { BuboCity } from './3d/city/BuboCity';
 import { BuboBuilding } from './3d/building/BuboBuilding';
 import { CameraRig } from './3d/cameras/CameraRig';
 import { ViewSwitcher } from './components/navigation/ViewSwitcher';
-import { FloorSelector } from './components/navigation/FloorSelector';
+// Floor selector omitted in single-floor expansive design
 import { AgentPanel } from './components/agent-panel/AgentPanel';
 import { PromptBar } from './components/prompt/PromptBar';
 import { PixelOfficeRoom } from './components/agent-view/PixelOfficeRoom';
@@ -170,7 +170,6 @@ export default function App() {
       {view === 'office' && (
         <>
           <PromptBar />
-          <FloorSelector />
           <AgentPanel />
         </>
       )}

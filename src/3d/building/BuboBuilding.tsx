@@ -235,46 +235,166 @@ function ServerRacks() {
   );
 }
 
-function Floor({
-  f,
+export function BuboBuilding({
   onContextMenu
 }: {
-  f: FloorId;
   onContextMenu?: (e: any, agent: AgentConfig) => void;
 }) {
-  const y = floorY(f);
-  const rooms = ROOMS.filter((r) => r.floor === f);
-  const agents = AGENTS.filter((a) => a.floor === f);
+  const agents = AGENTS;
 
   return (
-    <group position={[0, y, 0]}>
-      {/* Floor Slab */}
-      <Box p={[0, 0, 0]} s={[14, 0.3, 10]} c={CREAM} />
+    <group position={[0, 0, 0]}>
+      {/* ─── 1. EXPANSIVE SINGLE-LEVEL FLOOR SLAB (Width 36m, Depth 13m) ─── */}
+      {/* Main diagonal/warm oak parquet plank floor */}
+      <Box p={[0, 0, 0]} s={[36, 0.35, 13]} c="#e2d4be" />
 
-      {/* Room Carpets / Floor Zones */}
-      {rooms.map((r) => (
-        <mesh key={r.id} position={[r.center[0], 0.16, r.center[1]]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={r.size} />
-          <meshStandardMaterial color={r.color} opacity={0.4} transparent roughness={0.9} />
-        </mesh>
-      ))}
-      {rooms.map((r) => (
-        <Text key={r.id + 't'} position={[r.center[0], 0.18, r.center[1] + r.size[1] / 2 - 0.25]} rotation={[-Math.PI / 2, 0, 0]} fontSize={0.24} color="#ffffff" anchorX="center">
-          {r.name.toUpperCase()}
-        </Text>
+      {/* Perimeter Exterior Walls (Background & Left/Right) */}
+      {/* Back Wall with large panoramic windows (cutaway foreground) */}
+      <Box p={[0, 2.2, -6.5]} s={[36, 4.2, 0.3]} c="#0f172a" />
+      {/* Left Wall (Executive Wing) */}
+      <Box p={[-18, 2.2, 0]} s={[0.3, 4.2, 13]} c="#1e293b" />
+      {/* Right Wall (Entertainment & Rest Wing) */}
+      <Box p={[18, 2.2, 0]} s={[0.3, 4.2, 13]} c="#1e293b" />
+
+      {/* Exterior Panoramic Window Panes along the Back Wall */}
+      {[-14, -10, -5, 0, 5, 10, 14].map((x) => (
+        <group key={x}>
+          <Box p={[x, 2.4, -6.32]} s={[3.2, 1.8, 0.06]} c="#93c5fd" e={0.35} />
+          <Box p={[x, 2.4, -6.34]} s={[0.08, 1.8, 0.08]} c="#334155" />
+          <Box p={[x, 2.4, -6.34]} s={[3.2, 0.08, 0.08]} c="#334155" />
+        </group>
       ))}
 
-      {/* Walls & Windows */}
-      <Box p={[0, 2, -5]} s={[14, 3.7, 0.2]} c={f === 4 ? '#1e293b' : f === 3 ? '#cdbb9a' : f === 2 ? '#c9d3da' : '#b4bcc6'} />
-      <Box p={[-7, 2, 0]} s={[0.2, 3.7, 10]} c={f === 4 ? '#0f172a' : '#a7b0ba'} />
-      {[-5, 0, 5].map((x) => (
-        <Box key={x} p={[x, 2.2, -4.88]} s={[2, 1.2, 0.04]} c="#9fd3ee" e={0.25} />
-      ))}
-      <Text position={[0, 3.35, -4.85]} fontSize={0.34} color={NAVY} anchorX="center">
-        {`FLOOR ${f} · ${FLOOR_NAMES[f].toUpperCase()}`}
-      </Text>
+      {/* ─── 2. ZONE CARPETS & FLOOR MARKINGS ─── */}
+      {/* Executive Wing Carpet (Warm Burgundy / Rich Dark Slate) */}
+      <mesh position={[-11.5, 0.18, -0.5]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[11, 10]} />
+        <meshStandardMaterial color="#334155" opacity={0.35} transparent roughness={0.9} />
+      </mesh>
+      {/* Central Engineering Open Floor Carpet (Tech Slate Blue) */}
+      <mesh position={[0.0, 0.18, -0.5]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[11.5, 10]} />
+        <meshStandardMaterial color="#1e293b" opacity={0.3} transparent roughness={0.9} />
+      </mesh>
+      {/* Pantry Tile Area (Terracotta Warm Wood) */}
+      <mesh position={[8.5, 0.18, -3.2]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[5.2, 5.0]} />
+        <meshStandardMaterial color="#78350f" opacity={0.25} transparent roughness={0.8} />
+      </mesh>
+      {/* Entertainment & Gaming Red Rug (Like Game Dev Tycoon reference!) */}
+      <mesh position={[14.2, 0.18, 1.0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[6.2, 5.5]} />
+        <meshStandardMaterial color="#991b1b" opacity={0.65} transparent roughness={0.85} />
+      </mesh>
 
-      {/* Workstations AND Character Actors directly in this Floor coordinate frame */}
+      {/* ─── 3. INTERIOR LOW PARTITIONS & GLASS DIVIDERS ─── */}
+      {/* Executive Wing Divider (with door opening at z = 1.5) */}
+      <Box p={[-6.2, 1.2, -3.2]} s={[0.2, 2.2, 6.2]} c="#334155" />
+      <Box p={[-6.2, 1.2, 4.2]} s={[0.2, 2.2, 4.2]} c="#334155" />
+
+      {/* Game Room / Rest Wing Divider */}
+      <Box p={[11.2, 1.2, -3.2]} s={[0.2, 2.2, 6.2]} c="#334155" />
+      <Box p={[11.2, 1.2, 4.2]} s={[0.2, 2.2, 4.2]} c="#334155" />
+
+      {/* ─── 4. LEFT WING: EXECUTIVE SUITE & MEETING AREA ─── */}
+      {/* Executive Bookshelf run along the left wall */}
+      <group position={[-17.6, 0, 0]}>
+        <Box p={[0, 1.4, 0]} s={[0.6, 2.6, 6.0]} c="#1e293b" />
+        {/* Books & Folders */}
+        {[-2.2, -1.0, 0.2, 1.4, 2.2].map((z, i) => (
+          <group key={z}>
+            <Box p={[0.2, 0.7 + (i % 3) * 0.7, z]} s={[0.3, 0.5, 0.8]} c={i % 2 ? '#3b82f6' : '#f59e0b'} />
+          </group>
+        ))}
+      </group>
+      {/* Executive Round Meeting Table with 3 Chairs */}
+      <group position={[-12.0, 0, 2.8]}>
+        <Box p={[0, 0.7, 0]} s={[2.2, 0.08, 2.2]} c="#78350f" />
+        <Box p={[0, 0.35, 0]} s={[0.3, 0.65, 0.3]} c="#0f172a" />
+        {/* Chairs around meeting table */}
+        <Box p={[-1.3, 0.45, 0]} s={[0.45, 0.08, 0.45]} c="#1e293b" />
+        <Box p={[1.3, 0.45, 0]} s={[0.45, 0.08, 0.45]} c="#1e293b" />
+        <Box p={[0, 0.45, 1.3]} s={[0.45, 0.08, 0.45]} c="#1e293b" />
+      </group>
+
+      {/* ─── 5. CENTER: WHITEBOARD / BRAINSTORMING WALL ─── */}
+      {/* Large Wall-Mounted Whiteboard behind developers */}
+      <group position={[0, 2.3, -6.3]}>
+        <Box p={[0, 0, 0]} s={[7.0, 2.0, 0.08]} c="#f8fafc" />
+        <Box p={[0, 0, 0.02]} s={[7.1, 2.1, 0.04]} c="#334155" />
+        {/* Colorful Project Cards & Sticky Notes on Whiteboard */}
+        {[-2.5, -1.2, 0.2, 1.5, 2.6].map((bx, i) => (
+          <Box key={bx} p={[bx, 0.3, 0.06]} s={[0.8, 0.5, 0.02]} c={['#38bdf8', '#facc15', '#34d399', '#f43f5e', '#a855f7'][i]} />
+        ))}
+      </group>
+
+      {/* ─── 6. RIGHT TOP: PANTRY & KITCHENETTE ─── */}
+      <group position={[8.5, 0, -4.5]}>
+        {/* Refrigerator */}
+        <Box p={[1.8, 1.3, 0]} s={[1.1, 2.4, 1.0]} c="#f1f5f9" />
+        <Box p={[1.8, 1.3, 0.52]} s={[0.04, 0.6, 0.04]} c="#64748b" />
+        {/* Microwave Counter & Cabinet */}
+        <Box p={[-0.5, 0.5, 0]} s={[2.8, 0.95, 0.9]} c="#1e293b" />
+        <Box p={[-0.5, 0.98, 0]} s={[2.9, 0.06, 0.95]} c="#94a3b8" />
+        {/* Microwave */}
+        <Box p={[-1.2, 1.3, 0]} s={[0.7, 0.45, 0.5]} c="#334155" />
+        {/* Coffee Maker / Espresso Machine */}
+        <Box p={[0.2, 1.35, 0]} s={[0.6, 0.55, 0.5]} c="#0f172a" />
+        <Box p={[0.2, 1.35, 0.26]} s={[0.1, 0.1, 0.05]} c="#f59e0b" e={1} />
+        {/* Trash Can */}
+        <Box p={[-2.2, 0.4, 0]} s={[0.45, 0.75, 0.45]} c="#475569" />
+      </group>
+      {/* Standing Round Cafe Table */}
+      <group position={[8.5, 0, -1.5]}>
+        <Box p={[0, 0.95, 0]} s={[1.2, 0.06, 1.2]} c="#f8fafc" />
+        <Box p={[0, 0.47, 0]} s={[0.12, 0.92, 0.12]} c="#0f172a" />
+        <Box p={[0, 0.02, 0]} s={[0.7, 0.04, 0.7]} c="#0f172a" />
+      </group>
+
+      {/* ─── 7. RIGHT BOTTOM: GAMING, ENTERTAINMENT & SLEEPING PODS ─── */}
+      <group position={[14.2, 0, 1.0]}>
+        {/* Big Screen Entertainment TV on Stand */}
+        <Box p={[0, 0.45, -2.2]} s={[3.2, 0.85, 0.6]} c="#1e293b" />
+        <Box p={[0, 1.7, -2.2]} s={[2.8, 1.6, 0.1]} c="#020617" />
+        {/* Dynamic TV Screen Glow */}
+        <Box p={[0, 1.7, -2.14]} s={[2.6, 1.45, 0.04]} c="#38bdf8" e={0.8} />
+
+        {/* PlayStation 5 Console & Blue LED Strip */}
+        <Box p={[1.0, 0.95, -2.1]} s={[0.2, 0.55, 0.35]} c="#ffffff" />
+        <Box p={[1.0, 1.25, -2.05]} s={[0.18, 0.04, 0.04]} c="#3b82f6" e={1} />
+
+        {/* Casual Blue & Indigo Beanbag Chairs (Game Dev Tycoon style!) */}
+        <Box p={[-1.2, 0.3, 0.8]} s={[0.9, 0.5, 0.9]} c="#2563eb" />
+        <Box p={[0.0, 0.3, 1.0]} s={[0.9, 0.5, 0.9]} c="#3b82f6" />
+        <Box p={[1.2, 0.3, 0.8]} s={[0.9, 0.5, 0.9]} c="#1d4ed8" />
+
+        {/* Comfortable Gaming Sofa */}
+        <Box p={[0, 0.35, 2.2]} s={[2.8, 0.5, 0.9]} c="#1e293b" />
+        <Box p={[0, 0.7, 2.6]} s={[2.8, 0.6, 0.3]} c="#0f172a" />
+      </group>
+
+      {/* Quiet Sleeping Rest Pods (Comfortable Beds with pillows & blankets) */}
+      <group position={[15.0, 0, -4.5]}>
+        {/* Bed 1 */}
+        <group position={[-1.5, 0, 0]}>
+          <Box p={[0, 0.25, 0]} s={[2.2, 0.35, 1.3]} c="#334155" />
+          <Box p={[0, 0.48, 0]} s={[2.1, 0.15, 1.2]} c="#f1f5f9" />
+          <Box p={[-0.3, 0.54, 0]} s={[1.3, 0.08, 1.18]} c="#0ea5e9" />
+          <Box p={[0.7, 0.58, 0]} s={[0.45, 0.12, 0.9]} c="#ffffff" />
+        </group>
+        {/* Bed 2 */}
+        <group position={[1.2, 0, 0]}>
+          <Box p={[0, 0.25, 0]} s={[2.2, 0.35, 1.3]} c="#334155" />
+          <Box p={[0, 0.48, 0]} s={[2.1, 0.15, 1.2]} c="#f1f5f9" />
+          <Box p={[-0.3, 0.54, 0]} s={[1.3, 0.08, 1.18]} c="#6366f1" />
+          <Box p={[0.7, 0.58, 0]} s={[0.45, 0.12, 0.9]} c="#ffffff" />
+        </group>
+        {/* Nightstand & Lamp */}
+        <Box p={[-0.15, 0.35, 0.8]} s={[0.5, 0.55, 0.5]} c="#1e293b" />
+        <Box p={[-0.15, 0.72, 0.8]} s={[0.2, 0.2, 0.2]} c="#fef08a" e={0.8} />
+      </group>
+
+      {/* ─── 8. ALL WORKSTATIONS & CHARACTERS (ALL 8 IN ONE FLAT WIDE OFFICE) ─── */}
       {agents.map((a) => (
         <group key={a.id}>
           <Workstation cfg={a} />
@@ -282,61 +402,20 @@ function Floor({
         </group>
       ))}
 
-      {/* Floor Decor & Furniture */}
-      {f === 1 && (
-        <>
-          <StandardLounge />
-          <ServerRacks />
-        </>
-      )}
-      {f === 2 && (
-        <>
-          <StandardLounge />
-          <Plant x={-6.3} z={3.8} />
-          <Plant x={6.2} z={4} />
-        </>
-      )}
-      {f === 3 && (
-        <>
-          <Box p={[0, 0.6, 2.4]} s={[3, 0.08, 1.2]} c={WOOD} />
-          <Box p={[0, 0.3, 2.4]} s={[0.2, 0.6, 0.2]} c="#6f4f31" />
-          {[-1.2, 1.2].map((x) => (
-            <Box key={x} p={[x, 0.35, 3.3]} s={[0.5, 0.1, 0.5]} c={NAVY} />
-          ))}
-          <Plant x={-6.2} z={3.6} />
-        </>
-      )}
-      {f === 4 && (
-        <>
-          <GamingLoungeFloor4 />
-        </>
-      )}
+      {/* ─── 9. AIR CONDITIONING UNITS (AC) IN EVERY ZONE ─── */}
+      <ACUnit x={-11.5} y={3.4} z={-6.3} />  {/* Executive AC */}
+      <ACUnit x={-3.5} y={3.4} z={-6.3} />   {/* Dev Hub Left AC */}
+      <ACUnit x={3.5} y={3.4} z={-6.3} />    {/* Dev Hub Right AC */}
+      <ACUnit x={8.5} y={3.4} z={-6.3} />    {/* Pantry AC */}
+      <ACUnit x={14.5} y={3.4} z={-6.3} />   {/* Entertainment & Sleeping AC */}
 
-      {/* Wall Air Conditioners (AC) installed in every room / zone with active cyan LED */}
-      <ACUnit x={-3.5} y={3.1} z={-4.85} />
-      <ACUnit x={3.5} y={3.1} z={-4.85} />
-      <ACUnit x={-6.85} y={3.1} z={0} />
-    </group>
-  );
-}
-
-export function BuboBuilding({
-  onContextMenu
-}: {
-  onContextMenu?: (e: any, agent: AgentConfig) => void;
-}) {
-  const view = useStore((s) => s.view);
-  const floor = useStore((s) => s.floor);
-  const floors = ([1, 2, 3, 4] as FloorId[]).filter((f) => view === 'office' || f <= floor);
-
-  return (
-    <group>
-      {floors.map((f) => (
-        <Floor key={f} f={f} onContextMenu={onContextMenu} />
-      ))}
-      {floors.filter((f) => f < 4 && floors.includes((f + 1) as FloorId)).map((f) => (
-        <Stairs key={f} from={f} />
-      ))}
+      {/* ─── 10. INDOOR TROPICAL POTTED PLANTS (LIKE REFERENCE) ─── */}
+      <Plant x={-17.2} z={5.5} />
+      <Plant x={-7.0} z={5.5} />
+      <Plant x={-5.5} z={-5.6} />
+      <Plant x={5.5} z={-5.6} />
+      <Plant x={10.5} z={5.5} />
+      <Plant x={17.2} z={5.5} />
     </group>
   );
 }
