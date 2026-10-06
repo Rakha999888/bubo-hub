@@ -52,46 +52,18 @@ export function AgentPanel() {
       </div>
 
       <dl style={{ marginTop: '12px', borderTop: '1px solid #1e293b', paddingTop: '8px' }}>
-        <dt style={{ color: '#64748b', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Tugas Saat Ini</dt>
-        <dd style={{ color: '#e2e8f0', fontSize: '12px' }}>{st.task || 'Standby menunggu instruksi Discord'}</dd>
+        <dt style={{ color: '#64748b', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Status</dt>
+        <dd style={{ color: '#e2e8f0', fontSize: '12px' }}>{st.status === 'working' ? 'Bekerja aktif' : 'Standby / Santai'}</dd>
 
-        <dt style={{ color: '#64748b', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Aktivitas Real-Time</dt>
-        <dd style={{ color: '#cbd5e1', fontSize: '12px' }}>{st.activity || 'Siap di meja kerja'}</dd>
+        <dt style={{ color: '#64748b', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Tugas Saat Ini</dt>
+        <dd style={{ color: '#cbd5e1', fontSize: '12px' }}>{st.task || 'Menunggu instruksi'}</dd>
 
         <dt style={{ color: '#64748b', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Workstation</dt>
         <dd style={{ color: '#94a3b8', fontSize: '12px' }}>
-          Lantai {cfg.floor} · {cfg.workspace}
+          {cfg.workspace}
         </dd>
-
-        {st.recent.length > 0 && (
-          <>
-            <dt style={{ color: '#64748b', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Log Terkini</dt>
-            <dd>
-              {st.recent.slice(-4).map((r, i) => (
-                <div key={i} style={{ fontSize: '11px', color: '#94a3b8', margin: '2px 0' }}>• {r}</div>
-              ))}
-            </dd>
-          </>
-        )}
       </dl>
 
-      {!agentMode && (
-        <button className="primary" onClick={openAgent} style={{ marginTop: '12px', width: '100%', fontSize: '12px', padding: '6px 10px' }}>
-          Buka Terminal & Stream Log
-        </button>
-      )}
-
-      {agentMode && (
-        <>
-          <h4 style={{ margin: '12px 0 6px 0', fontSize: '0.85em', color: '#cbd5e1' }}>Terminal Stream</h4>
-          <pre className="log" style={{ background: '#020617', border: '1px solid #1e293b' }}>
-            {st.log.length ? st.log.join('\n') : 'Menunggu stream log dari server...'}
-          </pre>
-          <button onClick={closeAgentMode} style={{ marginTop: '8px', width: '100%', fontSize: '12px', padding: '6px 10px' }}>
-            Tutup Mode Detail
-          </button>
-        </>
-      )}
     </aside>
   );
 }

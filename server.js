@@ -113,11 +113,11 @@ function dispatchAgentWork(agentId, taskText, activityText, originChannel) {
     }
   });
 
-  broadcast({
-    type: 'agent_log',
-    agentId,
-    line: `[${originChannel}] ${name}: Aktif memproses tugas.`
-  });
+  // broadcast({
+  //   type: 'agent_log',
+  //   agentId,
+  //   line: `[${originChannel}] ${name}: Aktif memproses tugas.`
+  // });
 }
 
 // Complete agent work and reset back to idle after delay

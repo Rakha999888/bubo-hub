@@ -46,7 +46,8 @@ export const useStore = create<UIState>((set, get) => ({
     const cur = s.agents[e.agentId];
     if (!cur) return s;
     if (e.type === 'agent_log') {
-      return { agents: { ...s.agents, [e.agentId]: { ...cur, log: [...cur.log, e.line].slice(-60), recent: [e.line, ...cur.recent].slice(0, 5) } } };
+      // Do not store or display chat/system logs in UI
+      return s;
     }
     return { agents: { ...s.agents, [e.agentId]: { ...cur, ...e.patch } } };
   }),
@@ -57,7 +58,6 @@ export const useStore = create<UIState>((set, get) => ({
       agentId,
       patch: { status: 'working', task: text, activity: 'Sedang bekerja di depan laptop...' }
     });
-    get().applyEvent({ type: 'agent_log', agentId, line: `User: ${text}` });
     hermes.sendPrompt(agentId, text);
   }
 }));
