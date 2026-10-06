@@ -331,8 +331,8 @@ export function BuboBuilding({
       {/* Front Low Border Baseboard (So scene never exposes raw floor clip) */}
       <Box p={[0, 0.4, 6.6]} s={[38, 0.8, 0.5]} c="#1e293b" />
 
-      {/* Exterior Realistic Glass Windows with Modern Aluminum Mullions (spaced to never overlap wall decor) */}
-      {[-14, -10.5, -5.5, 7.8, 11.5, 15].map((x) => (
+      {/* Exterior Realistic Glass Windows with Modern Aluminum Mullions (spaced to never overlap wall decor or dividers) */}
+      {[-13.8, -9.8, 7.8, 14.8].map((x) => (
         <group key={x}>
           {/* Outer Glass Window Pane */}
           <Box p={[x, 2.4, -6.32]} s={[3.2, 1.8, 0.04]} c="#e0f2fe" e={0.05} />
@@ -373,13 +373,13 @@ export function BuboBuilding({
       </mesh>
 
       {/* ─── 3. INTERIOR LOW PARTITIONS & GLASS DIVIDERS ─── */}
-      {/* Executive Wing Divider (with door opening at z = 1.5) */}
-      <Box p={[-6.2, 1.2, -3.2]} s={[0.2, 2.2, 6.2]} c="#334155" />
-      <Box p={[-6.2, 1.2, 4.2]} s={[0.2, 2.2, 4.2]} c="#334155" />
+      {/* Executive Wing Divider (Stops cleanly at z = -6.0 before reaching back wall) */}
+      <Box p={[-6.2, 1.0, -3.25]} s={[0.2, 1.8, 5.5]} c="#334155" />
+      <Box p={[-6.2, 1.0, 3.8]} s={[0.2, 1.8, 4.0]} c="#334155" />
 
-      {/* Game Room / Rest Wing Divider */}
-      <Box p={[11.2, 1.2, -3.2]} s={[0.2, 2.2, 6.2]} c="#334155" />
-      <Box p={[11.2, 1.2, 4.2]} s={[0.2, 2.2, 4.2]} c="#334155" />
+      {/* Game Room / Rest Wing Divider (Stops cleanly at z = -6.0 before reaching back wall) */}
+      <Box p={[11.2, 1.0, -3.25]} s={[0.2, 1.8, 5.5]} c="#334155" />
+      <Box p={[11.2, 1.0, 3.8]} s={[0.2, 1.8, 4.0]} c="#334155" />
 
       {/* ─── 4. LEFT WING: EXECUTIVE SUITE & MEETING AREA ─── */}
       {/* Executive Bookshelf run along the left wall */}
@@ -443,7 +443,7 @@ export function BuboBuilding({
 
       {/* ─── WALL DECORATIONS ACROSS ENTIRE OFFICE ─── */}
       {/* 1. Wood Wall Sconces / Warm LED Up-Down Accent Wall Lights */}
-      {[-16.5, -12, -7.5, -4.5, 4.5, 7.5, 12, 16.5].map((lx) => (
+      {[-16.5, -11.5, -7.5, 4.5, 10.0, 16.5].map((lx) => (
         <group key={'sconce-' + lx} position={[lx, 3.2, -6.32]}>
           <Box p={[0, 0, 0]} s={[0.2, 0.35, 0.06]} c="#334155" />
           <Box p={[0, 0.12, 0.04]} s={[0.14, 0.06, 0.04]} c="#fef08a" e={1} />
