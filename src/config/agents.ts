@@ -18,6 +18,10 @@ export const SOFA_SEATS: Record<number, Array<{ id: string; pos: [number, number
   3: [
     { id: 'f3-s1', pos: [0.9, 0.15, 3.3], rotY: Math.PI },
     { id: 'f3-s2', pos: [1.5, 0.15, 3.3], rotY: Math.PI }
+  ],
+  4: [
+    { id: 'f4-s1', pos: [-3.6, 0.15, 0.8], rotY: Math.PI },
+    { id: 'f4-s2', pos: [-2.8, 0.15, 0.8], rotY: Math.PI }
   ]
 };
 

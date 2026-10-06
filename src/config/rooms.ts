@@ -3,7 +3,8 @@ import { RoomConfig } from '../types';
 export const FLOOR_NAMES: Record<number, string> = {
   1: 'Infrastructure Hub',
   2: 'Technology & Operations Hub',
-  3: 'Head Office & Management'
+  3: 'Head Office & Management',
+  4: 'Lounge & Gaming Relax Zone'
 };
 
 export const FLOOR_HEIGHT = 4;
@@ -95,14 +96,25 @@ export const ROOMS: RoomConfig[] = [
     size: [6, 5.2],
     color: '#0e7490'
   },
+  // ─── FLOOR 4: LOUNGE & GAMING RELAX ZONE (TV, PS5, SOFA, BEANBAGS) ─
   {
-    id: 'bubo-lounge',
-    floor: 1,
-    name: 'Lounge & Coffee Corner',
-    type: 'lounge',
+    id: 'gaming-zone',
+    floor: 4,
+    name: 'PlayStation & Entertainment Lounge',
+    type: 'gaming',
     agentIds: [],
-    center: [3.5, 0],
-    size: [6, 8],
-    color: '#854d0e'
+    center: [-3.2, -0.5],
+    size: [6, 7],
+    color: '#3b82f6'
+  },
+  {
+    id: 'relax-zone',
+    floor: 4,
+    name: 'Quiet Rest & Coffee Bar',
+    type: 'rest',
+    agentIds: [],
+    center: [3.2, -0.5],
+    size: [6, 7],
+    color: '#10b981'
   }
 ];

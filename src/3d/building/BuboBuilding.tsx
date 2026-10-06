@@ -29,6 +29,20 @@ function Plant({ x, z }: { x: number; z: number }) {
   );
 }
 
+/** Wall Air Conditioner (AC) with indicator light */
+function ACUnit({ x, y, z }: { x: number; y: number; z: number }) {
+  return (
+    <group position={[x, y, z]}>
+      {/* AC Main Body */}
+      <Box p={[0, 0, 0]} s={[1.2, 0.35, 0.25]} c="#f8fafc" />
+      {/* Air Vent Grille */}
+      <Box p={[0, -0.1, 0.1]} s={[1.05, 0.08, 0.04]} c="#94a3b8" />
+      {/* Power LED (Cool Cyan Glow) */}
+      <Box p={[0.45, 0.05, 0.13]} s={[0.04, 0.04, 0.02]} c="#38bdf8" e={1} />
+    </group>
+  );
+}
+
 /** Standard SMLONE Workstation: Desk, Monitor, Keyboard, and Chair with SitAnchor at (x, 0.15, z + 0.85) */
 export function Workstation({ cfg }: { cfg: AgentConfig }) {
   const status = useStore((s) => s.agents[cfg.id]?.status || 'idle');
@@ -88,7 +102,7 @@ function Stairs({ from }: { from: number }) {
   );
 }
 
-function Lounge() {
+function StandardLounge() {
   const tv = useRef<THREE.MeshStandardMaterial>(null);
   useFrame((s) => {
     if (tv.current) tv.current.emissiveIntensity = 0.7 + Math.sin(s.clock.elapsedTime * 3) * 0.2;
@@ -108,6 +122,79 @@ function Lounge() {
       <Plant x={6.2} z={3.6} />
       <Plant x={0.8} z={-4.4} />
       <Box p={[0.9, 0.9, 3]} s={[0.4, 1.4, 1.2]} c={WOOD} />
+    </group>
+  );
+}
+
+function GamingLoungeFloor4() {
+  const tvScreen = useRef<THREE.MeshStandardMaterial>(null);
+  useFrame((s) => {
+    if (tvScreen.current) {
+      // Dynamic game screen animation (PlayStation game dynamic glow)
+      const t = s.clock.elapsedTime;
+      tvScreen.current.emissiveIntensity = 0.85 + Math.sin(t * 4) * 0.25;
+    }
+  });
+
+  return (
+    <group>
+      {/* ─── GAMING ZONE (LEFT): HUGE TV, PS5 CONSOLE, SOFA, BEANBAGS ─── */}
+      {/* TV Stand / Media Cabinet */}
+      <Box p={[-3.2, 0.45, -4.2]} s={[3.2, 0.55, 0.9]} c="#1e293b" />
+      {/* Big Screen TV (65 inch Curved Screen) */}
+      <Box p={[-3.2, 2.1, -4.3]} s={[3.4, 1.8, 0.1]} c="#0f172a" />
+      <mesh position={[-3.2, 2.1, -4.24]}>
+        <planeGeometry args={[3.2, 1.6]} />
+        <meshStandardMaterial ref={tvScreen} color="#60a5fa" emissive="#3b82f6" emissiveIntensity={0.9} />
+      </mesh>
+
+      {/* PlayStation 5 Console (White with blue LED) */}
+      <Box p={[-4.2, 0.85, -4.1]} s={[0.2, 0.5, 0.35]} c="#f8fafc" />
+      <Box p={[-4.2, 0.85, -3.92]} s={[0.04, 0.45, 0.02]} c="#3b82f6" e={1} />
+      {/* DualSense Controllers */}
+      <Box p={[-3.5, 0.76, -4.0]} s={[0.25, 0.08, 0.15]} c="#e2e8f0" />
+      <Box p={[-3.0, 0.76, -4.0]} s={[0.25, 0.08, 0.15]} c="#e2e8f0" />
+
+      {/* Luxury Gaming Sofa */}
+      <Box p={[-3.2, 0.4, 0.8]} s={[2.8, 0.5, 1.0]} c="#2563eb" />
+      <Box p={[-3.2, 0.9, 1.25]} s={[2.8, 0.6, 0.25]} c="#1d4ed8" />
+      {/* Sofa Armrests */}
+      <Box p={[-4.5, 0.65, 0.8]} s={[0.25, 0.5, 1.0]} c="#1e40af" />
+      <Box p={[-1.9, 0.65, 0.8]} s={[0.25, 0.5, 1.0]} c="#1e40af" />
+
+      {/* Beanbag Chairs */}
+      <Box p={[-4.6, 0.35, -1.2]} s={[1.1, 0.5, 1.1]} c="#f59e0b" />
+      <Box p={[-1.8, 0.35, -1.2]} s={[1.1, 0.5, 1.1]} c="#ec4899" />
+      {/* Coffee Table in front of gaming sofa */}
+      <Box p={[-3.2, 0.32, -1.5]} s={[1.8, 0.25, 0.9]} c="#334155" />
+
+      {/* Arcade / Snack Vending Machine */}
+      <Box p={[-6.0, 1.3, -2.5]} s={[0.9, 2.2, 1.1]} c="#475569" />
+      <Box p={[-6.0, 1.4, -1.94]} s={[0.7, 1.0, 0.04]} c="#38bdf8" e={0.5} />
+
+      {/* ─── QUIET REST & COFFEE BAR (RIGHT) ─── */}
+      {/* Bar Counter */}
+      <Box p={[3.2, 0.7, -3.8]} s={[4.2, 1.1, 0.9]} c="#78350f" />
+      {/* Espresso Coffee Machine */}
+      <Box p={[2.2, 1.45, -3.8]} s={[0.6, 0.55, 0.5]} c="#1e293b" />
+      <Box p={[2.2, 1.45, -3.53]} s={[0.1, 0.1, 0.05]} c="#f59e0b" e={1} />
+      {/* Bar Stools */}
+      {[1.8, 2.8, 3.8, 4.6].map((x, i) => (
+        <group key={i}>
+          <Box p={[x, 0.45, -2.5]} s={[0.4, 0.08, 0.4]} c="#d97706" />
+          <Box p={[x, 0.22, -2.5]} s={[0.06, 0.44, 0.06]} c="#1e293b" />
+        </group>
+      ))}
+
+      {/* Rest Pod / Nap Lounge Bed */}
+      <Box p={[4.2, 0.35, 1.5]} s={[2.6, 0.4, 1.4]} c="#059669" />
+      <Box p={[5.3, 0.55, 1.5]} s={[0.4, 0.18, 1.2]} c="#ecfdf5" />
+
+      {/* Plants & Decorative Floor Lamps */}
+      <Plant x={-6.2} z={3.4} />
+      <Plant x={6.2} z={3.4} />
+      <Plant x={0.2} z={-4.2} />
+      <Box p={[0.2, 1.4, 3.2]} s={[0.4, 2.4, 0.4]} c="#fef08a" e={0.6} />
     </group>
   );
 }
@@ -158,8 +245,8 @@ function Floor({
       ))}
 
       {/* Walls & Windows */}
-      <Box p={[0, 2, -5]} s={[14, 3.7, 0.2]} c={f === 3 ? '#cdbb9a' : f === 2 ? '#c9d3da' : '#b4bcc6'} />
-      <Box p={[-7, 2, 0]} s={[0.2, 3.7, 10]} c="#a7b0ba" />
+      <Box p={[0, 2, -5]} s={[14, 3.7, 0.2]} c={f === 4 ? '#1e293b' : f === 3 ? '#cdbb9a' : f === 2 ? '#c9d3da' : '#b4bcc6'} />
+      <Box p={[-7, 2, 0]} s={[0.2, 3.7, 10]} c={f === 4 ? '#0f172a' : '#a7b0ba'} />
       {[-5, 0, 5].map((x) => (
         <Box key={x} p={[x, 2.2, -4.88]} s={[2, 1.2, 0.04]} c="#9fd3ee" e={0.25} />
       ))}
@@ -175,16 +262,16 @@ function Floor({
         </group>
       ))}
 
-      {/* Floor Decor */}
+      {/* Floor Decor & Furniture */}
       {f === 1 && (
         <>
-          <Lounge />
+          <StandardLounge />
           <ServerRacks />
         </>
       )}
       {f === 2 && (
         <>
-          <Lounge />
+          <StandardLounge />
           <Plant x={-6.3} z={3.8} />
           <Plant x={6.2} z={4} />
         </>
@@ -199,6 +286,16 @@ function Floor({
           <Plant x={-6.2} z={3.6} />
         </>
       )}
+      {f === 4 && (
+        <>
+          <GamingLoungeFloor4 />
+        </>
+      )}
+
+      {/* Wall Air Conditioners (AC) installed in every room / zone with active cyan LED */}
+      <ACUnit x={-3.5} y={3.1} z={-4.85} />
+      <ACUnit x={3.5} y={3.1} z={-4.85} />
+      <ACUnit x={-6.85} y={3.1} z={0} />
     </group>
   );
 }
@@ -210,14 +307,14 @@ export function BuboBuilding({
 }) {
   const view = useStore((s) => s.view);
   const floor = useStore((s) => s.floor);
-  const floors = ([1, 2, 3] as FloorId[]).filter((f) => view === 'office' || f <= floor);
+  const floors = ([1, 2, 3, 4] as FloorId[]).filter((f) => view === 'office' || f <= floor);
 
   return (
     <group>
       {floors.map((f) => (
         <Floor key={f} f={f} onContextMenu={onContextMenu} />
       ))}
-      {floors.filter((f) => f < 3 && floors.includes((f + 1) as FloorId)).map((f) => (
+      {floors.filter((f) => f < 4 && floors.includes((f + 1) as FloorId)).map((f) => (
         <Stairs key={f} from={f} />
       ))}
     </group>

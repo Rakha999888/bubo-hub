@@ -41,7 +41,7 @@ export interface AvatarSpec {
   props: string[];
 }
 
-export type FloorId = 1 | 2 | 3;
+export type FloorId = 1 | 2 | 3 | 4;
 export type ViewMode = 'office' | 'agent';
 export type CameraLevel = 'city' | 'building' | 'floor';
 

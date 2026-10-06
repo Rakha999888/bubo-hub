@@ -6,7 +6,7 @@ export function FloorSelector() {
   const floor = useStore((s) => s.floor); const setFloor = useStore((s) => s.setFloor);
   return (
     <div className="floors">
-      {([3, 2, 1] as FloorId[]).map((f) => (
+      {([4, 3, 2, 1] as FloorId[]).map((f) => (
         <button key={f} className={floor === f ? 'on' : ''} onClick={() => setFloor(f)}>
           <b>Floor {f}</b><small>{FLOOR_NAMES[f]}</small>
         </button>
