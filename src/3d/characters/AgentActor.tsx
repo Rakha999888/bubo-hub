@@ -81,6 +81,13 @@ export function AgentActor({
     yaw.current = Math.PI;
   }, [anchors]);
 
+  // Character personality hash for desynchronized staggered autonomous schedule
+  const charOffset = useMemo(() => {
+    let hash = 0;
+    for (let i = 0; i < cfg.id.length; i++) hash = (hash * 31 + cfg.id.charCodeAt(i)) % 1000;
+    return (hash / 1000) * 45; // 0..45s offset
+  }, [cfg.id]);
+
   useFrame((state, dt) => {
     const g = root.current;
     if (!g) return;
@@ -90,13 +97,6 @@ export function AgentActor({
 
     // Priority 1: Real active Hermes task (working / thinking) overrides everything
     const isHermesBusy = s.status === 'working' || s.status === 'thinking' || s.status === 'error';
-
-    // Character personality hash for desynchronized staggered autonomous schedule
-    const charOffset = useMemo(() => {
-      let hash = 0;
-      for (let i = 0; i < cfg.id.length; i++) hash = (hash * 31 + cfg.id.charCodeAt(i)) % 1000;
-      return (hash / 1000) * 45; // 0..45s offset
-    }, [cfg.id]);
 
     let dynamicTarget = anchors.sit;
     let isSofa = false;
