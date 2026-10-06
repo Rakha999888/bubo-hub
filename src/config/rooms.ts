@@ -4,7 +4,7 @@ export const FLOOR_NAMES: Record<number, string> = {
   1: 'Infrastructure Hub',
   2: 'Technology & Operations Hub',
   3: 'Head Office & Management',
-  4: 'Lounge & Gaming Relax Zone'
+  4: 'Gaming & Sleeping Rest Zone'
 };
 
 export const FLOOR_HEIGHT = 4;
@@ -110,7 +110,7 @@ export const ROOMS: RoomConfig[] = [
   {
     id: 'relax-zone',
     floor: 4,
-    name: 'Quiet Rest & Coffee Bar',
+    name: 'Sleeping Rest Pods & Coffee Bar',
     type: 'rest',
     agentIds: [],
     center: [3.2, -0.5],

@@ -172,23 +172,43 @@ function GamingLoungeFloor4() {
       <Box p={[-6.0, 1.3, -2.5]} s={[0.9, 2.2, 1.1]} c="#475569" />
       <Box p={[-6.0, 1.4, -1.94]} s={[0.7, 1.0, 0.04]} c="#38bdf8" e={0.5} />
 
-      {/* ─── QUIET REST & COFFEE BAR (RIGHT) ─── */}
-      {/* Bar Counter */}
-      <Box p={[3.2, 0.7, -3.8]} s={[4.2, 1.1, 0.9]} c="#78350f" />
+      {/* ─── QUIET REST, SLEEPING PODS & BEDS (RIGHT) ─── */}
+      {/* Sleeping Bunk Pod 1 (Bed Frame, Mattress, Duvet, Pillow, Privacy Partition) */}
+      <group position={[2.4, 0, 1.6]}>
+        <Box p={[0, 0.25, 0]} s={[2.2, 0.35, 1.3]} c="#334155" />       {/* Wood Base */}
+        <Box p={[0, 0.48, 0]} s={[2.1, 0.15, 1.2]} c="#f1f5f9" />       {/* Soft White Mattress */}
+        <Box p={[-0.3, 0.54, 0]} s={[1.3, 0.08, 1.18]} c="#0ea5e9" />    {/* Sky Blue Duvet / Blanket */}
+        <Box p={[0.7, 0.58, 0]} s={[0.45, 0.12, 0.9]} c="#ffffff" />     {/* Fluffy Pillow */}
+        <Box p={[1.05, 0.65, 0]} s={[0.1, 0.9, 1.3]} c="#1e293b" />      {/* Headboard */}
+        <Box p={[0, 0.65, -0.65]} s={[2.2, 0.9, 0.1]} c="#475569" />     {/* Privacy Wall Partition */}
+      </group>
+
+      {/* Sleeping Bunk Pod 2 (Second comfortable bed) */}
+      <group position={[5.2, 0, 1.6]}>
+        <Box p={[0, 0.25, 0]} s={[2.2, 0.35, 1.3]} c="#334155" />       {/* Wood Base */}
+        <Box p={[0, 0.48, 0]} s={[2.1, 0.15, 1.2]} c="#f1f5f9" />       {/* Soft White Mattress */}
+        <Box p={[-0.3, 0.54, 0]} s={[1.3, 0.08, 1.18]} c="#6366f1" />    {/* Indigo Duvet / Blanket */}
+        <Box p={[0.7, 0.58, 0]} s={[0.45, 0.12, 0.9]} c="#ffffff" />     {/* Fluffy Pillow */}
+        <Box p={[1.05, 0.65, 0]} s={[0.1, 0.9, 1.3]} c="#1e293b" />      {/* Headboard */}
+        <Box p={[0, 0.65, -0.65]} s={[2.2, 0.9, 0.1]} c="#475569" />     {/* Privacy Wall Partition */}
+      </group>
+
+      {/* Nightstand & Warm Sleep Lamp */}
+      <Box p={[3.8, 0.35, 2.1]} s={[0.5, 0.55, 0.5]} c="#1e293b" />
+      <Box p={[3.8, 0.72, 2.1]} s={[0.2, 0.2, 0.2]} c="#fef08a" e={0.8} />
+
+      {/* Coffee Bar Counter */}
+      <Box p={[3.5, 0.7, -3.8]} s={[4.2, 1.1, 0.9]} c="#78350f" />
       {/* Espresso Coffee Machine */}
       <Box p={[2.2, 1.45, -3.8]} s={[0.6, 0.55, 0.5]} c="#1e293b" />
       <Box p={[2.2, 1.45, -3.53]} s={[0.1, 0.1, 0.05]} c="#f59e0b" e={1} />
       {/* Bar Stools */}
-      {[1.8, 2.8, 3.8, 4.6].map((x, i) => (
+      {[2.2, 3.2, 4.2].map((x, i) => (
         <group key={i}>
           <Box p={[x, 0.45, -2.5]} s={[0.4, 0.08, 0.4]} c="#d97706" />
           <Box p={[x, 0.22, -2.5]} s={[0.06, 0.44, 0.06]} c="#1e293b" />
         </group>
       ))}
-
-      {/* Rest Pod / Nap Lounge Bed */}
-      <Box p={[4.2, 0.35, 1.5]} s={[2.6, 0.4, 1.4]} c="#059669" />
-      <Box p={[5.3, 0.55, 1.5]} s={[0.4, 0.18, 1.2]} c="#ecfdf5" />
 
       {/* Plants & Decorative Floor Lamps */}
       <Plant x={-6.2} z={3.4} />
