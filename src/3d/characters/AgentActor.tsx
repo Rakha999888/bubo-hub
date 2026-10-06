@@ -72,15 +72,15 @@ export function AgentActor({
     brk: new THREE.Vector3(BREAK_SPOT[cfg.floor]?.[0] || 0, 0.15, BREAK_SPOT[cfg.floor]?.[1] || 0)
   }), [cfg]);
 
-  // Initial mount: start directly seated on office chair facing desk
+  // Initial mount: start in relaxed posture/destination instead of stuck at workstation desk
   useEffect(() => {
     if (root.current) {
-      root.current.position.copy(anchors.sit);
+      root.current.position.set(cfg.desk[0] + 0.8, 0.15, 2.2);
       root.current.rotation.y = Math.PI;
     }
-    pose.current.sit = 1;
+    pose.current.sit = 0;
     yaw.current = Math.PI;
-  }, [anchors]);
+  }, [cfg]);
 
   // Character personality hash for desynchronized staggered autonomous schedule
   const charOffset = useMemo(() => {
@@ -109,8 +109,9 @@ export function AgentActor({
       dynamicTarget = anchors.sit;
       isSofa = false;
     } else {
-      // Single-floor sprawling horizontal open-plan office roaming
-      const cycle = (t + charOffset) % 85;
+      // When NO prompt/task, character stays away from typing at desk:
+      // Spends time relaxing at sofa, chatting at meeting table, or pantry!
+      const cycle = (t + charOffset) % 60;
 
       // Unique spacious destinations across wide horizontal single floor
       const destOptions: Record<string, { pos: [number, number, number]; isSofa?: boolean }> = {
@@ -127,16 +128,14 @@ export function AgentActor({
 
       const myDest = destOptions[cfg.id] || { pos: [0.0, 0.15, 1.5] };
 
-      if (s.status === 'break' || (cycle >= 25 && cycle < 55)) {
+      if (cycle < 45) {
+        // Relaxing at designated lounge / pantry / rest spot
         dynamicTarget = new THREE.Vector3(myDest.pos[0], myDest.pos[1], myDest.pos[2]);
         isSofa = !!myDest.isSofa;
-      } else if (cycle >= 55 && cycle < 65) {
-        // Walk midway in main central hallway
-        const midX = (cfg.desk[0] + myDest.pos[0]) * 0.5;
-        dynamicTarget = new THREE.Vector3(midX, 0.15, 1.5);
-        isSofa = false;
       } else {
-        dynamicTarget = anchors.sit;
+        // Strolling around central corridor
+        const midX = (cfg.desk[0] + myDest.pos[0]) * 0.5;
+        dynamicTarget = new THREE.Vector3(midX, 0.15, 1.2);
         isSofa = false;
       }
     }

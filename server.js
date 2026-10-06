@@ -175,22 +175,10 @@ function processLogLine(line) {
       console.log(`[Discord Inbound] ${channel.channelName} (${channel.name}): "${msg}"`);
 
       if (channel.isManager) {
-        // Manager Atlas triggered in #💬・general-chat!
+        // Manager triggered in #general-chat -> ONLY manager (Rakha) goes to laptop!
         dispatchAgentWork('bubo-manager', msg, 'Mengoordinasikan tim dari General Chat', channel.channelName);
-
-        // All division characters auto-walk to their chairs to work!
-        ALL_DIVISION_AGENT_IDS.forEach((divAgentId, idx) => {
-          setTimeout(() => {
-            dispatchAgentWork(
-              divAgentId,
-              `Arahan Manager: ${msg}`,
-              'Menerima arahan & bekerja dari General Chat',
-              '#💬・general-chat'
-            );
-          }, idx * 200); // slight natural stagger
-        });
       } else {
-        // Specific division channel triggered
+        // Specific division channel triggered -> ONLY that specific agent goes to laptop!
         dispatchAgentWork(channel.agentId, msg, `Mengerjakan tugas dari ${channel.channelName}`, channel.channelName);
       }
     }
@@ -205,12 +193,6 @@ function processLogLine(line) {
     if (channel) {
       console.log(`[Discord Response] Finished for ${channel.channelName} (${channel.name})`);
       finishAgentWork(channel.agentId, `Respon terkirim ke ${channel.channelName}`);
-
-      if (channel.isManager) {
-        ALL_DIVISION_AGENT_IDS.forEach((divAgentId) => {
-          finishAgentWork(divAgentId, 'Arahan General Chat selesai');
-        });
-      }
     }
   }
 }
