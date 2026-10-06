@@ -331,8 +331,8 @@ export function BuboBuilding({
       {/* Front Low Border Baseboard (So scene never exposes raw floor clip) */}
       <Box p={[0, 0.4, 6.6]} s={[38, 0.8, 0.5]} c="#1e293b" />
 
-      {/* Exterior Realistic Glass Windows with Modern Aluminum Mullions */}
-      {[-14, -10, -5, 0, 5, 10, 14].map((x) => (
+      {/* Exterior Realistic Glass Windows with Modern Aluminum Mullions (spaced apart from center official portraits) */}
+      {[-14, -10, -5.5, 5.5, 10, 14].map((x) => (
         <group key={x}>
           {/* Outer Glass Window Pane */}
           <Box p={[x, 2.4, -6.32]} s={[3.2, 1.8, 0.04]} c="#e0f2fe" e={0.05} />
@@ -420,14 +420,14 @@ export function BuboBuilding({
 
         {/* Official Portrait: Presiden Republik Indonesia Prabowo Subianto */}
         <FramedPhoto
-          position={[-1.7, 0, 0]}
+          position={[-1.6, 0, 0]}
           url="./presiden_prabowo.jpg"
           label="Presiden RI"
         />
 
         {/* Official Portrait: Wakil Presiden Republik Indonesia Gibran Rakabuming Raka */}
         <FramedPhoto
-          position={[1.7, 0, 0]}
+          position={[1.6, 0, 0]}
           url="./wapres_gibran.jpg"
           label="Wakil Presiden RI"
         />
