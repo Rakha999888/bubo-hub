@@ -77,7 +77,7 @@ export default function App() {
       <Canvas
         shadows
         dpr={[1, 1.75]}
-        camera={{ position: [0, 22, 16], fov: 38, near: 0.5, far: 400 }}
+        camera={{ position: [34, 26, 42], fov: 40, near: 0.5, far: 400 }}
         onPointerMissed={() => {
           selectAgent(null);
           handleCloseContextMenu();

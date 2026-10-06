@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { AgentConfig, AgentStatus } from '../../types';
 import { BREAK_SPOT, SOFA_SEATS, OFFICE_WAYPOINTS } from '../../config/agents';
@@ -143,7 +142,8 @@ export function AgentActor({
       // Cycle: 65s period
       const cycle = (t + charOffset) % 65;
       const sofaSeats = SOFA_SEATS[cfg.floor] || SOFA_SEATS[2];
-      const assignedSeat = sofaSeats[charOffset % sofaSeats.length] || sofaSeats[0];
+      const seatIdx = Math.floor(charOffset) % sofaSeats.length;
+      const assignedSeat = sofaSeats[seatIdx] || sofaSeats[0];
 
       if (s.status === 'break' || cycle >= 32 && cycle < 54) {
         // Break period: head to sofa and relax!
