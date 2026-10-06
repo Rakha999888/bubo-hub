@@ -26,7 +26,7 @@ interface UIState {
 }
 
 export const useStore = create<UIState>((set, get) => ({
-  view: 'office', floor: 2, cameraLevel: 'city',
+  view: 'office', floor: 2, cameraLevel: 'floor',
   selectedAgentId: null, agentMode: false, agents: initialAgents(),
   setView: (view) => set({ view, selectedAgentId: null, agentMode: false }),
   setFloor: (floor) => set({ floor, cameraLevel: 'floor' }),

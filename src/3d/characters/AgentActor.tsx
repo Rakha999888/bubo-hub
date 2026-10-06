@@ -240,58 +240,7 @@ export function AgentActor({
         </group>
       )}
 
-      {/* Real-time Discord 3D Nameplate */}
-      {showNameplate && (
-        <Html position={[0, 2.38, 0]} center distanceFactor={10} zIndexRange={[10, 0]} style={{ pointerEvents: 'none' }}>
-          <div
-            style={{
-              background: isManager ? 'rgba(15, 23, 42, 0.96)' : 'rgba(15, 23, 42, 0.94)',
-              border: isManager ? '1.5px solid #e0b341' : selected ? '1.5px solid #38bdf8' : '1px solid rgba(148, 163, 184, 0.35)',
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.65), 0 2px 6px rgba(0, 0, 0, 0.4)',
-              borderRadius: '8px',
-              padding: '5px 10px',
-              textAlign: 'center',
-              minWidth: '170px',
-              whiteSpace: 'nowrap',
-              backdropFilter: 'blur(8px)',
-              userSelect: 'none',
-              fontFamily: 'Inter, system-ui, sans-serif'
-            }}
-          >
-            {/* Top Row: Emoji + Official Name */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '13px' }}>{meta.emoji}</span>
-              <span style={{ fontSize: '12.5px', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.01em' }}>
-                {cfg.displayName}
-              </span>
-            </div>
-
-            {/* Middle Row: Exact Discord Channel Tag & Division */}
-            <div style={{ fontSize: '9.5px', color: '#94a3b8', margin: '2px 0 4px 0', fontWeight: 600 }}>
-              <span style={{ color: '#38bdf8', fontFamily: 'monospace' }}>{meta.channel}</span> · {meta.division}
-            </div>
-
-            {/* Bottom Row: Real-time Live Status Badge */}
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px',
-                fontSize: '9px',
-                fontWeight: 700,
-                color: statusColor,
-                background: 'rgba(0, 0, 0, 0.5)',
-                padding: '2px 8px',
-                borderRadius: '999px',
-                border: `1px solid ${statusColor}44`
-              }}
-            >
-              <span style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: statusColor, display: 'inline-block' }} />
-              <span>{st.status === 'idle' ? 'STANDBY' : st.status.toUpperCase()}</span>
-            </div>
-          </div>
-        </Html>
-      )}
+      {/* Permanent floating 3D nameplates REMOVED completely in Phase 9 for living office simulation */}
     </group>
   );
 }
