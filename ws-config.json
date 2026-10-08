@@ -1,0 +1,172 @@
+{
+  "wsUrl": "wss://tapes-link-metallica-billy.trycloudflare.com/ws",
+  "httpUrl": "https://tapes-link-metallica-billy.trycloudflare.com",
+  "updatedAt": "2026-10-08T23:50:51.247Z",
+  "routes": {
+    "bubo-manager": {
+      "agentId": "bubo-manager",
+      "name": "Bubo Coordinator",
+      "channel": "#💬・general-chat",
+      "role": "Head of AI Operations & Koordinator Tim",
+      "task": "",
+      "activity": "Standby",
+      "status": "idle",
+      "resources": {
+        "latency": "1590.2s",
+        "apiCalls": 131,
+        "status": "optimal"
+      },
+      "updatedAt": 1791503451235
+    },
+    "bubo-n8n": {
+      "agentId": "bubo-n8n",
+      "name": "Bubo n8n",
+      "channel": "#⚡・bubo-n8n",
+      "role": "Otomasi Alur Kerja & Integrasi Sistem",
+      "task": "",
+      "activity": "Standby",
+      "status": "idle",
+      "resources": {
+        "latency": "5.3s",
+        "apiCalls": 1,
+        "status": "optimal"
+      },
+      "updatedAt": 1791503451234
+    },
+    "bubo-portal": {
+      "agentId": "bubo-portal",
+      "name": "Bubo Portal",
+      "channel": "#🌐・bubo-portal",
+      "role": "Frontend UI/UX Web Portal Trainee",
+      "task": "",
+      "activity": "Standby",
+      "status": "idle",
+      "resources": {
+        "latency": "79.2s",
+        "apiCalls": 6,
+        "status": "optimal"
+      },
+      "updatedAt": 1791503451235
+    },
+    "bubo-backend-portal": {
+      "agentId": "bubo-backend-portal",
+      "name": "Bubo Backend",
+      "channel": "#💻・bubo-backend-portal",
+      "role": "Backend Engineering & Database PostgreSQL",
+      "task": "",
+      "activity": "Standby",
+      "status": "idle",
+      "resources": {
+        "latency": "423.7s",
+        "apiCalls": 40,
+        "status": "optimal"
+      },
+      "updatedAt": 1791503451234
+    },
+    "bubo-admin-portal": {
+      "agentId": "bubo-admin-portal",
+      "name": "Bubo Admin Portal",
+      "channel": "#🛡・bubo-admin-portal",
+      "role": "Dashboard Admin & Manajemen Sistem",
+      "task": "",
+      "activity": "Standby",
+      "status": "idle",
+      "resources": {
+        "latency": "1108.3s",
+        "apiCalls": 150,
+        "status": "optimal"
+      },
+      "updatedAt": 1791503451235
+    },
+    "bubo-source-video": {
+      "agentId": "bubo-source-video",
+      "name": "Bubo Source Video",
+      "channel": "#🎬・bubo-source-video",
+      "role": "Produksi, Kurasi Materi & Skrip Video",
+      "task": "",
+      "activity": "Standby",
+      "status": "idle",
+      "resources": {
+        "latency": "11.0s",
+        "apiCalls": 1,
+        "status": "optimal"
+      },
+      "updatedAt": 1791503451234
+    },
+    "bubo-pdf": {
+      "agentId": "bubo-pdf",
+      "name": "Bubo PDF",
+      "channel": "#📄・bubo-pdf",
+      "role": "Pengolahan, Ekstraksi & Dokumen PDF",
+      "task": "",
+      "activity": "Standby",
+      "status": "idle",
+      "resources": {
+        "latency": "3.9s",
+        "apiCalls": 1,
+        "status": "optimal"
+      },
+      "updatedAt": 1791503451234
+    },
+    "bubo-qc-portal": {
+      "agentId": "bubo-qc-portal",
+      "name": "Bubo QC Portal",
+      "channel": "#🔍・bubo-qc-portal",
+      "role": "Quality Control & Troubleshooting Bug",
+      "task": "",
+      "activity": "Standby",
+      "status": "idle",
+      "resources": {
+        "latency": "3.6s",
+        "apiCalls": 1,
+        "status": "optimal"
+      },
+      "updatedAt": 1791503451235
+    },
+    "bubo-ticketing": {
+      "agentId": "bubo-ticketing",
+      "name": "Bubo Ticketing",
+      "channel": "#🎫・bubo-ticketing",
+      "role": "Manajemen Tiket & Jira Helpdesk",
+      "task": "",
+      "activity": "Standby",
+      "status": "idle",
+      "resources": {
+        "latency": "4.6s",
+        "apiCalls": 1,
+        "status": "optimal"
+      },
+      "updatedAt": 1791503451234
+    },
+    "bubo-building": {
+      "agentId": "bubo-building",
+      "name": "Bubo Building",
+      "channel": "#🏗・bubo-building",
+      "role": "Arsitektur Sistem & Server Build SMLONE",
+      "task": "",
+      "activity": "Standby",
+      "status": "idle",
+      "resources": {
+        "latency": "61.3s",
+        "apiCalls": 10,
+        "status": "optimal"
+      },
+      "updatedAt": 1791503451234
+    },
+    "bubo-sheet": {
+      "agentId": "bubo-sheet",
+      "name": "Bubo Sheet",
+      "channel": "#📊・bubo-sheet",
+      "role": "Pengolahan Google Sheets & Manajemen Data Spreadsheet",
+      "task": "",
+      "activity": "Standby",
+      "status": "idle",
+      "resources": {
+        "latency": "35.3s",
+        "apiCalls": 3,
+        "status": "optimal"
+      },
+      "updatedAt": 1791503451234
+    }
+  }
+}
