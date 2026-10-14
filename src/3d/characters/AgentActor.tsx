@@ -72,15 +72,15 @@ export function AgentActor({
     brk: new THREE.Vector3(BREAK_SPOT[cfg.floor]?.[0] || 0, 0.15, BREAK_SPOT[cfg.floor]?.[1] || 0)
   }), [cfg]);
 
-  // Initial mount: start in relaxed posture/destination instead of stuck at workstation desk
+  // Initial mount: start directly seated at their own workstation chair
   useEffect(() => {
     if (root.current) {
-      root.current.position.set(cfg.desk[0] + 0.8, 0.15, 2.2);
+      root.current.position.set(cfg.desk[0], 0.15, cfg.desk[1] + 0.85);
       root.current.rotation.y = Math.PI;
     }
-    pose.current.sit = 0;
+    pose.current.sit = 1;
     yaw.current = Math.PI;
-  }, [cfg]);
+  }, [cfg, anchors]);
 
   // Character personality hash for desynchronized staggered autonomous schedule
   const charOffset = useMemo(() => {
@@ -96,57 +96,47 @@ export function AgentActor({
     const p = pose.current;
     const t = state.clock.elapsedTime;
 
-    // Priority 1: ONLY work at laptop when there is a real prompt / task or Hermes is busy working!
-    // If no active prompt or task, character remains FREE to roam / relax / not type!
+    // Default posture: seated comfortably at desk working/typing
     const hasActivePromptOrTask = !!s.task && s.task.trim().length > 0;
     const isHermesBusy = (s.status === 'working' || s.status === 'thinking' || s.status === 'error') && hasActivePromptOrTask;
+
+    // 75% of the time seated at desk, 25% take a quick break to pantry/sofa
+    const cycle = (t + charOffset) % 120;
+    const isTakingBreak = cycle > 90 && !isHermesBusy;
 
     let dynamicTarget = anchors.sit;
     let isSofa = false;
 
-    if (isHermesBusy) {
-      // Must return immediately to workstation and work!
+    if (isTakingBreak) {
+      const destOptions: Record<string, { pos: [number, number, number]; isSofa?: boolean }> = {
+        'bubo-manager': { pos: [-13.5, 0.15, 3.2], isSofa: true },     // Executive lounge sofa
+        'bubo-admin-portal': { pos: [-10.5, 0.15, 2.5] },              // Executive meeting table
+        'bubo-portal': { pos: [-4.0, 0.15, 2.2] },                     // Central corridor left
+        'bubo-backend-portal': { pos: [0.0, 0.15, 2.5] },              // Central discussion area
+        'bubo-qc-portal': { pos: [4.0, 0.15, 2.2] },                   // Central corridor right
+        'bubo-n8n': { pos: [7.5, 0.15, -3.5] },                         // Coffee Bar & Pantry
+        'bubo-source-video': { pos: [9.0, 0.15, -1.5] },                // Cafe standing table
+        'bubo-ticketing': { pos: [14.0, 0.15, 2.2], isSofa: true },     // Game Room Beanbags
+        'bubo-building': { pos: [15.0, 0.15, -3.8] }                   // Quiet Sleeping Pods
+      };
+      const myDest = destOptions[cfg.id] || { pos: [0.0, 0.15, 1.5] };
+      dynamicTarget = new THREE.Vector3(myDest.pos[0], myDest.pos[1], myDest.pos[2]);
+      isSofa = !!myDest.isSofa;
+    } else {
       dynamicTarget = anchors.sit;
       isSofa = false;
-    } else {
-      // When NO prompt/task, character stays away from typing at desk:
-      // Spends time relaxing at sofa, chatting at meeting table, or pantry!
-      const cycle = (t + charOffset) % 60;
-
-      // Distributed destinations across entire office (NO clustering at right side!)
-      const destOptions: Record<string, { pos: [number, number, number]; isSofa?: boolean }> = {
-        'bubo-manager': { pos: [-13.5, 0.15, 3.2], isSofa: true },     // Executive lounge sofa (Far Left)
-        'bubo-admin-portal': { pos: [-10.5, 0.15, 2.5] },              // Executive meeting table (Left)
-        'bubo-portal': { pos: [-4.0, 0.15, 2.2] },                     // Central corridor left
-        'bubo-backend-portal': { pos: [0.0, 0.15, 2.5] },              // Central discussion area (Center)
-        'bubo-qc-portal': { pos: [4.0, 0.15, 2.2] },                   // Central corridor right
-        'bubo-n8n': { pos: [7.5, 0.15, -3.5] },                         // Coffee Bar & Pantry (Mid Right)
-        'bubo-source-video': { pos: [9.0, 0.15, -1.5] },                // Cafe standing table (Mid Right)
-        'bubo-ticketing': { pos: [14.0, 0.15, 2.2], isSofa: true },     // Game Room Beanbags (Far Right)
-        'bubo-building': { pos: [15.0, 0.15, -3.8] }                   // Quiet Sleeping Pods (Far Right Back)
-      };
-
-      const myDest = destOptions[cfg.id] || { pos: [0.0, 0.15, 1.5] };
-
-      if (cycle < 45) {
-        // Relaxing at designated lounge / pantry / rest spot
-        dynamicTarget = new THREE.Vector3(myDest.pos[0], myDest.pos[1], myDest.pos[2]);
-        isSofa = !!myDest.isSofa;
-      } else {
-        // Strolling around central corridor
-        const midX = (cfg.desk[0] + myDest.pos[0]) * 0.5;
-        dynamicTarget = new THREE.Vector3(midX, 0.15, 1.2);
-        isSofa = false;
-      }
     }
 
     const to = dynamicTarget.clone().sub(g.position);
     to.y = 0;
     const dist = to.length();
 
-    // Natural sitting transition: seated at workstation OR on sofa
-    const isAtRest = dist < 0.25 && (dynamicTarget === anchors.sit || isSofa);
-    p.sit = THREE.MathUtils.damp(p.sit, isAtRest ? 1 : 0, 4.5, dt);
+    // Sitting at desk or sofa
+    const isSeatedAtDesk = dist < 0.25 && dynamicTarget === anchors.sit;
+    const isSeatedAtSofa = dist < 0.25 && isSofa;
+    const shouldSit = isSeatedAtDesk || isSeatedAtSofa;
+
+    p.sit = THREE.MathUtils.damp(p.sit, shouldSit ? 1 : 0, 5.0, dt);
 
     const canMove = p.sit < 0.35;
     p.walking = dist > 0.15 && canMove;
@@ -156,20 +146,13 @@ export function AgentActor({
       g.position.addScaledVector(to.normalize(), Math.min(dist, speed * dt));
     }
 
-    // Role-specific typing / relaxing
-    if (isSofa && isAtRest) {
-      p.typing = false;
-      // Relaxed behavior on sofa
-      if (cfg.id === 'bubo-portal' || cfg.id === 'bubo-ticketing') {
-        p.mood = 'happy'; // relaxing on phone
-      } else if (cfg.id === 'bubo-admin-portal') {
-        p.mood = 'think'; // sketching on tablet
-      } else {
-        p.mood = 'normal';
-      }
-    } else if (dynamicTarget === anchors.sit && isAtRest) {
-      p.typing = isHermesBusy;
+    // Role-specific typing / posture
+    if (isSeatedAtDesk) {
+      p.typing = isHermesBusy || (Math.sin(t * 0.8 + charOffset) > -0.2); // Natural typing rhythm
       p.mood = isHermesBusy ? 'focused' : 'normal';
+    } else if (isSeatedAtSofa) {
+      p.typing = false;
+      p.mood = 'happy';
     } else {
       p.typing = false;
       p.mood = 'normal';
