@@ -442,14 +442,25 @@ export function BuboCharacter({ pose, accessory, avatar, manager = false, dim = 
 
     arms.forEach((r, i) => {
       if (!r.current) return;
-      // In Three.js, with head and face facing +Z, arm hanging straight down has neutral rotation.
-      // Negative rotation around X (-x) swings the arm forward toward the face (+Z) onto the desk/keyboard!
-      // When seated at desk (p.sit > 0), arms reach forward 75-80 degrees onto the keyboard / tabletop:
-      let x = -p.sit * 1.45;
-      if (p.typing) x += Math.sin(t * 15 + i * 2) * 0.12;
-      else if (p.sit > 0.5) x += Math.sin(t * 1.5 + i) * 0.03; // Gentle breathing motion on desk
-      if (p.walking) x += swing * 0.5 * (i ? 1 : -1);
-      if (p.mood === 'success') x = -2.7 + Math.sin(t * 10) * 0.2;
+      // In Three.js with character facing +Z in local space:
+      // Negative rotation around local X (-x) lifts the arm FORWARD toward chest & desk/keyboard.
+      // Positive rotation (+x) swings it backward behind the torso.
+      // When sitting (p.sit > 0), arms lift forward by default (-1.25 rad) onto the table!
+      let x = -p.sit * 1.25;
+      if (p.typing) {
+        // Typing oscillation moving fingertips forward and back on keys
+        x += Math.sin(t * 16 + i * 2) * 0.12 - 0.1;
+      } else if (p.sit > 0.5) {
+        // Relaxed arm resting on table
+        x += Math.sin(t * 1.5 + i) * 0.03;
+      }
+      if (p.walking) {
+        // Natural walking arm swing
+        x += swing * 0.55 * (i ? 1 : -1);
+      }
+      if (p.mood === 'success') {
+        x = -2.7 + Math.sin(t * 10) * 0.2; // Celebration hands in the air
+      }
       r.current.rotation.x = x;
     });
 

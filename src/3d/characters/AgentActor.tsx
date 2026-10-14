@@ -96,33 +96,45 @@ export function AgentActor({
     const p = pose.current;
     const t = state.clock.elapsedTime;
 
-    // Default posture: seated comfortably at desk working/typing
+    // ─── AUTONOMOUS FREE ROAMING & OFFICE LIFE CYCLE ───
+    // Agen bebas bergerak keliling kantor (pantry, meeting room, lounge, sofa, koridor)
+    // dan kembali sesekali ke meja kerja. Jika Hermes sedang mengerjakan prompt / task,
+    // agen langsung berjalan kembali ke meja dan fokus mengetik.
     const hasActivePromptOrTask = !!s.task && s.task.trim().length > 0;
     const isHermesBusy = (s.status === 'working' || s.status === 'thinking' || s.status === 'error') && hasActivePromptOrTask;
 
-    // 75% of the time seated at desk, 25% take a quick break to pantry/sofa
-    const cycle = (t + charOffset) % 120;
-    const isTakingBreak = cycle > 90 && !isHermesBusy;
+    // Siklus bebas roaming per agen (offset berbeda agar tidak serentak)
+    const cycle = (t * 0.15 + charOffset) % 100;
+
+    // 60% waktu bebas roaming keliling berbagai spot kantor, 40% waktu duduk santai di meja
+    const isFreeRoaming = !isHermesBusy && cycle < 65;
 
     let dynamicTarget = anchors.sit;
     let isSofa = false;
 
-    if (isTakingBreak) {
-      const destOptions: Record<string, { pos: [number, number, number]; isSofa?: boolean }> = {
-        'bubo-manager': { pos: [-13.5, 0.15, 3.2], isSofa: true },     // Executive lounge sofa
-        'bubo-admin-portal': { pos: [-10.5, 0.15, 2.5] },              // Executive meeting table
-        'bubo-portal': { pos: [-4.0, 0.15, 2.2] },                     // Central corridor left
-        'bubo-backend-portal': { pos: [0.0, 0.15, 2.5] },              // Central discussion area
-        'bubo-qc-portal': { pos: [4.0, 0.15, 2.2] },                   // Central corridor right
-        'bubo-n8n': { pos: [7.5, 0.15, -3.5] },                         // Coffee Bar & Pantry
-        'bubo-source-video': { pos: [9.0, 0.15, -1.5] },                // Cafe standing table
-        'bubo-ticketing': { pos: [14.0, 0.15, 2.2], isSofa: true },     // Game Room Beanbags
-        'bubo-building': { pos: [15.0, 0.15, -3.8] }                   // Quiet Sleeping Pods
-      };
-      const myDest = destOptions[cfg.id] || { pos: [0.0, 0.15, 1.5] };
-      dynamicTarget = new THREE.Vector3(myDest.pos[0], myDest.pos[1], myDest.pos[2]);
-      isSofa = !!myDest.isSofa;
+    if (isFreeRoaming) {
+      // Pilihan spot roaming santai dan eksplorasi di seantero kantor:
+      // executive meeting table, sofa lounge, coffee bar, pantry, central hall, gaming pods
+      const roamWaypoints: Array<{ pos: [number, number, number]; isSofa?: boolean }> = [
+        { pos: [-13.5, 0.15, 3.2], isSofa: true },  // Executive sofa lounge
+        { pos: [-10.5, 0.15, 2.5] },                // Executive round meeting table
+        { pos: [-4.0, 0.15, 2.2] },                 // Left central corridor
+        { pos: [0.0, 0.15, 2.4] },                  // Center corridor & discussion zone
+        { pos: [4.0, 0.15, 2.2] },                  // Right central corridor
+        { pos: [7.5, 0.15, -3.5] },                 // Coffee bar & kitchen counter
+        { pos: [9.0, 0.15, -1.5] },                 // Standing cafe round table
+        { pos: [14.0, 0.15, 2.2], isSofa: true },  // Game room beanbags
+        { pos: [15.2, 0.15, 2.0], isSofa: true },  // Game room sofa
+        { pos: [15.0, 0.15, -3.8] },                // Rest & sleeping pods
+      ];
+
+      // Tentukan waypoint dinamis berdasarkan siklus waktu
+      const spotIndex = Math.floor((cycle + charOffset) % roamWaypoints.length);
+      const chosenSpot = roamWaypoints[spotIndex];
+      dynamicTarget = new THREE.Vector3(chosenSpot.pos[0], chosenSpot.pos[1], chosenSpot.pos[2]);
+      isSofa = !!chosenSpot.isSofa;
     } else {
+      // Kembali duduk di meja kerja sendiri
       dynamicTarget = anchors.sit;
       isSofa = false;
     }
@@ -131,24 +143,27 @@ export function AgentActor({
     to.y = 0;
     const dist = to.length();
 
-    // Sitting at desk or sofa
-    const isSeatedAtDesk = dist < 0.25 && dynamicTarget === anchors.sit;
-    const isSeatedAtSofa = dist < 0.25 && isSofa;
+    // Duduk jika sudah sampai di kursi meja kerja atau sofa
+    const isSeatedAtDesk = dist < 0.35 && dynamicTarget === anchors.sit;
+    const isSeatedAtSofa = dist < 0.35 && isSofa;
     const shouldSit = isSeatedAtDesk || isSeatedAtSofa;
 
+    // Animasi duduk / berdiri yang mulus
     p.sit = THREE.MathUtils.damp(p.sit, shouldSit ? 1 : 0, 5.0, dt);
 
-    const canMove = p.sit < 0.35;
+    // Boleh berjalan jika tidak sedang duduk diam
+    const canMove = p.sit < 0.4;
     p.walking = dist > 0.15 && canMove;
 
     if (p.walking) {
-      const speed = cfg.id === 'bubo-manager' ? 1.35 : 1.5;
+      const speed = isHermesBusy ? 1.8 : 1.35; // Jalan lebih cepat saat dipanggil bekerja
       g.position.addScaledVector(to.normalize(), Math.min(dist, speed * dt));
     }
 
-    // Role-specific typing / posture
+    // Role-specific gesture / posture
     if (isSeatedAtDesk) {
-      p.typing = isHermesBusy || (Math.sin(t * 0.8 + charOffset) > -0.2); // Natural typing rhythm
+      // Saat di meja: mengetik dengan tangan ke depan di atas keyboard
+      p.typing = isHermesBusy || (Math.sin(t * 1.5 + charOffset) > -0.1);
       p.mood = isHermesBusy ? 'focused' : 'normal';
     } else if (isSeatedAtSofa) {
       p.typing = false;
@@ -158,6 +173,7 @@ export function AgentActor({
       p.mood = 'normal';
     }
 
+    // Arah hadap: jika berjalan hadap arah jalan, jika duduk di meja hadap monitor (-Z)
     const goalYaw = p.walking ? Math.atan2(to.x, to.z) : Math.PI;
     yaw.current += wrap(goalYaw - yaw.current) * Math.min(1, 8 * dt);
     g.rotation.y = yaw.current;
