@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { useStore } from '../../state/store';
 
 export function PromptBar() {
-  const id = useStore((s) => s.selectedAgentId);
-  const agent = useStore((s) => (id ? s.agents[id] : null));
+  const id = useStore((s) => s.selectedAgentId) || 'bubo-manager';
+  const agent = useStore((s) => s.agents[id]);
   const sendPrompt = useStore((s) => s.sendPrompt);
   const [input, setInput] = useState('');
 
-  if (!id || !agent) return null;
+  if (!agent) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
