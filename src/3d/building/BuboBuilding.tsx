@@ -100,10 +100,16 @@ function ACUnit({ x, y, z }: { x: number; y: number; z: number }) {
 
 /** Standard SMLONE Workstation: Desk, Monitor, Keyboard, and Chair with SitAnchor at (x, 0.15, z + 0.85) */
 export function Workstation({ cfg }: { cfg: AgentConfig }) {
-  const status = useStore((s) => s.agents[cfg.id]?.status || 'idle');
+  const ag = useStore((s) => s.agents[cfg.id]);
+  const status = ag?.status || 'idle';
+  const hasTask = !!ag?.task && ag.task.trim().length > 0;
+  const isWorking = (status === 'working' || status === 'thinking' || status === 'error') && hasTask;
+
   const [x, z] = cfg.desk;
   const y0 = 0.15;
-  const screen = status === 'offline' || status === 'idle' ? '#10151f' : STATUS_COLOR[status];
+  // Layar monitor & laptop HANYA menyala jika sedang bekerja diperintah prompt!
+  const screen = isWorking ? STATUS_COLOR[status] || '#38bdf8' : '#0f172a';
+  const emissiveInt = isWorking ? 0.9 : 0;
 
   return (
     <group>
@@ -118,7 +124,7 @@ export function Workstation({ cfg }: { cfg: AgentConfig }) {
 
       {/* Monitor Frame & Screen */}
       <Box p={[x, y0 + 1.0, z - 0.2]} s={[0.9, 0.52, 0.05]} c="#1a1d25" />
-      <Box p={[x, y0 + 1.0, z - 0.17]} s={[0.82, 0.45, 0.02]} c={screen} e={status === 'idle' || status === 'offline' ? 0 : 0.8} />
+      <Box p={[x, y0 + 1.0, z - 0.17]} s={[0.82, 0.45, 0.02]} c={screen} e={emissiveInt} />
       {/* Monitor Stand */}
       <Box p={[x, y0 + 0.78, z - 0.2]} s={[0.1, 0.16, 0.1]} c="#1a1d25" />
 

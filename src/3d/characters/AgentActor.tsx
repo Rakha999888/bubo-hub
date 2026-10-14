@@ -96,44 +96,46 @@ export function AgentActor({
     const p = pose.current;
     const t = state.clock.elapsedTime;
 
-    // ─── AUTONOMOUS ACTIVE ROAMING (LIVING OFFICE) ───
-    // Karakter aktif berjalan dan berkeliling di kantor secara otonom kapan pun
-    // tanpa perlu menunggu prompt! Agen berjalan ke koridor, pantry, sofa, dan meeting table.
+    // ─── BEKERJA HANYA JIKA ADA PROMPT / TASK AKTIF ───
+    // Agen HANYA mengetik & bekerja di laptop jika sedang diberi prompt / perintah aktif!
+    // Agen lain yang tidak diberi perintah TIDAK bekerja (p.typing = false).
     const hasActivePromptOrTask = !!s.task && s.task.trim().length > 0;
-    const isHermesBusy = (s.status === 'working' || s.status === 'thinking' || s.status === 'error') && hasActivePromptOrTask;
-
-    // Setiap agen memiliki siklus hidup dinamis dengan periode 45 detik
-    const cycle = (t * 0.25 + charOffset) % 45;
-
-    // 55% waktu aktif bebas bergerak keliling kantor, 45% waktu kembali duduk rapi di meja
-    const isRoamingNow = !isHermesBusy && cycle < 25;
+    const isWorkingOnPrompt = (s.status === 'working' || s.status === 'thinking' || s.status === 'error') && hasActivePromptOrTask;
 
     let dynamicTarget = anchors.sit;
     let isSofa = false;
 
-    if (isRoamingNow) {
-      // 10 titik destinasi hidup di seluruh penjuru kantor (termasuk pantry & sofa lounge)
-      const roamWaypoints: Array<{ pos: [number, number, number]; isSofa?: boolean }> = [
-        { pos: [-13.5, 0.15, 3.2], isSofa: true },  // Executive sofa lounge
-        { pos: [-10.5, 0.15, 2.5] },                // Executive round meeting table
-        { pos: [-4.0, 0.15, 2.2] },                 // Koridor kiri
-        { pos: [0.0, 0.15, 2.4] },                  // Koridor utama tengah
-        { pos: [3.5, 0.15, 0.8] },                  // Sofa santai lounge tengah
-        { pos: [5.5, 0.15, -3.8] },                 // Coffee bar & pantry kulkas
-        { pos: [7.5, 0.15, -2.5] },                 // Meja santai cafe
-        { pos: [12.5, 0.15, 1.8], isSofa: true },  // Game room sofa biru
-        { pos: [14.0, 0.15, 2.2], isSofa: true },  // Beanbags santai TV
-        { pos: [14.5, 0.15, -3.5] },                // Sleeping pods & quiet room
-      ];
-
-      // Berikan tujuan unik berbeda berdasarkan karakter ID dan siklus
-      const spotIndex = Math.floor((cycle * 0.4 + charOffset) % roamWaypoints.length);
-      const chosenSpot = roamWaypoints[spotIndex];
-      dynamicTarget = new THREE.Vector3(chosenSpot.pos[0], chosenSpot.pos[1], chosenSpot.pos[2]);
-      isSofa = !!chosenSpot.isSofa;
-    } else {
+    if (isWorkingOnPrompt) {
+      // Agen yang sedang diprompt WAJIB langsung ke meja workstation sendiri dan fokus bekerja!
       dynamicTarget = anchors.sit;
       isSofa = false;
+    } else {
+      // Agen yang TIDAK sedang diprompt: santai dan bebas bergerak di kantor tanpa bekerja
+      const cycle = (t * 0.2 + charOffset) % 45;
+      const isRoamingNow = cycle < 28;
+
+      if (isRoamingNow) {
+        const roamWaypoints: Array<{ pos: [number, number, number]; isSofa?: boolean }> = [
+          { pos: [-13.5, 0.15, 3.2], isSofa: true },  // Executive sofa lounge
+          { pos: [-10.5, 0.15, 2.5] },                // Executive round meeting table
+          { pos: [-4.0, 0.15, 2.2] },                 // Koridor kiri
+          { pos: [0.0, 0.15, 2.4] },                  // Koridor utama tengah
+          { pos: [3.5, 0.15, 0.8] },                  // Sofa santai lounge tengah
+          { pos: [5.5, 0.15, -3.8] },                 // Coffee bar & pantry kulkas
+          { pos: [7.5, 0.15, -2.5] },                 // Meja santai cafe
+          { pos: [12.5, 0.15, 1.8], isSofa: true },  // Game room sofa biru
+          { pos: [14.0, 0.15, 2.2], isSofa: true },  // Beanbags santai TV
+          { pos: [14.5, 0.15, -3.5] },                // Sleeping pods & quiet room
+        ];
+
+        const spotIndex = Math.floor((cycle * 0.35 + charOffset) % roamWaypoints.length);
+        const chosenSpot = roamWaypoints[spotIndex];
+        dynamicTarget = new THREE.Vector3(chosenSpot.pos[0], chosenSpot.pos[1], chosenSpot.pos[2]);
+        isSofa = !!chosenSpot.isSofa;
+      } else {
+        dynamicTarget = anchors.sit;
+        isSofa = false;
+      }
     }
 
     const to = dynamicTarget.clone().sub(g.position);
@@ -148,20 +150,19 @@ export function AgentActor({
     p.walking = dist > 0.25;
 
     if (p.walking) {
-      const speed = isHermesBusy ? 2.2 : 1.6;
+      const speed = isWorkingOnPrompt ? 2.4 : 1.5; // Berlari/jalan cepat ke meja jika diprompt
       g.position.addScaledVector(to.normalize(), Math.min(dist, speed * dt));
     }
 
-    // Gesture & animasi
-    if (dist < 0.4 && dynamicTarget === anchors.sit) {
-      p.typing = isHermesBusy || (Math.sin(t * 1.5 + charOffset) > -0.1);
-      p.mood = isHermesBusy ? 'focused' : 'normal';
-    } else if (dist < 0.4 && isSofa) {
-      p.typing = false;
-      p.mood = 'happy';
+    // Gesture & animasi:
+    // HANYA mengetik jika sedang diperintah oleh prompt!
+    if (dist < 0.4 && dynamicTarget === anchors.sit && isWorkingOnPrompt) {
+      p.typing = true;
+      p.mood = 'focused';
     } else {
+      // Saat standby / tidak diprompt, dilarang mengetik/bekerja!
       p.typing = false;
-      p.mood = 'normal';
+      p.mood = isAtRest && isSofa ? 'happy' : 'normal';
     }
 
     // Arah pandang rotasi
