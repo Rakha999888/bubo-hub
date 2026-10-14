@@ -431,17 +431,23 @@ export function BuboCharacter({ pose, accessory, avatar, manager = false, dim = 
     legs.forEach((r, i) => {
       if (!r.current) return;
       r.current.position.y = hips;
-      r.current.rotation.x = -p.sit * Math.PI / 2 + swing * 0.55 * (i ? -1 : 1);
+      // Thighs swing forward towards +Z (negative X rotation) when sitting
+      r.current.rotation.x = -p.sit * (Math.PI / 2.1) + swing * 0.55 * (i ? -1 : 1);
     });
 
     shins.forEach((r) => {
-      if (r.current) r.current.rotation.x = p.sit * Math.PI / 2;
+      // Shins bend downward towards feet (+X rotation relative to thigh)
+      if (r.current) r.current.rotation.x = p.sit * (Math.PI / 2.1);
     });
 
     arms.forEach((r, i) => {
       if (!r.current) return;
-      let x = -p.sit * 1.05;
+      // In Three.js, with head and face facing +Z, arm hanging straight down has neutral rotation.
+      // Negative rotation around X (-x) swings the arm forward toward the face (+Z) onto the desk/keyboard!
+      // When sitting at desk (p.sit > 0), arms rest naturally forward on desk (-1.15 rad).
+      let x = -p.sit * 1.15;
       if (p.typing) x += Math.sin(t * 15 + i * 2) * 0.08;
+      else if (p.sit > 0.5) x += Math.sin(t * 1.5 + i) * 0.03; // Gentle natural breathing motion resting on desk
       if (p.walking) x += swing * 0.5 * (i ? 1 : -1);
       if (p.mood === 'success') x = -2.7 + Math.sin(t * 10) * 0.2;
       r.current.rotation.x = x;
