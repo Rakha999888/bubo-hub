@@ -105,25 +105,25 @@ export function AgentActor({
     // Setiap agen memiliki siklus hidup dinamis dengan periode 45 detik
     const cycle = (t * 0.25 + charOffset) % 45;
 
-    // 70% waktu aktif bebas bergerak keliling kantor, 30% waktu duduk di meja
-    const isRoamingNow = !isHermesBusy && cycle < 32;
+    // 55% waktu aktif bebas bergerak keliling kantor, 45% waktu kembali duduk rapi di meja
+    const isRoamingNow = !isHermesBusy && cycle < 25;
 
     let dynamicTarget = anchors.sit;
     let isSofa = false;
 
     if (isRoamingNow) {
-      // 10 titik destinasi hidup di seluruh penjuru kantor
+      // 10 titik destinasi hidup di seluruh penjuru kantor (termasuk pantry & sofa lounge)
       const roamWaypoints: Array<{ pos: [number, number, number]; isSofa?: boolean }> = [
         { pos: [-13.5, 0.15, 3.2], isSofa: true },  // Executive sofa lounge
         { pos: [-10.5, 0.15, 2.5] },                // Executive round meeting table
         { pos: [-4.0, 0.15, 2.2] },                 // Koridor kiri
         { pos: [0.0, 0.15, 2.4] },                  // Koridor utama tengah
-        { pos: [4.0, 0.15, 2.2] },                  // Koridor kanan
-        { pos: [7.5, 0.15, -3.5] },                 // Coffee bar & pantry
-        { pos: [9.0, 0.15, -1.5] },                 // Meja bundar cafe
-        { pos: [14.0, 0.15, 2.2], isSofa: true },  // Beanbags game lounge
-        { pos: [15.2, 0.15, 2.0], isSofa: true },  // Sofa game room
-        { pos: [15.0, 0.15, -3.8] },                // Area santai pods
+        { pos: [3.5, 0.15, 0.8] },                  // Sofa santai lounge tengah
+        { pos: [5.5, 0.15, -3.8] },                 // Coffee bar & pantry kulkas
+        { pos: [7.5, 0.15, -2.5] },                 // Meja santai cafe
+        { pos: [12.5, 0.15, 1.8], isSofa: true },  // Game room sofa biru
+        { pos: [14.0, 0.15, 2.2], isSofa: true },  // Beanbags santai TV
+        { pos: [14.5, 0.15, -3.5] },                // Sleeping pods & quiet room
       ];
 
       // Berikan tujuan unik berbeda berdasarkan karakter ID dan siklus
