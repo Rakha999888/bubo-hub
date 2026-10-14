@@ -444,10 +444,10 @@ export function BuboCharacter({ pose, accessory, avatar, manager = false, dim = 
       if (!r.current) return;
       // In Three.js, with head and face facing +Z, arm hanging straight down has neutral rotation.
       // Negative rotation around X (-x) swings the arm forward toward the face (+Z) onto the desk/keyboard!
-      // When sitting at desk (p.sit > 0), arms rest naturally forward on desk (-1.15 rad).
-      let x = -p.sit * 1.15;
-      if (p.typing) x += Math.sin(t * 15 + i * 2) * 0.08;
-      else if (p.sit > 0.5) x += Math.sin(t * 1.5 + i) * 0.03; // Gentle natural breathing motion resting on desk
+      // When seated at desk (p.sit > 0), arms reach forward 75-80 degrees onto the keyboard / tabletop:
+      let x = -p.sit * 1.45;
+      if (p.typing) x += Math.sin(t * 15 + i * 2) * 0.12;
+      else if (p.sit > 0.5) x += Math.sin(t * 1.5 + i) * 0.03; // Gentle breathing motion on desk
       if (p.walking) x += swing * 0.5 * (i ? 1 : -1);
       if (p.mood === 'success') x = -2.7 + Math.sin(t * 10) * 0.2;
       r.current.rotation.x = x;
@@ -540,12 +540,11 @@ export function BuboCharacter({ pose, accessory, avatar, manager = false, dim = 
               <cylinderGeometry args={[0.08, 0.075, 0.34, 12]} />
               {topMat}
             </mesh>
-            {/* Hand / Fingers */}
-            <group position={[0, -0.44, 0]}>
-              <mesh>
-                <sphereGeometry args={[0.085, 12, 12]} />
+            {/* Hand / Fingers (reaching forward toward keyboard) */}
+            <group position={[0, -0.42, 0.08]}>
+              <RoundedBox args={[0.14, 0.08, 0.16]} radius={0.03} smoothness={3}>
                 {skinMat}
-              </mesh>
+              </RoundedBox>
             </group>
           </group>
         ))}
