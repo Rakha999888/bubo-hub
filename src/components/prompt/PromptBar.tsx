@@ -2,51 +2,50 @@ import { useState } from 'react';
 import { useStore } from '../../state/store';
 
 export function PromptBar() {
-  const id = useStore((s) => s.selectedAgentId) || 'bubo-manager';
-  const agent = useStore((s) => s.agents[id]);
+  const selectedId = useStore((s) => s.selectedAgentId);
+  const selectAgent = useStore((s) => s.selectAgent);
+  const agents = useStore((s) => s.agents);
   const sendPrompt = useStore((s) => s.sendPrompt);
   const [input, setInput] = useState('');
 
-  if (!agent) return null;
+  const currentId = selectedId || 'bubo-manager';
+  const currentAgent = agents[currentId];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
-    sendPrompt(id, input.trim());
+    if (!input.trim() || !currentAgent) return;
+    sendPrompt(currentId, input.trim());
     setInput('');
   };
 
   return (
-    <form
-      className="prompt"
-      onSubmit={handleSubmit}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        background: 'rgba(15, 23, 42, 0.95)',
-        padding: '8px 12px',
-        borderRadius: '12px',
-        border: '1px solid rgba(56, 189, 248, 0.4)',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
-        backdropFilter: 'blur(10px)'
-      }}
-    >
+    <form className="prompt" onSubmit={handleSubmit}>
+      <select
+        value={currentId}
+        onChange={(e) => selectAgent(e.target.value)}
+        style={{
+          background: '#0a1222',
+          color: '#38bdf8',
+          border: '1px solid var(--line)',
+          borderRadius: '8px',
+          padding: '8px 10px',
+          fontSize: '12px',
+          fontWeight: 600,
+          outline: 'none',
+          cursor: 'pointer'
+        }}
+      >
+        {Object.values(agents).map((a) => (
+          <option key={a.id} value={a.id}>
+            {a.name}
+          </option>
+        ))}
+      </select>
       <input
         type="text"
-        placeholder={`Beri tugas/prompt untuk ${agent.name} (akan langsung bekerja di laptop)...`}
+        placeholder={`Kirim prompt tugas untuk ${currentAgent?.name || 'Agen'}...`}
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        style={{
-          flex: 1,
-          background: 'rgba(2, 6, 23, 0.8)',
-          border: '1px solid rgba(255, 255, 255, 0.12)',
-          borderRadius: '8px',
-          padding: '8px 12px',
-          color: '#f8fafc',
-          fontSize: '12px',
-          outline: 'none'
-        }}
       />
       <button
         type="submit"
@@ -55,14 +54,14 @@ export function PromptBar() {
           color: '#ffffff',
           border: 'none',
           borderRadius: '8px',
-          padding: '8px 14px',
+          padding: '8px 16px',
           fontSize: '12px',
-          fontWeight: 600,
+          fontWeight: 700,
           cursor: 'pointer',
           whiteSpace: 'nowrap'
         }}
       >
-        Tugaskan ↵
+        Kirim Perintah ↵
       </button>
     </form>
   );

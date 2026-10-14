@@ -102,7 +102,7 @@ button { font:inherit; color:var(--text); background:transparent; border:1px sol
 
 .log { background:#0a1222; border:1px solid var(--line); border-radius:8px; padding:8px; font-size:11px; white-space:pre-wrap; max-height:180px; overflow:auto; }
 
-.prompt { position:absolute; z-index:6; left:50%; transform:translateX(-50%); bottom:18px; width:min(640px,90%); display:flex; gap:8px; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:8px; }
+.prompt { position:absolute; z-index:99; left:50%; transform:translateX(-50%); bottom:20px; width:min(640px,90%); display:flex; gap:8px; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:8px; box-shadow:0 12px 36px rgba(0,0,0,0.6); }
 .prompt input { flex:1; background:#0a1222; color:var(--text); border:1px solid var(--line); border-radius:8px; padding:8px 10px; font:inherit; }
 
 .agent-label {
