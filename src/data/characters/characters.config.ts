@@ -1,15 +1,15 @@
 import { AgentConfig } from '../../types';
 
-// ─── 8 MAIN AGENTS IN EXPANSIVE HORIZONTAL SINGLE-FLOOR OFFICE ───────────
-// Central Open Workstations (x from -5.5 to +5.5, z from -2.8 to +0.5)
+// ─── 10 MAIN SMLONE AGENTS IN EXPANSIVE HORIZONTAL SINGLE-FLOOR OFFICE ───
+// Central Open Workstations mapped 1:1 to real Discord channels
 export const BUBO_CHARACTERS: AgentConfig[] = [
   // ─── 1. RAKHA (Manager / Coordinator) ──────────────────────────────────
   {
     id: 'bubo-manager',
     name: 'Rakha',
-    displayName: 'Rakha',
-    role: 'Product Lead & Coordinator',
-    department: '#general-chat',
+    displayName: 'Rakha (Coordinator)',
+    role: 'Head of AI Operations & Coordinator',
+    department: '#💬・general-chat',
     floor: 1,
     room: 'executive-wing',
     website: null,
@@ -34,13 +34,43 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
     }
   },
 
-  // ─── 2. KOKO (Senior Automation Engineer) ──────────────────────────────
+  // ─── 2. BUBO ADMIN (Dashboard Admin & Operations) ──────────────────────
+  {
+    id: 'bubo-admin-portal',
+    name: 'Bubo Admin',
+    displayName: 'Bubo Admin Portal',
+    role: 'Dashboard Admin & Operasional Sistem',
+    department: '#🛡・bubo-admin-portal',
+    floor: 1,
+    room: 'executive-wing',
+    website: 'admin.smlone.com',
+    personality: ['organized', 'fastidious', 'protective', 'clear', 'decisive'],
+    visualTheme: 'emerald-dark',
+    workspace: 'Admin & Operations Desk',
+    accessory: 'admin-badge',
+    desk: [-8.8, -2.2],
+    avatar: {
+      hair: 'creative-wavy',
+      hairColor: '#3c2415',
+      top: 'business-blazer',
+      topColor: '#0f172a',
+      accentColor: '#10b981',
+      bottom: 'form-pants',
+      bottomColor: '#1e293b',
+      shoes: 'dress-shoes',
+      shoeColor: '#0f172a',
+      skinColor: '#f7d5a3',
+      props: ['tablet']
+    }
+  },
+
+  // ─── 3. BUBO N8N (Senior Automation Engineer) ──────────────────────────
   {
     id: 'bubo-n8n',
-    name: 'Koko',
-    displayName: 'Koko',
-    role: 'Senior Automation Engineer',
-    department: '#bubo-n8n',
+    name: 'Bubo n8n',
+    displayName: 'Bubo n8n',
+    role: 'Otomasi Alur Kerja & Integrasi n8n',
+    department: '#⚡・bubo-n8n',
     floor: 1,
     room: 'central-dev-hub',
     website: 'https://n8n-jua7.srv1825659.hstgr.cloud',
@@ -64,13 +94,13 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
     }
   },
 
-  // ─── 3. BUDI (Frontend Engineer) ───────────────────────────────────────
+  // ─── 4. BUBO PORTAL (Frontend Engineer) ────────────────────────────────
   {
     id: 'bubo-portal',
-    name: 'Budi',
-    displayName: 'Budi',
-    role: 'Frontend UI/UX Web Engineer',
-    department: '#bubo-portal',
+    name: 'Bubo Portal',
+    displayName: 'Bubo Portal',
+    role: 'Frontend UI/UX Web Portal Trainee',
+    department: '#🌐・bubo-portal',
     floor: 1,
     room: 'central-dev-hub',
     website: 'portal.smlone.com',
@@ -94,13 +124,13 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
     }
   },
 
-  // ─── 4. SAMSUL (Backend Architect) ─────────────────────────────────────
+  // ─── 5. BUBO BACKEND (Backend DB Architect) ────────────────────────────
   {
     id: 'bubo-backend-portal',
-    name: 'Samsul',
-    displayName: 'Samsul',
-    role: 'Backend Engineering & DB Architect',
-    department: '#bubo-backend-portal',
+    name: 'Bubo Backend',
+    displayName: 'Bubo Backend',
+    role: 'Backend Engineering & DB Neon PostgreSQL',
+    department: '#💻・bubo-backend-portal',
     floor: 1,
     room: 'central-dev-hub',
     website: 'api.smlone.cloud',
@@ -124,73 +154,43 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
     }
   },
 
-  // ─── 5. PINA (UI/UX & Design Operations) ───────────────────────────────
+  // ─── 6. BUBO PTM (Monitoring & Pelaporan PTM) ──────────────────────────
   {
-    id: 'bubo-admin-portal',
-    name: 'Pina',
-    displayName: 'Pina',
-    role: 'Dashboard Admin & Operations',
-    department: '#bubo-admin-portal',
-    floor: 1,
-    room: 'executive-wing',
-    website: 'admin.smlone.com',
-    personality: ['organized', 'fastidious', 'protective', 'clear', 'decisive'],
-    visualTheme: 'emerald-dark',
-    workspace: 'Design & Admin Desk',
-    accessory: 'admin-badge',
-    desk: [-8.8, -2.2],
-    avatar: {
-      hair: 'creative-wavy',
-      hairColor: '#3c2415',
-      top: 'business-blazer',
-      topColor: '#0f172a',
-      accentColor: '#10b981',
-      bottom: 'form-pants',
-      bottomColor: '#1e293b',
-      shoes: 'dress-shoes',
-      shoeColor: '#0f172a',
-      skinColor: '#f7d5a3',
-      props: ['tablet']
-    }
-  },
-
-  // ─── 6. ALPIN (Media Production Lead) ──────────────────────────────────
-  {
-    id: 'bubo-source-video',
-    name: 'Alpin',
-    displayName: 'Alpin',
-    role: 'Media Production & Motion Lead',
-    department: '#bubo-source-video',
+    id: 'bubo-ptm',
+    name: 'Bubo PTM',
+    displayName: 'Bubo PTM',
+    role: 'Pelaporan & Tracking Monitoring PTM',
+    department: '#📊・bubo-ptm',
     floor: 1,
     room: 'central-dev-hub',
     website: null,
-    personality: ['visual', 'storyteller', 'meticulous', 'creative', 'cinematic'],
-    visualTheme: 'violet-night',
-    workspace: 'Media & Video Desk',
-    accessory: 'camera',
-    desk: [-4.2, 0.4],
+    personality: ['meticulous', 'data-driven', 'structured', 'reporting-expert'],
+    visualTheme: 'blue-slate',
+    workspace: 'Monitoring & Reporting Desk',
+    accessory: 'workflow-board',
+    desk: [4.2, -2.5],
     avatar: {
-      hair: 'creative-long',
-      hairColor: '#262626',
-      top: 'creative-jacket',
+      hair: 'office-clean',
+      hairColor: '#1f2937',
+      top: 'tech-jacket',
       topColor: '#1e293b',
-      accentColor: '#8b5cf6',
-      bottom: 'slim-pants',
+      accentColor: '#3b82f6',
+      bottom: 'modern-pants',
       bottomColor: '#0f172a',
-      shoes: 'sneakers-casual',
-      shoeColor: '#8b5cf6',
+      shoes: 'sneakers-pro',
+      shoeColor: '#1e293b',
       skinColor: '#e5b88f',
-      props: ['headphones']
+      props: ['tablet', 'clipboard']
     }
   },
 
-  // ─── 7. JUKI (QA & Testing Lead) ───────────────────────────────────────
+  // ─── 7. BUBO QC PORTAL (Quality Control & Audit) ───────────────────────
   {
     id: 'bubo-qc-portal',
-    name: 'Juki',
-    displayName: 'Juki',
-    role: 'Quality Control & Automation QC',
-    department: '#bubo-qc-portal',
+    name: 'Bubo QC',
+    displayName: 'Bubo QC Portal',
+    role: 'Quality Control & Troubleshooting Audit',
+    department: '#🔍・bubo-qc-portal',
     floor: 1,
     room: 'central-dev-hub',
     website: null,
@@ -198,7 +198,7 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
     visualTheme: 'sky-slate',
     workspace: 'Quality Control Desk',
     accessory: 'qc-lens',
-    desk: [-1.4, 0.4],
+    desk: [-4.2, 0.4],
     avatar: {
       hair: 'qa-spiky',
       hairColor: '#1c1917',
@@ -214,13 +214,13 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
     }
   },
 
-  // ─── 8. ROKI (IT Helpdesk Lead) ────────────────────────────────────────
+  // ─── 8. BUBO TICKETING (IT Helpdesk Lead) ──────────────────────────────
   {
     id: 'bubo-ticketing',
-    name: 'Roki',
-    displayName: 'Roki',
-    role: 'IT Ticketing & Service Desk Lead',
-    department: '#bubo-ticketing',
+    name: 'Bubo Ticketing',
+    displayName: 'Bubo Ticketing',
+    role: 'IT Ticketing & Jira Cloud Helpdesk',
+    department: '#🎫・bubo-ticketing',
     floor: 1,
     room: 'central-dev-hub',
     website: 'https://smlone.atlassian.net',
@@ -228,7 +228,7 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
     visualTheme: 'amber-dark',
     workspace: 'Helpdesk & Support Desk',
     accessory: 'ticket',
-    desk: [1.4, 0.4],
+    desk: [-1.4, 0.4],
     avatar: {
       hair: 'friendly-medium',
       hairColor: '#1f2937',
@@ -244,13 +244,13 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
     }
   },
 
-  // ─── 9. KOKO (Building & Infrastructure Lead) ──────────────────────────
+  // ─── 9. BUBO BUILDING (System Architecture & Server Build) ────────────
   {
     id: 'bubo-building',
-    name: 'Koko',
-    displayName: 'Koko',
-    role: 'System Architecture & Build Lead',
-    department: '#bubo-building',
+    name: 'Bubo Building',
+    displayName: 'Bubo Building',
+    role: 'Arsitektur Sistem & Server Build SMLONE',
+    department: '#🏗・bubo-building',
     floor: 1,
     room: 'central-dev-hub',
     website: null,
@@ -258,7 +258,7 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
     visualTheme: 'cyan-slate',
     workspace: 'Infra & Server Architecture Desk',
     accessory: 'server-rack',
-    desk: [4.2, -2.5],
+    desk: [1.4, 0.4],
     avatar: {
       hair: 'neat-dark',
       hairColor: '#1f2937',
@@ -271,6 +271,36 @@ export const BUBO_CHARACTERS: AgentConfig[] = [
       shoeColor: '#111827',
       skinColor: '#f4c59b',
       props: ['smartwatch']
+    }
+  },
+
+  // ─── 10. BUBO SHEET (Pipeline Otomasi Sheets) ──────────────────────────
+  {
+    id: 'bubo-sheet',
+    name: 'Bubo Sheet',
+    displayName: 'Bubo Sheet',
+    role: 'Automasi & Pipeline Google Sheets',
+    department: '#bubo-sheet',
+    floor: 1,
+    room: 'central-dev-hub',
+    website: null,
+    personality: ['systematic', 'data-pipeline', 'efficient', 'integrator'],
+    visualTheme: 'emerald-teal',
+    workspace: 'Sheets Pipeline Desk',
+    accessory: 'pdf-doc',
+    desk: [4.2, 0.4],
+    avatar: {
+      hair: 'short-modern',
+      hairColor: '#1c1917',
+      top: 'tech-jacket',
+      topColor: '#0f172a',
+      accentColor: '#10b981',
+      bottom: 'modern-pants',
+      bottomColor: '#1e293b',
+      shoes: 'sneakers-pro',
+      shoeColor: '#10b981',
+      skinColor: '#f4c59b',
+      props: ['tablet', 'coffee-mug']
     }
   }
 ];

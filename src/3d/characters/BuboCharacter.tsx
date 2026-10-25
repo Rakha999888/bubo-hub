@@ -158,12 +158,12 @@ function ExpressiveFace({ mood }: { mood: FacialState | 'normal' | 'error' | 'su
   useFrame((state) => {
     const t = state.clock.elapsedTime;
     if (eyesGroup.current) {
-      // Natural human blinking rhythm (every ~3.8 seconds, quick 0.12s close)
-      const blinkCycle = t % 3.8;
+      // Natural smooth blinking rhythm
+      const blinkCycle = t % 4.2;
       let blinkScale = 1.0;
-      if (blinkCycle > 3.65) {
-        const p = (blinkCycle - 3.65) / 0.15;
-        blinkScale = Math.sin(p * Math.PI) < 0.8 ? 0.08 : 0.85;
+      if (blinkCycle > 4.08) {
+        const p = (blinkCycle - 4.08) / 0.12;
+        blinkScale = 1.0 - Math.sin(p * Math.PI) * 0.85;
       }
       eyesGroup.current.scale.y = baseEyeScaleY * blinkScale;
     }

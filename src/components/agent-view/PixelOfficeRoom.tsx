@@ -7,7 +7,7 @@ import { Agent3DPortrait } from './Agent3DPortrait';
 // Wall decor presets for each room row (3 desks per row)
 const ROW_DECOR = [
   {
-    title: 'Ruang 1 · Manajemen & Rekayasa Utama',
+    title: 'Ruang 1 · Manajemen, Admin & Rekayasa Otomasi',
     noteText: 'KOPI DULU BARU PROMPT',
     noteRotate: '-2deg',
     showWindow: true,
@@ -15,7 +15,7 @@ const ROW_DECOR = [
     showServer: true
   },
   {
-    title: 'Ruang 2 · Desain UI/UX & Rekayasa Web',
+    title: 'Ruang 2 · Web Portal, Database & Monitoring PTM',
     noteText: 'OPERASIONAL 24/7 SISTEM AKTIF',
     noteRotate: '2.5deg',
     showWindow: false,
@@ -23,11 +23,19 @@ const ROW_DECOR = [
     showServer: true
   },
   {
-    title: 'Ruang 3 · Operasional Tiket & Media Kreatif',
-    noteText: 'INTEGRASI & OTOMASI SISTEM',
+    title: 'Ruang 3 · Quality Control, Tiket Jira & Infrastruktur',
+    noteText: 'INTEGRASI & ARSITEKTUR KOKOH',
     noteRotate: '-1.5deg',
     showWindow: true,
     showClock: false,
+    showServer: true
+  },
+  {
+    title: 'Ruang 4 · Pipeline Data & Spreadsheet Otomasi',
+    noteText: 'DATA AKURAT NO HUMAN ERROR',
+    noteRotate: '2.0deg',
+    showWindow: true,
+    showClock: true,
     showServer: true
   }
 ];

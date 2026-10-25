@@ -12,20 +12,20 @@ const PORT = 4005;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// ─── DISCORD CHANNELS & BUBO AGENTS MAPPING ─────────────────────────
+// ─── DISCORD CHANNELS & BUBO AGENTS MAPPING (EXACT 1:1 WITH SMLONE DISCORD) ───
 const DISCORD_CHANNELS = {
   '1553291734799220797': {
     agentId: 'bubo-manager',
-    name: 'Bubo Coordinator',
+    name: 'Rakha (Coordinator)',
     channelName: '#💬・general-chat',
-    role: 'Head of AI Operations & Koordinator Tim',
+    role: 'Head of AI Operations & Coordinator',
     isManager: true
   },
   '1553302924124360946': {
     agentId: 'bubo-n8n',
     name: 'Bubo n8n',
     channelName: '#⚡・bubo-n8n',
-    role: 'Otomasi Alur Kerja & Integrasi Sistem'
+    role: 'Otomasi Alur Kerja & Integrasi n8n'
   },
   '1553302926095552553': {
     agentId: 'bubo-portal',
@@ -37,50 +37,49 @@ const DISCORD_CHANNELS = {
     agentId: 'bubo-backend-portal',
     name: 'Bubo Backend',
     channelName: '#💻・bubo-backend-portal',
-    role: 'Backend Engineering & Database PostgreSQL'
+    role: 'Backend Engineering & DB Neon PostgreSQL'
   },
   '1553398524584919151': {
     agentId: 'bubo-admin-portal',
     name: 'Bubo Admin Portal',
     channelName: '#🛡・bubo-admin-portal',
-    role: 'Dashboard Admin & Manajemen Sistem'
-  },
-  '1553406460199706624': {
-    agentId: 'bubo-source-video',
-    name: 'Bubo Source Video',
-    channelName: '#🎬・bubo-source-video',
-    role: 'Produksi, Kurasi Materi & Skrip Video'
-  },
-  '1553406461445406994': {
-    agentId: 'bubo-pdf',
-    name: 'Bubo PDF',
-    channelName: '#📄・bubo-pdf',
-    role: 'Pengolahan, Ekstraksi & Dokumen PDF'
+    role: 'Dashboard Admin & Operasional Sistem'
   },
   '1553545688116363325': {
     agentId: 'bubo-qc-portal',
     name: 'Bubo QC Portal',
     channelName: '#🔍・bubo-qc-portal',
-    role: 'Quality Control & Troubleshooting Bug'
+    role: 'Quality Control & Troubleshooting Audit'
   },
   '1553800580621668457': {
     agentId: 'bubo-ticketing',
     name: 'Bubo Ticketing',
     channelName: '#🎫・bubo-ticketing',
-    role: 'Manajemen Tiket & Jira Helpdesk'
+    role: 'IT Ticketing & Jira Cloud Helpdesk'
   },
   '1556298595299233833': {
     agentId: 'bubo-building',
     name: 'Bubo Building',
     channelName: '#🏗・bubo-building',
     role: 'Arsitektur Sistem & Server Build SMLONE'
+  },
+  '1557076368737439874': {
+    agentId: 'bubo-ptm',
+    name: 'Bubo PTM',
+    channelName: '#📊・bubo-ptm',
+    role: 'Pelaporan & Tracking Monitoring PTM'
+  },
+  '1559853093850587166': {
+    agentId: 'bubo-sheet',
+    name: 'Bubo Sheet',
+    channelName: '#bubo-sheet',
+    role: 'Automasi & Pipeline Google Sheets'
   }
 };
 
-const ALL_DIVISION_AGENT_IDS = [
-  'bubo-n8n', 'bubo-portal', 'bubo-backend-portal', 'bubo-admin-portal',
-  'bubo-source-video', 'bubo-pdf', 'bubo-qc-portal', 'bubo-ticketing', 'bubo-building'
-];
+const ALL_DIVISION_AGENT_IDS = Object.values(DISCORD_CHANNELS)
+  .filter((c) => !c.isManager)
+  .map((c) => c.agentId);
 
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
@@ -164,7 +163,8 @@ if (fs.existsSync(GATEWAY_LOG)) {
 
 function processLogLine(line) {
   // 1. Detect inbound message from Discord
-  const inboundMatch = line.match(/inbound message: platform=discord (?:user=(.*?) )?chat=(\d+) msg='(.*)'/);
+  // Format: inbound message: platform=discord user=test api chat=1556298595299233833 msg='...' reply_to_id=...
+  const inboundMatch = line.match(/inbound message: platform=discord (?:user=(.*?) )?chat=(\d+) msg='(.*?)'(?: reply_to_id=.*)?$/);
   if (inboundMatch) {
     const user = inboundMatch[1] || 'User';
     const chatId = inboundMatch[2];
@@ -172,7 +172,7 @@ function processLogLine(line) {
     const channel = DISCORD_CHANNELS[chatId];
 
     if (channel) {
-      console.log(`[Discord Inbound] ${channel.channelName} (${channel.name}): "${msg}"`);
+      console.log(`[Discord Inbound] ${channel.channelName} (${channel.name}): "${msg.slice(0, 60)}"`);
 
       if (channel.isManager) {
         // Manager triggered in #general-chat -> ONLY manager (Rakha) goes to laptop!
@@ -186,18 +186,20 @@ function processLogLine(line) {
   }
 
   // 2. Detect response ready / finished from Discord
+  // Format: response ready: platform=discord chat=1556298595299233833 session=...
+  // Or: Sending response (xxxx chars) to 1556298595299233833
   const responseMatch = line.match(/(?:response ready: platform=discord chat=(\d+)|Sending response \(\d+ chars\) to (\d+))/);
   if (responseMatch) {
     const chatId = responseMatch[1] || responseMatch[2];
     const channel = DISCORD_CHANNELS[chatId];
     if (channel) {
       console.log(`[Discord Response] Finished for ${channel.channelName} (${channel.name})`);
-      finishAgentWork(channel.agentId, `Respon terkirim ke ${channel.channelName}`);
+      finishAgentWork(channel.agentId, `Tugas selesai di ${channel.channelName}`);
     }
   }
 }
 
-// Watch gateway.log with 250ms polling
+// Watch gateway.log with 200ms polling
 setInterval(() => {
   if (!fs.existsSync(GATEWAY_LOG)) return;
   try {
@@ -216,10 +218,34 @@ setInterval(() => {
     } else if (currentSize < lastLogSize) {
       lastLogSize = currentSize; // log rotated
     }
-  } catch (err) {
-    // Ignore transient file lock
-  }
-}, 250);
+  } catch (err) {}
+}, 200);
+
+// ─── CLOUDFLARE TUNNEL URL AUTO-SYNC ─────────────────────────────────
+function syncTunnelUrl() {
+  const tunnelLog = '/root/.pm2/logs/bubo-tunnel-error.log';
+  if (!fs.existsSync(tunnelLog)) return;
+  try {
+    const content = fs.readFileSync(tunnelLog, 'utf-8');
+    const matches = content.match(/https:\/\/[-a-z0-9.]+\.trycloudflare\.com/g);
+    if (matches && matches.length > 0) {
+      const activeUrl = matches[matches.length - 1];
+      const wsUrl = activeUrl.replace('https://', 'wss://') + '/ws';
+      const wsConfig = {
+        wsUrl,
+        httpUrl: activeUrl,
+        updatedAt: new Date().toISOString()
+      };
+      const jsonStr = JSON.stringify(wsConfig, null, 2);
+      fs.writeFileSync(path.join(__dirname, 'public/ws-config.json'), jsonStr);
+      if (fs.existsSync(path.join(__dirname, 'dist'))) {
+        fs.writeFileSync(path.join(__dirname, 'dist/ws-config.json'), jsonStr);
+      }
+    }
+  } catch (e) {}
+}
+syncTunnelUrl();
+setInterval(syncTunnelUrl, 30000);
 
 // ─── DISCORD BOT RECENT HEALTH CHECK ─────────────────────────────────
 let discordToken = '';

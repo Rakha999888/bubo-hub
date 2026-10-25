@@ -102,8 +102,7 @@ function ACUnit({ x, y, z }: { x: number; y: number; z: number }) {
 export function Workstation({ cfg }: { cfg: AgentConfig }) {
   const ag = useStore((s) => s.agents[cfg.id]);
   const status = ag?.status || 'idle';
-  const hasTask = !!ag?.task && ag.task.trim().length > 0;
-  const isWorking = (status === 'working' || status === 'thinking' || status === 'error') && hasTask;
+  const isWorking = status === 'working' || status === 'thinking';
 
   const [x, z] = cfg.desk;
   const y0 = 0.15;
@@ -167,10 +166,6 @@ function Stairs({ from }: { from: number }) {
 }
 
 function StandardLounge() {
-  const tv = useRef<THREE.MeshStandardMaterial>(null);
-  useFrame((s) => {
-    if (tv.current) tv.current.emissiveIntensity = 0.7 + Math.sin(s.clock.elapsedTime * 3) * 0.2;
-  });
   return (
     <group>
       <Box p={[3.4, 0.4, 2.2]} s={[2.4, 0.5, 0.9]} c="#c9694a" />
@@ -178,7 +173,7 @@ function StandardLounge() {
       <Box p={[3.4, 0.35, 0.6]} s={[1.2, 0.3, 0.7]} c={WOOD} />
       <mesh position={[3.5, 2.0, -4.85]}>
         <boxGeometry args={[2.4, 1.2, 0.08]} />
-        <meshStandardMaterial ref={tv} color="#6aa7ff" emissive="#6aa7ff" emissiveIntensity={0.8} />
+        <meshStandardMaterial color="#38bdf8" emissive="#0284c7" emissiveIntensity={0.6} roughness={0.4} />
       </mesh>
       <Box p={[5.7, 0.7, -4.3]} s={[1.2, 1.1, 0.7]} c="#d9d4c8" />
       <Box p={[5.5, 1.45, -4.3]} s={[0.4, 0.4, 0.4]} c="#2b2b2b" />
@@ -191,25 +186,16 @@ function StandardLounge() {
 }
 
 function GamingLoungeFloor4() {
-  const tvScreen = useRef<THREE.MeshStandardMaterial>(null);
-  useFrame((s) => {
-    if (tvScreen.current) {
-      // Dynamic game screen animation (PlayStation game dynamic glow)
-      const t = s.clock.elapsedTime;
-      tvScreen.current.emissiveIntensity = 0.85 + Math.sin(t * 4) * 0.25;
-    }
-  });
-
   return (
     <group>
       {/* ─── GAMING ZONE (LEFT): HUGE TV, PS5 CONSOLE, SOFA, BEANBAGS ─── */}
       {/* TV Stand / Media Cabinet */}
       <Box p={[-3.2, 0.45, -4.2]} s={[3.2, 0.55, 0.9]} c="#1e293b" />
-      {/* Big Screen TV (65 inch Curved Screen) */}
+      {/* Big Screen TV (65 inch Screen) */}
       <Box p={[-3.2, 2.1, -4.3]} s={[3.4, 1.8, 0.1]} c="#0f172a" />
-      <mesh position={[-3.2, 2.1, -4.24]}>
+      <mesh position={[-3.2, 2.1, -4.22]}>
         <planeGeometry args={[3.2, 1.6]} />
-        <meshStandardMaterial ref={tvScreen} color="#60a5fa" emissive="#3b82f6" emissiveIntensity={0.9} />
+        <meshStandardMaterial color="#60a5fa" emissive="#1e3a8a" emissiveIntensity={0.7} roughness={0.3} />
       </mesh>
 
       {/* PlayStation 5 Console (White with blue LED) */}

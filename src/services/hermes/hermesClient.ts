@@ -3,7 +3,7 @@ import { HermesEvent } from '../../types';
 type Listener = (e: HermesEvent) => void;
 declare const process: { env: { HERMES_WS_URL?: string } };
 
-const DEFAULT_FALLBACK_WSS = 'wss://issued-add-counts-diversity.trycloudflare.com/ws';
+const DEFAULT_FALLBACK_WSS = 'wss://thumbs-survive-cool-hood.trycloudflare.com/ws';
 
 /**
  * Hermes client connecting to live Bubo WebSocket server.

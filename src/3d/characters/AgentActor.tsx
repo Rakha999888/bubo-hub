@@ -99,8 +99,7 @@ export function AgentActor({
     // ─── BEKERJA HANYA JIKA ADA PROMPT / TASK AKTIF ───
     // Agen HANYA mengetik & bekerja di laptop jika sedang diberi prompt / perintah aktif!
     // Agen lain yang tidak diberi perintah TIDAK bekerja (p.typing = false).
-    const hasActivePromptOrTask = !!s.task && s.task.trim().length > 0;
-    const isWorkingOnPrompt = (s.status === 'working' || s.status === 'thinking' || s.status === 'error') && hasActivePromptOrTask;
+    const isWorkingOnPrompt = s.status === 'working' || s.status === 'thinking';
 
     let dynamicTarget = anchors.sit;
     let isSofa = false;
