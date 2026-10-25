@@ -110,12 +110,12 @@ export function AgentActor({
       dynamicTarget = anchors.sit;
       isSofa = false;
     } else {
-      // Agen yang TIDAK sedang diprompt: santai dan bebas bergerak di kantor tanpa bekerja
-      const cycle = (t * 0.2 + charOffset) % 45;
-      const isRoamingNow = cycle < 28;
+      // Agen yang TIDAK sedang diprompt: 9 agen duduk rapi di meja kerja, 1 agen bergantian jalan santai (anti-crowding)
+      const agentIdx = BUBO_CHARACTERS.findIndex((c) => c.id === cfg.id);
+      const activeWalkerIdx = Math.floor(t / 14) % BUBO_CHARACTERS.length;
+      const isRoamingNow = agentIdx === activeWalkerIdx;
 
       if (isRoamingNow) {
-        const agentIdx = BUBO_CHARACTERS.findIndex((c) => c.id === cfg.id);
         const roamWaypoints: Array<{ pos: [number, number, number]; isSofa?: boolean }> = [
           { pos: [-13.5, 0.15, 3.2], isSofa: true },  // Executive sofa lounge
           { pos: [-10.5, 0.15, 1.8] },                // Executive round meeting table (safe clearance)
@@ -129,16 +129,9 @@ export function AgentActor({
           { pos: [14.5, 0.15, -3.5] },                // Sleeping pods & quiet room
         ];
 
-        // Unique waypoint assignment + spatial separation per character (no crowding or clipping)
-        const spotIndex = (Math.floor(cycle * 0.3) + agentIdx) % roamWaypoints.length;
+        const spotIndex = (Math.floor(t / 14) + agentIdx) % roamWaypoints.length;
         const chosenSpot = roamWaypoints[spotIndex];
-        const offsetX = ((agentIdx % 3) - 1) * 0.45;
-        const offsetZ = ((agentIdx % 2) === 0 ? 0.35 : -0.35);
-        dynamicTarget = new THREE.Vector3(
-          chosenSpot.pos[0] + (chosenSpot.isSofa ? 0 : offsetX),
-          chosenSpot.pos[1],
-          chosenSpot.pos[2] + (chosenSpot.isSofa ? 0 : offsetZ)
-        );
+        dynamicTarget = new THREE.Vector3(chosenSpot.pos[0], chosenSpot.pos[1], chosenSpot.pos[2]);
         isSofa = !!chosenSpot.isSofa;
       } else {
         dynamicTarget = anchors.sit;
