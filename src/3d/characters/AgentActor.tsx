@@ -101,20 +101,23 @@ export function AgentActor({
 
     const agentIdx = BUBO_CHARACTERS.findIndex((c) => c.id === cfg.id);
 
-    // Titik-titik tujuan bergerak bebas di seluruh penjuru kantor
-    const roamWaypoints: Array<{ pos: [number, number, number]; isSofa?: boolean }> = [
-      { pos: [-13.5, 0.15, 3.2], isSofa: true },  // Executive sofa lounge
-      { pos: [-10.5, 0.15, 1.8] },                // Executive round meeting table
-      { pos: [-7.0, 0.15, 2.2] },                 // Koridor barat meeting
-      { pos: [-3.5, 0.15, 2.4] },                 // Koridor dev kiri
-      { pos: [0.0, 0.15, 2.2] },                  // Koridor utama tengah
-      { pos: [3.5, 0.15, 0.8], isSofa: true },    // Sofa santai lounge tengah
-      { pos: [6.0, 0.15, -2.6] },                 // Coffee bar & pantry kulkas
-      { pos: [8.0, 0.15, -1.8] },                 // Meja santai cafe
-      { pos: [10.5, 0.15, 2.2] },                 // Koridor timur entertainment
-      { pos: [12.5, 0.15, 1.8], isSofa: true },  // Game room sofa biru
-      { pos: [14.2, 0.15, 2.4], isSofa: true },  // Beanbags santai TV
-      { pos: [14.5, 0.15, -3.2] },                // Sleeping pods & quiet room
+    // 10 Zona Bebas Bergerak Mandiri (Terdistribusi Sempurna Tanpa Saling Tabrak)
+    const AGENT_ROAM_ZONES: Array<{
+      spotA: [number, number, number];
+      spotB: [number, number, number];
+      sofaA?: boolean;
+      sofaB?: boolean;
+    }> = [
+      { spotA: [-10.5, 0.15, 1.8], spotB: [-12.0, 0.15, 2.5] },                // 0. Rakha: Executive meeting table & discussion
+      { spotA: [-13.5, 0.15, 3.2], spotB: [-8.5, 0.15, 2.4], sofaA: true },    // 1. Admin: Executive sofa lounge & west aisle
+      { spotA: [-5.5, 0.15, 2.4], spotB: [-4.0, 0.15, 2.4] },                  // 2. n8n: Koridor barat
+      { spotA: [-1.5, 0.15, 2.4], spotB: [0.0, 0.15, 2.4] },                   // 3. Portal: Koridor tengah barat
+      { spotA: [1.5, 0.15, 2.4], spotB: [3.0, 0.15, 2.4] },                    // 4. Backend: Koridor tengah timur
+      { spotA: [3.5, 0.15, 0.8], spotB: [4.8, 0.15, 1.2], sofaA: true },       // 5. PTM: Sofa santai lounge tengah
+      { spotA: [6.0, 0.15, -2.6], spotB: [7.2, 0.15, -2.6] },                  // 6. QC: Coffee bar & pantry kulkas
+      { spotA: [8.5, 0.15, -1.8], spotB: [9.5, 0.15, -2.2] },                  // 7. Ticketing: Meja santai cafe
+      { spotA: [12.5, 0.15, 1.8], spotB: [11.2, 0.15, 2.4], sofaA: true },     // 8. Building: Game room sofa biru
+      { spotA: [14.2, 0.15, 2.4], spotB: [14.5, 0.15, -3.2], sofaA: true },    // 9. Sheet: Beanbags santai TV & quiet pod
     ];
 
     let dynamicTarget: THREE.Vector3;
@@ -126,19 +129,11 @@ export function AgentActor({
       isSofa = false;
     } else {
       // ─── SAAT STANDBY: 10 AGEN BERGERAK BEBAS KELILING KANTOR ───
-      const roamCycle = Math.floor((t * 0.08 + charOffset) / 8);
-      const spotIndex = (roamCycle + agentIdx * 2) % roamWaypoints.length;
-      const chosenSpot = roamWaypoints[spotIndex];
-
-      const offsetX = ((agentIdx % 3) - 1) * 0.35;
-      const offsetZ = (agentIdx % 2 === 0 ? 0.3 : -0.3);
-
-      dynamicTarget = new THREE.Vector3(
-        chosenSpot.pos[0] + (chosenSpot.isSofa ? 0 : offsetX),
-        chosenSpot.pos[1],
-        chosenSpot.pos[2] + (chosenSpot.isSofa ? 0 : offsetZ)
-      );
-      isSofa = !!chosenSpot.isSofa;
+      const myZone = AGENT_ROAM_ZONES[agentIdx >= 0 ? agentIdx : 0];
+      const cycle = Math.floor((t * 0.08 + charOffset) / 10) % 2;
+      const targetPos = cycle === 0 ? myZone.spotA : myZone.spotB;
+      dynamicTarget = new THREE.Vector3(targetPos[0], targetPos[1], targetPos[2]);
+      isSofa = cycle === 0 ? !!myZone.sofaA : !!myZone.sofaB;
     }
 
     const to = dynamicTarget.clone().sub(g.position);
@@ -152,7 +147,7 @@ export function AgentActor({
 
     if (p.walking) {
       // Jalan lincah ke laptop jika diprompt (2.4), jalan santai saat roaming (1.4)
-      const speed = isWorkingOnPrompt ? 2.4 : 1.4;
+      const speed = isWorkingOnPrompt ? 2.4 : 1.35;
       g.position.addScaledVector(to.normalize(), Math.min(dist, speed * dt));
     }
 
