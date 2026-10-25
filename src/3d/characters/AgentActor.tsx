@@ -39,8 +39,8 @@ const wrap = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
 
 /**
  * AgentActor:
- * Seated on their workstation chair in office.
- * Above head: 3D badge showing full Bubo name, exact Discord channel, and division with real-time status.
+ * 1. Saat Standby: 10 Agen bergerak bebas keliling kantor (koridor, sofa, pantry, lounge, ruang rapat).
+ * 2. Saat Ada Prompt Masuk (Discord / UI): Agen terkait BARU BERGERAK ke laptop meja kerjanya, monitor menyala, duduk & mengetik.
  */
 export function AgentActor({
   cfg,
@@ -56,7 +56,7 @@ export function AgentActor({
   const selected = useStore((s) => s.selectedAgentId === cfg.id);
   const selectAgent = useStore((s) => s.selectAgent);
   const root = useRef<THREE.Group>(null);
-  const pose = useRef<Pose>({ sit: 1, walking: false, typing: false, mood: 'normal' });
+  const pose = useRef<Pose>({ sit: 0, walking: false, typing: false, mood: 'normal' });
   const yaw = useRef(Math.PI);
   const latest = useRef(st);
   latest.current = st;
@@ -73,21 +73,20 @@ export function AgentActor({
     brk: new THREE.Vector3(BREAK_SPOT[cfg.floor]?.[0] || 0, 0.15, BREAK_SPOT[cfg.floor]?.[1] || 0)
   }), [cfg]);
 
-  // Initial mount: start directly seated at their own workstation chair
+  // Initial mount: mulai dari posisi meja masing-masing
   useEffect(() => {
     if (root.current) {
       root.current.position.set(cfg.desk[0], 0.15, cfg.desk[1] + 0.85);
       root.current.rotation.y = Math.PI;
     }
-    pose.current.sit = 1;
     yaw.current = Math.PI;
   }, [cfg, anchors]);
 
-  // Character personality hash for desynchronized staggered autonomous schedule
+  // Personality hash untuk desinkronisasi alami jadwal bergerak bebas
   const charOffset = useMemo(() => {
     let hash = 0;
     for (let i = 0; i < cfg.id.length; i++) hash = (hash * 31 + cfg.id.charCodeAt(i)) % 1000;
-    return (hash / 1000) * 45; // 0..45s offset
+    return (hash / 1000) * 50; // 0..50s offset
   }, [cfg.id]);
 
   useFrame((state, dt) => {
@@ -97,53 +96,48 @@ export function AgentActor({
     const p = pose.current;
     const t = state.clock.elapsedTime;
 
-    // ─── BEKERJA HANYA JIKA ADA PROMPT / TASK AKTIF ───
-    // Aturan Mutlak:
-    // 1. Saat Standby (tidak ada prompt DC): 10 agen duduk tenang di meja masing-masing (monitor mati, tidak roaming liar).
-    // 2. Saat Ada Prompt dari DC / UI masuk: Agen yang bersangkutan BARU BERGERAK & BEBAS BERGERAK (ngetik laptop nyala, keliling lorong/pantry/lounge dinamis).
+    // ─── STATUS PROMPT / KERJA ───
     const isWorkingOnPrompt = s.status === 'working' || s.status === 'thinking';
 
-    if (!isWorkingOnPrompt) {
-      // ─── SAAT STANDBY (TIDAK ADA PROMPT DARI DC): TERTIB DUDUK DI KURSI MEJA ───
-      g.position.copy(anchors.sit);
-      p.sit = 1;
-      p.walking = false;
-      p.typing = false;
-      p.mood = 'normal';
-      yaw.current = Math.PI;
-      g.rotation.y = Math.PI; // Menghadap ke monitor laptop
-      return;
-    }
-
-    // ─── SAAT ADA PROMPT DARI DC / UI (isWorkingOnPrompt = true): BEBAS BERGERAK ───
     const agentIdx = BUBO_CHARACTERS.findIndex((c) => c.id === cfg.id);
-    const workCycle = (t * 0.16 + charOffset) % 36; // Siklus kerja dinamis 36 detik
 
+    // Titik-titik tujuan bergerak bebas di seluruh penjuru kantor
     const roamWaypoints: Array<{ pos: [number, number, number]; isSofa?: boolean }> = [
       { pos: [-13.5, 0.15, 3.2], isSofa: true },  // Executive sofa lounge
       { pos: [-10.5, 0.15, 1.8] },                // Executive round meeting table
-      { pos: [-4.0, 0.15, 2.2] },                 // Koridor kiri
-      { pos: [0.0, 0.15, 2.4] },                  // Koridor utama tengah
-      { pos: [3.5, 0.15, 0.8] },                  // Sofa santai lounge tengah
-      { pos: [5.5, 0.15, -3.0] },                 // Coffee bar & pantry kulkas
-      { pos: [7.5, 0.15, -2.5] },                 // Meja santai cafe
+      { pos: [-7.0, 0.15, 2.2] },                 // Koridor barat meeting
+      { pos: [-3.5, 0.15, 2.4] },                 // Koridor dev kiri
+      { pos: [0.0, 0.15, 2.2] },                  // Koridor utama tengah
+      { pos: [3.5, 0.15, 0.8], isSofa: true },    // Sofa santai lounge tengah
+      { pos: [6.0, 0.15, -2.6] },                 // Coffee bar & pantry kulkas
+      { pos: [8.0, 0.15, -1.8] },                 // Meja santai cafe
+      { pos: [10.5, 0.15, 2.2] },                 // Koridor timur entertainment
       { pos: [12.5, 0.15, 1.8], isSofa: true },  // Game room sofa biru
-      { pos: [14.0, 0.15, 2.2], isSofa: true },  // Beanbags santai TV
-      { pos: [14.5, 0.15, -3.5] },                // Sleeping pods & quiet room
+      { pos: [14.2, 0.15, 2.4], isSofa: true },  // Beanbags santai TV
+      { pos: [14.5, 0.15, -3.2] },                // Sleeping pods & quiet room
     ];
 
-    let dynamicTarget = anchors.sit;
+    let dynamicTarget: THREE.Vector3;
     let isSofa = false;
 
-    if (workCycle < 18) {
-      // Fase 1: Mengetik aktif di meja kerja laptop menyala
+    if (isWorkingOnPrompt) {
+      // ─── SAAT ADA PROMPT MASUK: BERGERAK MENUJU LAPTOP MEJA KERJA, DUDUK & MENGETIK ───
       dynamicTarget = anchors.sit;
       isSofa = false;
     } else {
-      // Fase 2: Bergerak bebas keliling kantor (inspeksi, diskusi, ambil kopi, koordinasi tim)
-      const spotIndex = (Math.floor(workCycle * 0.25) + agentIdx) % roamWaypoints.length;
+      // ─── SAAT STANDBY: 10 AGEN BERGERAK BEBAS KELILING KANTOR ───
+      const roamCycle = Math.floor((t * 0.08 + charOffset) / 8);
+      const spotIndex = (roamCycle + agentIdx * 2) % roamWaypoints.length;
       const chosenSpot = roamWaypoints[spotIndex];
-      dynamicTarget = new THREE.Vector3(chosenSpot.pos[0], chosenSpot.pos[1], chosenSpot.pos[2]);
+
+      const offsetX = ((agentIdx % 3) - 1) * 0.35;
+      const offsetZ = (agentIdx % 2 === 0 ? 0.3 : -0.3);
+
+      dynamicTarget = new THREE.Vector3(
+        chosenSpot.pos[0] + (chosenSpot.isSofa ? 0 : offsetX),
+        chosenSpot.pos[1],
+        chosenSpot.pos[2] + (chosenSpot.isSofa ? 0 : offsetZ)
+      );
       isSofa = !!chosenSpot.isSofa;
     }
 
@@ -151,26 +145,31 @@ export function AgentActor({
     to.y = 0;
     const dist = to.length();
 
-    // Duduk jika sudah tiba di kursi workstation atau sofa
-    const isAtRest = dist < 0.45 && (dynamicTarget === anchors.sit || isSofa);
+    // Duduk jika tiba di kursi workstation (saat diprompt) atau tiba di sofa lounge
+    const isAtRest = dist < 0.45 && ((isWorkingOnPrompt && dynamicTarget === anchors.sit) || isSofa);
     p.sit = THREE.MathUtils.damp(p.sit, isAtRest ? 1 : 0, 5.0, dt);
     p.walking = dist > 0.25;
 
     if (p.walking) {
-      const speed = 2.2; // Lincah bergerak saat diperintah bekerja
+      // Jalan lincah ke laptop jika diprompt (2.4), jalan santai saat roaming (1.4)
+      const speed = isWorkingOnPrompt ? 2.4 : 1.4;
       g.position.addScaledVector(to.normalize(), Math.min(dist, speed * dt));
     }
 
-    // Mengetik hanya saat di kursi workstation meja sendiri
-    if (dist < 0.45 && dynamicTarget === anchors.sit) {
+    // Mengetik HANYA jika sedang diprompt dan sudah tiba di laptop meja kerja!
+    if (isWorkingOnPrompt && dist < 0.45) {
       p.typing = true;
       p.mood = 'focused';
     } else {
+      // Saat bebas bergerak santai (standby): dilarang mengetik!
       p.typing = false;
       p.mood = isAtRest && isSofa ? 'happy' : 'normal';
     }
 
-    const goalYaw = p.walking ? Math.atan2(to.x, to.z) : Math.PI;
+    // Rotasi: saat jalan menghadap arah tujuan, saat di laptop menghadap monitor (Math.PI)
+    const goalYaw = p.walking
+      ? Math.atan2(to.x, to.z)
+      : (isWorkingOnPrompt ? Math.PI : (isSofa ? Math.PI : yaw.current));
     yaw.current += wrap(goalYaw - yaw.current) * Math.min(1, 8 * dt);
     g.rotation.y = yaw.current;
   });
