@@ -107,8 +107,8 @@ export function Workstation({ cfg }: { cfg: AgentConfig }) {
   const [x, z] = cfg.desk;
   const y0 = 0.15;
   // Layar monitor & laptop HANYA menyala jika sedang bekerja diperintah prompt!
-  const screen = isWorking ? STATUS_COLOR[status] || '#38bdf8' : '#0f172a';
-  const emissiveInt = isWorking ? 0.9 : 0;
+  const screen = isWorking ? (STATUS_COLOR[status] || '#10b981') : '#0f172a';
+  const emissiveInt = isWorking ? 1.8 : 0;
 
   return (
     <group>
