@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { AgentConfig, AgentStatus } from '../../types';
 import { BREAK_SPOT, SOFA_SEATS, OFFICE_WAYPOINTS } from '../../config/agents';
+import { BUBO_CHARACTERS } from '../../data/characters/characters.config';
 import { BuboCharacter, Pose } from './BuboCharacter';
 import { useStore } from '../../state/store';
 
@@ -20,18 +21,18 @@ export const STATUS_COLOR: Record<AgentStatus, string> = {
   offline: '#64748b'
 };
 
-// Clean Discord Channel mapping (no emojis)
+// Clean Discord Channel mapping
 const DISCORD_META: Record<string, { channel: string; division: string }> = {
-  'bubo-manager': { channel: '#general-chat', division: 'Coordinator' },
-  'bubo-n8n': { channel: '#bubo-n8n', division: 'n8n Automation' },
-  'bubo-portal': { channel: '#bubo-portal', division: 'Frontend Portal' },
-  'bubo-backend-portal': { channel: '#bubo-backend-portal', division: 'Backend Portal' },
-  'bubo-admin-portal': { channel: '#bubo-admin-portal', division: 'Admin Portal' },
-  'bubo-source-video': { channel: '#bubo-source-video', division: 'Source Video' },
-  'bubo-pdf': { channel: '#bubo-pdf', division: 'PDF Processing' },
-  'bubo-qc-portal': { channel: '#bubo-qc-portal', division: 'QC Portal' },
-  'bubo-ticketing': { channel: '#bubo-ticketing', division: 'Ticketing Helpdesk' },
-  'bubo-building': { channel: '#bubo-building', division: 'Building & Infra' }
+  'bubo-manager': { channel: '#💬・general-chat', division: 'Coordinator' },
+  'bubo-admin-portal': { channel: '#🛡・bubo-admin-portal', division: 'Admin Portal' },
+  'bubo-n8n': { channel: '#⚡・bubo-n8n', division: 'n8n Automation' },
+  'bubo-portal': { channel: '#🌐・bubo-portal', division: 'Frontend Portal' },
+  'bubo-backend-portal': { channel: '#💻・bubo-backend-portal', division: 'Backend DB' },
+  'bubo-ptm': { channel: '#📊・bubo-ptm', division: 'Monitoring PTM' },
+  'bubo-qc-portal': { channel: '#🔍・bubo-qc-portal', division: 'QC Portal' },
+  'bubo-ticketing': { channel: '#🎫・bubo-ticketing', division: 'Ticketing Jira' },
+  'bubo-building': { channel: '#🏗・bubo-building', division: 'Building & Infra' },
+  'bubo-sheet': { channel: '#bubo-sheet', division: 'Sheets Automation' }
 };
 
 const wrap = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
@@ -114,22 +115,30 @@ export function AgentActor({
       const isRoamingNow = cycle < 28;
 
       if (isRoamingNow) {
+        const agentIdx = BUBO_CHARACTERS.findIndex((c) => c.id === cfg.id);
         const roamWaypoints: Array<{ pos: [number, number, number]; isSofa?: boolean }> = [
           { pos: [-13.5, 0.15, 3.2], isSofa: true },  // Executive sofa lounge
-          { pos: [-10.5, 0.15, 2.5] },                // Executive round meeting table
+          { pos: [-10.5, 0.15, 1.8] },                // Executive round meeting table (safe clearance)
           { pos: [-4.0, 0.15, 2.2] },                 // Koridor kiri
           { pos: [0.0, 0.15, 2.4] },                  // Koridor utama tengah
           { pos: [3.5, 0.15, 0.8] },                  // Sofa santai lounge tengah
-          { pos: [5.5, 0.15, -3.8] },                 // Coffee bar & pantry kulkas
+          { pos: [5.5, 0.15, -3.0] },                 // Coffee bar & pantry kulkas (safe clearance)
           { pos: [7.5, 0.15, -2.5] },                 // Meja santai cafe
           { pos: [12.5, 0.15, 1.8], isSofa: true },  // Game room sofa biru
           { pos: [14.0, 0.15, 2.2], isSofa: true },  // Beanbags santai TV
           { pos: [14.5, 0.15, -3.5] },                // Sleeping pods & quiet room
         ];
 
-        const spotIndex = Math.floor((cycle * 0.35 + charOffset) % roamWaypoints.length);
+        // Unique waypoint assignment + spatial separation per character (no crowding or clipping)
+        const spotIndex = (Math.floor(cycle * 0.3) + agentIdx) % roamWaypoints.length;
         const chosenSpot = roamWaypoints[spotIndex];
-        dynamicTarget = new THREE.Vector3(chosenSpot.pos[0], chosenSpot.pos[1], chosenSpot.pos[2]);
+        const offsetX = ((agentIdx % 3) - 1) * 0.45;
+        const offsetZ = ((agentIdx % 2) === 0 ? 0.35 : -0.35);
+        dynamicTarget = new THREE.Vector3(
+          chosenSpot.pos[0] + (chosenSpot.isSofa ? 0 : offsetX),
+          chosenSpot.pos[1],
+          chosenSpot.pos[2] + (chosenSpot.isSofa ? 0 : offsetZ)
+        );
         isSofa = !!chosenSpot.isSofa;
       } else {
         dynamicTarget = anchors.sit;

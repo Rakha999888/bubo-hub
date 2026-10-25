@@ -567,12 +567,12 @@ export function BuboBuilding({
         </group>
       ))}
 
-      {/* ─── 9. AIR CONDITIONING UNITS (AC) IN EVERY ZONE ─── */}
-      <ACUnit x={-11.5} y={3.4} z={-6.3} />  {/* Executive AC */}
-      <ACUnit x={-3.5} y={3.4} z={-6.3} />   {/* Dev Hub Left AC */}
-      <ACUnit x={3.5} y={3.4} z={-6.3} />    {/* Dev Hub Right AC */}
-      <ACUnit x={8.5} y={3.4} z={-6.3} />    {/* Pantry AC */}
-      <ACUnit x={14.5} y={3.4} z={-6.3} />   {/* Entertainment & Sleeping AC */}
+      {/* ─── 9. AIR CONDITIONING UNITS (AC) IN EVERY ZONE (MOUNTED HIGH ON WALL) ─── */}
+      <ACUnit x={-11.5} y={3.6} z={-6.3} />  {/* Executive AC */}
+      <ACUnit x={-3.5} y={3.6} z={-6.3} />   {/* Dev Hub Left AC */}
+      <ACUnit x={3.5} y={3.6} z={-6.3} />    {/* Dev Hub Right AC */}
+      <ACUnit x={8.5} y={3.6} z={-6.3} />    {/* Pantry AC */}
+      <ACUnit x={14.5} y={3.6} z={-6.3} />   {/* Entertainment & Sleeping AC */}
 
       {/* ─── 10. INDOOR TROPICAL POTTED PLANTS (LIKE REFERENCE) ─── */}
       <Plant x={-17.2} z={5.5} />
