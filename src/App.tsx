@@ -16,13 +16,23 @@ import { CameraLevel, AgentConfig } from './types';
 function Counts() {
   const agents = useStore((s) => s.agents);
   const n = (k: string) => Object.values(agents).filter((a) => a.status === k).length;
+  const onlineCount = Object.values(agents).filter((a) => a.status !== 'offline').length;
+  const workingCount = n('working');
   return (
-    <div className="counts">
-      <span style={{ color: '#34d399' }}>● Online {Object.values(agents).filter((a) => a.status !== 'offline').length}</span>
-      <span style={{ color: STATUS_COLOR.working }}>● Working {n('working')}</span>
-      <span style={{ color: STATUS_COLOR.waiting }}>● Waiting {n('waiting')}</span>
-      <span style={{ color: STATUS_COLOR.error }}>● Error {n('error')}</span>
-    </div>
+    <>
+      <div className="counts">
+        <span style={{ color: '#34d399' }}>● Online {onlineCount}</span>
+        <span style={{ color: STATUS_COLOR.working }}>● Working {workingCount}</span>
+        <span style={{ color: STATUS_COLOR.waiting }}>● Waiting {n('waiting')}</span>
+        <span style={{ color: STATUS_COLOR.error }}>● Error {n('error')}</span>
+      </div>
+      <div className="counts-mobile">
+        <span style={{ color: '#34d399' }}>● {onlineCount} On</span>
+        {workingCount > 0 && (
+          <span style={{ color: STATUS_COLOR.working }}>· {workingCount} Work</span>
+        )}
+      </div>
+    </>
   );
 }
 

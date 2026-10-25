@@ -19,48 +19,31 @@ export function PromptBar() {
   };
 
   return (
-    <form className="prompt" onSubmit={handleSubmit}>
-      <select
-        value={currentId}
-        onChange={(e) => selectAgent(e.target.value)}
-        style={{
-          background: '#0a1222',
-          color: '#38bdf8',
-          border: '1px solid var(--line)',
-          borderRadius: '8px',
-          padding: '8px 10px',
-          fontSize: '12px',
-          fontWeight: 600,
-          outline: 'none',
-          cursor: 'pointer'
-        }}
-      >
-        {Object.values(agents).map((a) => (
-          <option key={a.id} value={a.id}>
-            {a.name}
-          </option>
-        ))}
-      </select>
+    <form className={`prompt-bar ${selectedId ? 'has-panel' : ''}`} onSubmit={handleSubmit}>
+      <div className="prompt-top-row">
+        <select
+          className="prompt-select"
+          value={currentId}
+          onChange={(e) => selectAgent(e.target.value)}
+        >
+          {Object.values(agents).map((a) => (
+            <option key={a.id} value={a.id}>
+              {a.name}
+            </option>
+          ))}
+        </select>
+        <button className="prompt-submit-btn prompt-submit-btn-mobile" type="submit">
+          Kirim ↵
+        </button>
+      </div>
       <input
+        className="prompt-input"
         type="text"
-        placeholder={`Kirim prompt tugas untuk ${currentAgent?.name || 'Agen'}...`}
+        placeholder={`Kirim prompt untuk ${currentAgent?.name || 'Agen'}...`}
         value={input}
         onChange={(e) => setInput(e.target.value)}
       />
-      <button
-        type="submit"
-        style={{
-          background: '#0284c7',
-          color: '#ffffff',
-          border: 'none',
-          borderRadius: '8px',
-          padding: '8px 16px',
-          fontSize: '12px',
-          fontWeight: 700,
-          cursor: 'pointer',
-          whiteSpace: 'nowrap'
-        }}
-      >
+      <button className="prompt-submit-btn prompt-submit-btn-desktop" type="submit">
         Kirim Perintah ↵
       </button>
     </form>

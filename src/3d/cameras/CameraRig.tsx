@@ -12,38 +12,61 @@ export function CameraRig() {
   const floor = useStore((s) => s.floor);
   const level = useStore((s) => s.cameraLevel);
   const selectedAgentId = useStore((s) => s.selectedAgentId);
-  const camera = useThree((s) => s.camera);
+  const camera = useThree((s) => s.camera as any);
+  const size = useThree((s) => s.size);
   const controls = useRef<any>(null);
 
   useEffect(() => {
     let pos: [number, number, number], tgt: [number, number, number];
+    let targetFov = 40;
+
+    const aspect = size.width / Math.max(1, size.height);
 
     if (view === 'agent') {
       return;
     } else if (level === 'city') {
       pos = [28, 32, 28];
       tgt = [0, 4, 0];
+      targetFov = 45;
     } else if (level === 'building') {
       pos = [16, 22, 18];
       tgt = [0, 4, 0];
+      targetFov = 45;
     } else {
       // Wide sprawling horizontal single-floor office:
-      // Isometric view looking at the full breadth of the office from front-left angled perspective
-      pos = [2, 21, 24];
-      tgt = [0.5, 0.5, -0.5];
+      if (aspect < 0.75) {
+        // Narrow portrait smartphone (iPhone / Android)
+        pos = [1.5, 34, 38];
+        tgt = [0, 0, -1];
+        targetFov = 58;
+      } else if (aspect < 1.15) {
+        // Tablet / Foldable portrait
+        pos = [2, 28, 32];
+        tgt = [0.2, 0.2, -0.8];
+        targetFov = 48;
+      } else {
+        // Desktop landscape (16:9 / wide)
+        pos = [2, 21, 24];
+        tgt = [0.5, 0.5, -0.5];
+        targetFov = 40;
+      }
     }
 
     const c = controls.current;
     if (!c) return;
-    const upd = () => c.update();
+    const upd = () => {
+      camera.updateProjectionMatrix();
+      c.update();
+    };
     const tw = gsap.timeline({ defaults: { duration: 1.1, ease: 'power2.inOut', onUpdate: upd } });
     tw.to(camera.position, { x: pos[0], y: pos[1], z: pos[2] }, 0)
-      .to(c.target, { x: tgt[0], y: tgt[1], z: tgt[2] }, 0);
+      .to(c.target, { x: tgt[0], y: tgt[1], z: tgt[2] }, 0)
+      .to(camera, { fov: targetFov }, 0);
 
     return () => {
       tw.kill();
     };
-  }, [view, floor, level, selectedAgentId, camera]);
+  }, [view, floor, level, selectedAgentId, camera, size.width, size.height]);
 
   return (
     <OrbitControls
@@ -51,12 +74,14 @@ export function CameraRig() {
       makeDefault
       enabled={true}
       enablePan={true}
-      minDistance={10}
-      maxDistance={45}
-      minPolarAngle={Math.PI / 6}
-      maxPolarAngle={Math.PI / 2.3}
-      minAzimuthAngle={-Math.PI / 4}
-      maxAzimuthAngle={Math.PI / 4}
+      enableDamping={true}
+      dampingFactor={0.08}
+      minDistance={6}
+      maxDistance={70}
+      minPolarAngle={Math.PI / 8}
+      maxPolarAngle={Math.PI / 2.25}
+      minAzimuthAngle={-Math.PI / 3}
+      maxAzimuthAngle={Math.PI / 3}
     />
   );
 }

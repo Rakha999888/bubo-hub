@@ -132,16 +132,12 @@ export function PixelOfficeRoom({ initialAgentId }: { initialAgentId?: string | 
             >
               {/* UPPER WALL SECTION OF THIS ROOM ROW */}
               <div
+                className="pixel-room-wall"
                 style={{
-                  height: '135px',
                   background: 'linear-gradient(180deg, #1c2330 0%, #222b39 100%)',
                   borderBottom: '12px solid #161c26',
                   position: 'relative',
-                  overflow: 'hidden',
-                  padding: '12px 24px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between'
+                  overflow: 'hidden'
                 }}
               >
                 {/* Wall Panel Grid Lines */}
@@ -298,15 +294,12 @@ export function PixelOfficeRoom({ initialAgentId }: { initialAgentId?: string | 
                 </div>
               </div>
 
-              {/* LOWER FLOOR SECTION WITH 3 DESKS (Side by Side in 3 Columns) */}
+              {/* LOWER FLOOR SECTION WITH DESKS (Responsive Grid) */}
               <div
+                className="pixel-room-floor"
                 style={{
                   background: 'repeating-linear-gradient(90deg, #4d3826 0px, #4d3826 50px, #433020 50px, #433020 100px)',
                   boxShadow: 'inset 0 12px 24px rgba(0,0,0,0.5)',
-                  padding: '24px 20px 28px 20px',
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(3, 1fr)',
-                  gap: '20px',
                   position: 'relative'
                 }}
               >
