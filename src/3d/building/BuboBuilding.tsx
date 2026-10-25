@@ -342,26 +342,26 @@ export function BuboBuilding({
         </group>
       ))}
 
-      {/* ─── 2. ZONE CARPETS & FLOOR MARKINGS ─── */}
+      {/* ─── 2. ZONE CARPETS & FLOOR MARKINGS (NO Z-FIGHTING) ─── */}
       {/* Executive Wing Carpet (Warm Burgundy / Rich Dark Slate) */}
-      <mesh position={[-11.5, 0.18, -0.5]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh position={[-11.5, 0.19, -0.5]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[11, 10]} />
-        <meshStandardMaterial color="#334155" opacity={0.35} transparent roughness={0.9} />
+        <meshStandardMaterial color="#334155" opacity={0.35} transparent depthWrite={false} roughness={0.9} polygonOffset polygonOffsetFactor={-1} polygonOffsetUnits={-1} />
       </mesh>
       {/* Central Engineering Open Floor Carpet (Tech Slate Blue) */}
-      <mesh position={[0.0, 0.18, -0.5]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh position={[0.0, 0.19, -0.5]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[11.5, 10]} />
-        <meshStandardMaterial color="#1e293b" opacity={0.3} transparent roughness={0.9} />
+        <meshStandardMaterial color="#1e293b" opacity={0.3} transparent depthWrite={false} roughness={0.9} polygonOffset polygonOffsetFactor={-1} polygonOffsetUnits={-1} />
       </mesh>
       {/* Pantry Tile Area (Terracotta Warm Wood) */}
-      <mesh position={[8.5, 0.18, -3.2]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh position={[8.5, 0.19, -3.2]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[5.2, 5.0]} />
-        <meshStandardMaterial color="#78350f" opacity={0.25} transparent roughness={0.8} />
+        <meshStandardMaterial color="#78350f" opacity={0.25} transparent depthWrite={false} roughness={0.8} polygonOffset polygonOffsetFactor={-1} polygonOffsetUnits={-1} />
       </mesh>
       {/* Entertainment & Gaming Red Rug (Like Game Dev Tycoon reference!) */}
-      <mesh position={[14.2, 0.18, 1.0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh position={[14.2, 0.19, 1.0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[6.2, 5.5]} />
-        <meshStandardMaterial color="#991b1b" opacity={0.65} transparent roughness={0.85} />
+        <meshStandardMaterial color="#991b1b" opacity={0.65} transparent depthWrite={false} roughness={0.85} polygonOffset polygonOffsetFactor={-1} polygonOffsetUnits={-1} />
       </mesh>
 
       {/* ─── 3. INTERIOR LOW PARTITIONS & GLASS DIVIDERS ─── */}

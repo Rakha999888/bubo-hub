@@ -15,6 +15,7 @@ export function CameraRig() {
   const camera = useThree((s) => s.camera as any);
   const size = useThree((s) => s.size);
   const controls = useRef<any>(null);
+  const isInitial = useRef(true);
 
   useEffect(() => {
     let pos: [number, number, number], tgt: [number, number, number];
@@ -54,11 +55,23 @@ export function CameraRig() {
 
     const c = controls.current;
     if (!c) return;
+
+    // First mount: langsung set instan tanpa animasi agar tidak ada kedap-kedip / lompat kamera saat buka web!
+    if (isInitial.current) {
+      isInitial.current = false;
+      camera.position.set(pos[0], pos[1], pos[2]);
+      c.target.set(tgt[0], tgt[1], tgt[2]);
+      camera.fov = targetFov;
+      camera.updateProjectionMatrix();
+      c.update();
+      return;
+    }
+
     const upd = () => {
       camera.updateProjectionMatrix();
       c.update();
     };
-    const tw = gsap.timeline({ defaults: { duration: 1.1, ease: 'power2.inOut', onUpdate: upd } });
+    const tw = gsap.timeline({ defaults: { duration: 1.0, ease: 'power2.inOut', onUpdate: upd } });
     tw.to(camera.position, { x: pos[0], y: pos[1], z: pos[2] }, 0)
       .to(c.target, { x: tgt[0], y: tgt[1], z: tgt[2] }, 0)
       .to(camera, { fov: targetFov }, 0);

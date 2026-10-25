@@ -86,8 +86,8 @@ export default function App() {
 
       <Canvas
         shadows
-        dpr={[1, 1.75]}
-        camera={{ position: [34, 26, 42], fov: 40, near: 0.5, far: 400 }}
+        dpr={[1, 1.5]}
+        camera={{ position: [2, 21, 24], fov: 40, near: 0.5, far: 200 }}
         onPointerMissed={() => {
           selectAgent(null);
           handleCloseContextMenu();
@@ -95,11 +95,13 @@ export default function App() {
       >
         <color attach="background" args={['#bfe3f5']} />
         <fog attach="fog" args={['#bfe3f5', 90, 220]} />
-        <ambientLight intensity={0.7} />
+        <ambientLight intensity={0.75} />
         <directionalLight
           position={[30, 40, 25]}
           intensity={1.1}
           castShadow
+          shadow-bias={-0.0004}
+          shadow-normalBias={0.02}
           shadow-mapSize={[2048, 2048]}
           shadow-camera-left={-40}
           shadow-camera-right={40}
@@ -111,7 +113,6 @@ export default function App() {
         <BuboCity />
         <BuboBuilding onContextMenu={handleAgentContextMenu} />
         <CameraRig />
-        <AdaptiveDpr pixelated />
       </Canvas>
 
       {/* Context Menu on Right Click */}

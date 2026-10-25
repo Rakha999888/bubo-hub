@@ -35,6 +35,25 @@ const DISCORD_META: Record<string, { channel: string; division: string }> = {
   'bubo-sheet': { channel: '#bubo-sheet', division: 'Sheets Automation' }
 };
 
+// 10 Zona Bebas Bergerak Mandiri (Terdistribusi Sempurna Tanpa Saling Tabrak)
+export const AGENT_ROAM_ZONES: Array<{
+  spotA: [number, number, number];
+  spotB: [number, number, number];
+  sofaA?: boolean;
+  sofaB?: boolean;
+}> = [
+  { spotA: [-10.5, 0.15, 1.8], spotB: [-12.0, 0.15, 2.5] },                // 0. Rakha: Executive meeting table & discussion
+  { spotA: [-13.5, 0.15, 3.2], spotB: [-8.5, 0.15, 2.4], sofaA: true },    // 1. Admin: Executive sofa lounge & west aisle
+  { spotA: [-5.5, 0.15, 2.4], spotB: [-4.0, 0.15, 2.4] },                  // 2. n8n: Koridor barat
+  { spotA: [-1.5, 0.15, 2.4], spotB: [0.0, 0.15, 2.4] },                   // 3. Portal: Koridor tengah barat
+  { spotA: [1.5, 0.15, 2.4], spotB: [3.0, 0.15, 2.4] },                    // 4. Backend: Koridor tengah timur
+  { spotA: [3.5, 0.15, 0.8], spotB: [4.8, 0.15, 1.2], sofaA: true },       // 5. PTM: Sofa santai lounge tengah
+  { spotA: [6.0, 0.15, -2.6], spotB: [7.2, 0.15, -2.6] },                  // 6. QC: Coffee bar & pantry kulkas
+  { spotA: [8.5, 0.15, -1.8], spotB: [9.5, 0.15, -2.2] },                  // 7. Ticketing: Meja santai cafe
+  { spotA: [12.5, 0.15, 1.8], spotB: [11.2, 0.15, 2.4], sofaA: true },     // 8. Building: Game room sofa biru
+  { spotA: [14.2, 0.15, 2.4], spotB: [14.5, 0.15, -3.2], sofaA: true },    // 9. Sheet: Beanbags santai TV & quiet pod
+];
+
 const wrap = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
 
 /**
@@ -73,10 +92,14 @@ export function AgentActor({
     brk: new THREE.Vector3(BREAK_SPOT[cfg.floor]?.[0] || 0, 0.15, BREAK_SPOT[cfg.floor]?.[1] || 0)
   }), [cfg]);
 
-  // Initial mount: mulai dari posisi meja masing-masing
+  // Initial mount: langsung mulai dari zona standby masing-masing agar tidak ada kedap-kedip teleportasi!
   useEffect(() => {
     if (root.current) {
-      root.current.position.set(cfg.desk[0], 0.15, cfg.desk[1] + 0.85);
+      const agentIdx = BUBO_CHARACTERS.findIndex((c) => c.id === cfg.id);
+      const myZone = AGENT_ROAM_ZONES[agentIdx >= 0 ? agentIdx : 0];
+      const isWorking = st.status === 'working' || st.status === 'thinking';
+      const initialPos = isWorking ? anchors.sit : new THREE.Vector3(myZone.spotA[0], 0.15, myZone.spotA[2]);
+      root.current.position.copy(initialPos);
       root.current.rotation.y = Math.PI;
     }
     yaw.current = Math.PI;
@@ -100,25 +123,6 @@ export function AgentActor({
     const isWorkingOnPrompt = s.status === 'working' || s.status === 'thinking';
 
     const agentIdx = BUBO_CHARACTERS.findIndex((c) => c.id === cfg.id);
-
-    // 10 Zona Bebas Bergerak Mandiri (Terdistribusi Sempurna Tanpa Saling Tabrak)
-    const AGENT_ROAM_ZONES: Array<{
-      spotA: [number, number, number];
-      spotB: [number, number, number];
-      sofaA?: boolean;
-      sofaB?: boolean;
-    }> = [
-      { spotA: [-10.5, 0.15, 1.8], spotB: [-12.0, 0.15, 2.5] },                // 0. Rakha: Executive meeting table & discussion
-      { spotA: [-13.5, 0.15, 3.2], spotB: [-8.5, 0.15, 2.4], sofaA: true },    // 1. Admin: Executive sofa lounge & west aisle
-      { spotA: [-5.5, 0.15, 2.4], spotB: [-4.0, 0.15, 2.4] },                  // 2. n8n: Koridor barat
-      { spotA: [-1.5, 0.15, 2.4], spotB: [0.0, 0.15, 2.4] },                   // 3. Portal: Koridor tengah barat
-      { spotA: [1.5, 0.15, 2.4], spotB: [3.0, 0.15, 2.4] },                    // 4. Backend: Koridor tengah timur
-      { spotA: [3.5, 0.15, 0.8], spotB: [4.8, 0.15, 1.2], sofaA: true },       // 5. PTM: Sofa santai lounge tengah
-      { spotA: [6.0, 0.15, -2.6], spotB: [7.2, 0.15, -2.6] },                  // 6. QC: Coffee bar & pantry kulkas
-      { spotA: [8.5, 0.15, -1.8], spotB: [9.5, 0.15, -2.2] },                  // 7. Ticketing: Meja santai cafe
-      { spotA: [12.5, 0.15, 1.8], spotB: [11.2, 0.15, 2.4], sofaA: true },     // 8. Building: Game room sofa biru
-      { spotA: [14.2, 0.15, 2.4], spotB: [14.5, 0.15, -3.2], sofaA: true },    // 9. Sheet: Beanbags santai TV & quiet pod
-    ];
 
     let dynamicTarget: THREE.Vector3;
     let isSofa = false;
